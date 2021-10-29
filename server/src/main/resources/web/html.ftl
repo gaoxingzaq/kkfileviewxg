@@ -7,8 +7,13 @@
 	<title>${file.name}预览</title>
     <#include "*/commonHeader.ftl">
 </head>
+<#if pdfUrl?contains("http://") || pdfUrl?contains("https://")>
+    <#assign finalUrl="${pdfUrl}">
+<#else>
+    <#assign finalUrl="${baseUrl}${pdfUrl}">
+</#if>
 <body>
-    <iframe src="${pdfUrl}" width="100%" frameborder="0"></iframe>
+    <iframe src="${finalUrl}" width="100%" frameborder="0"></iframe>
 </body>
 <script type="text/javascript">
     document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight-10;
