@@ -112,7 +112,7 @@ pdf预览模式预览效果如下
 
 > 2021年10月29日，v4.0.7版本发布 ：
 
-1、修复openoffice 或lieboffice转换内核模式下PPT PPTX图片页码和水印问题 
+1、修复openoffice 或lieboffice转换内核模式下PPT PPTX图片页码和水印问题
 2、修复PDF浏览模式有的发票不显示文字 
 3、增加OFD模式打印功能 
 4、增加转换内核POI  转换为HTML 
