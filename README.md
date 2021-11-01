@@ -1,11 +1,12 @@
 # file-online-preview
-此项目为文件文档在线预览项目解决方案，对标业内付费产品有【[永中office](http://dcs.yozosoft.com/)】【[office365](http://www.officeweb365.com/)】【[idocv](https://www.idocv.com/)】等，在取得公司高层同意后以Apache协议开源出来反哺社区，在此特别感谢@唐老大的支持以及@端木详笑的贡献。该项目使用流行的spring boot搭建，易上手和部署，基本支持主流办公文档的在线预览，如doc,docx,Excel,pdf,txt,zip,rar,图片等等
+此项目为文件文档在线预览项目解决方案，对标业内付费产品有【[永中office](http://dcs.yozosoft.com/)】【[office365](http://www.officeweb365.com/)】【[idocv](https://www.idocv.com/)】等，在取得公司高层同意后以Apache协议开源出来反哺社区，在此特别感谢@唐老大的支持以及@端木详笑的贡献。该项目使用流行的spring boot搭建，易上手和部署，基本支持主流办公文档的在线预览，如doc,docx,Excel,pdf,txt,zip,rar,vsd,rtf,docm图片等等
 ### 项目特性
 
 1. 支持 office, pdf, cad 等办公文档
 1. 支持 txt, xml(渲染), md(渲染), java, php, py, js, css 等所有纯文本
 1. 支持 zip, rar, jar, tar, gzip 等压缩包
-1. 支持 jpg, jpeg, png, gif, tif, tiff 等图片预览（翻转，缩放，镜像）
+1. 支持 jpg, jpeg, png, gif, tif, tiff,webp 等图片预览（翻转，缩放，镜像）
+1. 支持 eml,ofd,svg
 1. 使用 spring-boot 开发，预览服务搭建部署非常简便
 1. rest 接口提供服务，跨语言、跨平台特性(java,php,python,go,php，....)都支持，应用接入简单方便
 1. 抽象预览服务接口，方便二次开发，非常方便添加其他类型文件预览支持
@@ -28,9 +29,7 @@
 ### 联系我们，加入组织
 > 我们会用心回答解决大家在项目使用中的问题，也请大家在提问前至少 Google 或 baidu 过，珍爱生命远离无效的交流沟通
 
-![](./doc/KK开源技术交流2群群聊二维码.png) 
-
-QQ群号：~~613025121(已满)~~  2群：484680571
+QQ群号：~~484680571(已满)~~  3群433403637
 
 ### 文档预览效果
 #### 1. 文本预览
