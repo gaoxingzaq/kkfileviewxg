@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0">
-    <title>${file.name}markdown文本预览</title>
+    <title>${file.name}文本预览</title>
     <script src="js/marked.min.js" type="text/javascript"></script>
     <#include "*/commonHeader.ftl">
 </head>
@@ -45,8 +45,23 @@
     /**
      * 加载markdown
      */
+	   function htmlttt (str){ 
+             var s = "";
+             if(str.length == 0) return "";
+             s = str.replace(/&amp;/g,"&");
+             s = s.replace(/&lt;/g,"<");
+             s = s.replace(/&gt;/g,">");
+             s = s.replace(/&nbsp;/g," ");
+             s = s.replace(/&#39;/g,"\'");
+             s = s.replace(/&quot;/g,"\"");
+			 s = s.replace(/<script.*?>.*?<\/script>/ig, ''); 
+             s = s.replace(/<script/gi, "&lt;script ");
+			  s = s.replace(/<iframe/gi, "&lt;iframe ");
+             return s;  
+       } 
     function loadMarkdown() {
         var textData = Base64.decode($("#textData").val())
+		  textData = htmlttt(textData);
         window.textPreData = "<pre style='background-color: #FFFFFF;border:none'>" + textData + "</pre>";
         window.textMarkdownData = marked(textData);
         $("#markdown").html(window.textMarkdownData);
