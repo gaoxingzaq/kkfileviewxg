@@ -174,9 +174,9 @@
         <dependency>
             <groupId>com.aspose</groupId>
             <artifactId>aspose-cad</artifactId>
-            <version>19.9</version>
+            <version>21.8</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/aspose-cad-21.4.jar</systemPath>
+            <systemPath>${basedir}/lib/aspose-cad-21.8.jar</systemPath>
         </dependency>
         <!-- 编码识别 -->
         <dependency>
