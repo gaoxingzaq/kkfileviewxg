@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <description xmlns="http://openoffice.org/extensions/description/2006" xmlns:d="http://openoffice.org/extensions/description/2006"  xmlns:xlink="http://www.w3.org/1999/xlink">
-    <version value="2020.11.01" />
+    <version value="2021.05.01" />
     <identifier value="org.openoffice.en.hunspell.dictionaries" />
     <display-name>
         <name lang="en-US">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
@@ -113,7 +113,7 @@
         <name lang="ts">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="tt">Инглиз теленең орфография сүзлеге, күчерү кагыдәләре, тезаурус һәм грамматиканы тикшерү</name>
         <name lang="ug">ئىنگلىزچە ئىملا لۇغىتى، ھەرپ ئۇلىنىش قائىدىسى، مەنىداش سۆزلەر لۇغىتى ۋە تىلقۇرما تەكشۈرگۈچ</name>
-        <name lang="uk">Англійські орфографічний словник, правила переносу, тезаурус та перевірка граматики</name>
+        <name lang="uk">Англійські орфографічні словники, правила переносу, тезаурус та перевірка граматики</name>
         <name lang="uz">Ingliz imlo lug‘ati, bo‘g‘in ko‘chirish qoidalari, tezarus va grammatikani tekshirgich</name>
         <name lang="ve">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="vec">Disionari ortogràfeghi Inglezi, règołe de siłabasion, disionaro de i sinònemi e controłor gramategałe</name>

@@ -1,6 +1,6 @@
 
 ======================================================================
-LibreOffice 7.1 自述文档
+LibreOffice 7.2 自述文档
 ======================================================================
 
 
@@ -85,7 +85,7 @@ sudo dpkg -i *.deb
 
 对于本安装说明中未特别提及的其他 Linux 发行版，安装 LibreOffice 应该很简单。主要的差异大概在桌面集成方面。
 
-RPMS 或 DEBS 目录中分别还包含名为 libreoffice7.1-freedesktop-menus-7.1.0.1-1.noarch.rpm (或者 libreoffice7.1-debian-menus_7.1.0.1-1_all.deb 或类似的) 的软件包。该软件包可供所有支持 Freedesktop.org 规范/推荐 (https://en.wikipedia.org/wiki/Freedesktop.org) 的 Linux 发行版使用，也可在前文说明中未提及的其他 Linux 发行版中安装。
+RPMS 或 DEBS 目录中分别还包含名为 libreoffice7.2-freedesktop-menus-7.2.0.1-1.noarch.rpm (或者 libreoffice7.2-debian-menus_7.2.0.1-1_all.deb 或类似的) 的软件包。该软件包可供所有支持 Freedesktop.org 规范/推荐 (https://en.wikipedia.org/wiki/Freedesktop.org) 的 Linux 发行版使用，也可在前文说明中未提及的其他 Linux 发行版中安装。
 
 安装语言包
 ----------------------------------------------------------------------
@@ -198,7 +198,7 @@ SF |= 0x00004000
 
 您可以为这个重要的开源项目做出主要的贡献，即使您的软件设计和编码经验有限。是的，您可以！
 
-我们希望您能够愉快地使用新的 LibreOffice 7.1 并在线加入我们。
+我们希望您能够愉快地使用新的 LibreOffice 7.2 并在线加入我们。
 
 LibreOffice 社区
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.1 -->
-<!-- <?xml version="1.0" encoding="UTF-8"?> -->
 <interface domain="sc">
   <requires lib="gtk+" version="3.20"/>
   <requires lib="LibreOffice" version="1.0"/>
@@ -1290,13 +1289,6 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="MenuFile-ExportToEPUB">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="action_name">.uno:ExportToEPUB</property>
-      </object>
-    </child>
-    <child>
       <object class="GtkSeparatorMenuItem" id="MenuFile-separator2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -1544,10 +1536,10 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="MenuFormat-InsertZWNBSP">
+      <object class="GtkMenuItem" id="MenuFormat-InsertWJ">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="action_name">.uno:InsertZWNBSP</property>
+        <property name="action_name">.uno:InsertWJ</property>
       </object>
     </child>
     <child>
@@ -1927,6 +1919,13 @@
       <object class="GtkSeparatorMenuItem" id="MenuInsert-separator2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="MenuInsert-InsertQrCode">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="action_name">.uno:InsertQrCode</property>
       </object>
     </child>
     <child>
@@ -3167,8 +3166,8 @@
           <object class="sfxlo-PriorityHBox" id="DefaultBox1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-end">5</property>
             <property name="baseline_position">bottom</property>
             <child>
               <object class="sfxlo-DropdownBox" id="SectionTools">
@@ -3303,7 +3302,6 @@
                               <object class="sfxlo-NotebookbarToolBox" id="thirdExt2">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="resize_mode">immediate</property>
                                 <property name="toolbar_style">icons</property>
                                 <property name="show_arrow">False</property>
                                 <property name="icon_size">1</property>
@@ -3991,7 +3989,7 @@
                                               <object class="GtkToolButton" id="CharFontName">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="margin_right">5</property>
+                                                <property name="margin-end">5</property>
                                                 <property name="action_name">.uno:CharFontName</property>
                                               </object>
                                               <packing>
@@ -4003,7 +4001,7 @@
                                               <object class="GtkToolButton" id="FontHeight">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="margin_left">5</property>
+                                                <property name="margin-start">5</property>
                                                 <property name="action_name">.uno:FontHeight</property>
                                               </object>
                                               <packing>

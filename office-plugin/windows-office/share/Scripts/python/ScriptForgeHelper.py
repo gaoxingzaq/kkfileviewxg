@@ -171,6 +171,8 @@ def _SF_Platform(propertyname: str):       # used by SF_Platform Basic module
         return pf.OSVersion
     elif propertyname == 'Processor':
         return pf.Processor
+    elif propertyname == 'PythonVersion':
+        return pf.PythonVersion
     else:
         return None
 
@@ -209,6 +211,9 @@ class Platform(object, metaclass = _Singleton):
 
     @property  # real processor name e.g. 'amdk'
     def Processor(self): return platform.processor()
+
+    @property  # Python major.minor.patchlevel
+    def PythonVersion(self): return 'Python ' + platform.python_version()
 
 
 # #################################################################
@@ -260,6 +265,12 @@ def _SF_String__HashStr(string: str, algorithm: str) -> str:  # used by SF_Strin
     except Exception:
         return ''
 
+
+# #################################################################
+# lists the scripts, that shall be visible inside the Basic/Python IDE
+# #################################################################
+
+g_exportedScripts = ()
 
 if __name__ == "__main__":
     print(_SF_Platform('Architecture'))

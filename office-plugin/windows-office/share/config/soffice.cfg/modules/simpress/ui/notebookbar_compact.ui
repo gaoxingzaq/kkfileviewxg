@@ -1033,10 +1033,10 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="MenuHome-InsertZWNBSP">
+      <object class="GtkMenuItem" id="MenuHome-InsertWJ">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="action_name">.uno:InsertZWNBSP</property>
+        <property name="action_name">.uno:InsertWJ</property>
       </object>
     </child>
     <child>
@@ -1274,6 +1274,13 @@
       <object class="GtkSeparatorMenuItem" id="MenuInsert-separator2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="MenuInsert-InsertQrCode">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="action_name">.uno:InsertQrCode</property>
       </object>
     </child>
     <child>
@@ -2229,10 +2236,10 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="MenuText-InsertZWNBSP">
+      <object class="GtkMenuItem" id="MenuText-InsertWJ">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="action_name">.uno:InsertZWNBSP</property>
+        <property name="action_name">.uno:InsertWJ</property>
       </object>
     </child>
     <child>
@@ -3271,7 +3278,6 @@
                         <property name="receives_default">False</property>
                         <property name="valign">center</property>
                         <property name="vexpand">True</property>
-                        <property name="resize_mode">immediate</property>
                         <property name="relief">none</property>
                         <property name="use_underline">True</property>
                       </object>
@@ -3646,7 +3652,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="valign">center</property>
-                            <property name="margin_left">5</property>
+                            <property name="margin-start">5</property>
                             <property name="show_arrow">False</property>
                             <child>
                               <object class="GtkToolButton" id="Home-FontHeight">

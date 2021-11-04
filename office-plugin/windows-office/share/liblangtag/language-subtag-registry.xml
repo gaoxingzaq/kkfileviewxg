@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<registry date="2021-03-05">
+<registry date="2021-08-06">
   <language>
     <subtag>aa</subtag>
     <description>Afar</description>
@@ -50873,6 +50873,12 @@
     <comments>Indicates that the content is transcribed according to X-SAMPA</comments>
   </variant>
   <variant>
+    <subtag>gallo</subtag>
+    <description>Gallo</description>
+    <added>2021-08-05</added>
+    <prefix>fr</prefix>
+  </variant>
+  <variant>
     <subtag>gascon</subtag>
     <description>Gascon</description>
     <added>2018-04-22</added>
@@ -50884,6 +50890,16 @@
     <description>Classical Occitan orthography</description>
     <added>2018-04-22</added>
     <prefix>oc</prefix>
+    <prefix>oc-aranes</prefix>
+    <prefix>oc-auvern</prefix>
+    <prefix>oc-cisaup</prefix>
+    <prefix>oc-creiss</prefix>
+    <prefix>oc-gascon</prefix>
+    <prefix>oc-lemosin</prefix>
+    <prefix>oc-lengadoc</prefix>
+    <prefix>oc-nicard</prefix>
+    <prefix>oc-provenc</prefix>
+    <prefix>oc-vivaraup</prefix>
     <comments>Classical written standard for Occitan developed in 1935 by Alibèrt</comments>
   </variant>
   <variant>
@@ -50891,12 +50907,25 @@
     <description>Italian-inspired Occitan orthography</description>
     <added>2018-04-22</added>
     <prefix>oc</prefix>
+    <prefix>oc-cisaup</prefix>
+    <prefix>oc-nicard</prefix>
+    <prefix>oc-provenc</prefix>
   </variant>
   <variant>
     <subtag>grmistr</subtag>
     <description>Mistralian or Mistralian-inspired Occitan orthography</description>
     <added>2018-04-22</added>
     <prefix>oc</prefix>
+    <prefix>oc-aranes</prefix>
+    <prefix>oc-auvern</prefix>
+    <prefix>oc-cisaup</prefix>
+    <prefix>oc-creiss</prefix>
+    <prefix>oc-gascon</prefix>
+    <prefix>oc-lemosin</prefix>
+    <prefix>oc-lengadoc</prefix>
+    <prefix>oc-nicard</prefix>
+    <prefix>oc-provenc</prefix>
+    <prefix>oc-vivaraup</prefix>
     <comments>Written standard developed by Romanilha in 1853 and used by Mistral and the Félibres, including derived standards such as Escolo dóu Po, Escolo Gaston Febus, and others</comments>
   </variant>
   <variant>
@@ -51248,6 +51277,13 @@
     <added>2010-06-29</added>
     <prefix>rm</prefix>
     <comments>Sutsilvan is one of the five traditional written standards or "idioms" of the Romansh language.</comments>
+  </variant>
+  <variant>
+    <subtag>synnejyl</subtag>
+    <description>Synnejysk</description>
+    <description>South Jutish</description>
+    <added>2021-07-17</added>
+    <prefix>da</prefix>
   </variant>
   <variant>
     <subtag>tarask</subtag>

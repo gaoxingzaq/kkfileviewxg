@@ -93,6 +93,8 @@
           <menu:menuitem menu:id=".uno:PasteOnlyValue"/>
           <menu:menuitem menu:id=".uno:PasteOnlyFormula"/>
           <menu:menuseparator/>
+          <menu:menuitem menu:id=".uno:PasteTransposed"/>
+          <menu:menuseparator/>
           <menu:menuitem menu:id=".uno:PasteSpecial"/>
         </menu:menupopup>
       </menu:menu>
@@ -110,6 +112,8 @@
           <menu:menuitem menu:id=".uno:SelectColumn"/>
           <menu:menuitem menu:id=".uno:SelectData"/>
           <menu:menuitem menu:id=".uno:SelectUnprotectedCells"/>
+          <menu:menuitem menu:id=".uno:SelectVisibleRows"/>
+          <menu:menuitem menu:id=".uno:SelectVisibleColumns"/>
         </menu:menupopup>
       </menu:menu>
       <menu:menuseparator/>
@@ -262,7 +266,7 @@
           <menu:menuitem menu:id=".uno:InsertSoftHyphen"/>
           <menu:menuitem menu:id=".uno:InsertNarrowNobreakSpace"/>
           <menu:menuitem menu:id=".uno:InsertZWSP"/>
-          <menu:menuitem menu:id=".uno:InsertZWNBSP"/>
+          <menu:menuitem menu:id=".uno:InsertWJ"/>
           <menu:menuitem menu:id=".uno:InsertLRM"/>
           <menu:menuitem menu:id=".uno:InsertRLM"/>
         </menu:menupopup>
@@ -743,6 +747,8 @@
           <menu:menuitem menu:id=".uno:OpenXMLFilterSettings"/>
         </menu:menupopup>
       </menu:menu>
+      <menu:menuitem menu:id=".uno:DevelopmentToolsDockingWindow"/>
+      <menu:menuseparator/>
       <menu:menuitem menu:id="service:com.sun.star.deployment.ui.PackageManagerDialog" menu:style="text"/>
       <menu:menuitem menu:id=".uno:ConfigureDialog" menu:style="text"/>
       <menu:menuitem menu:id=".uno:OptionsTreeDialog"/>
@@ -760,6 +766,7 @@
       <menu:menuitem menu:id=".uno:ExtendedHelp"/>
       <menu:menuitem menu:id=".uno:Documentation"/>
       <menu:menuitem menu:id=".uno:TipOfTheDay"/>
+      <menu:menuitem menu:id=".uno:CommandPopup"/>
       <menu:menuseparator/>
       <menu:menuitem menu:id=".uno:QuestionAnswers"/>
       <menu:menuitem menu:id=".uno:SendFeedback"/>

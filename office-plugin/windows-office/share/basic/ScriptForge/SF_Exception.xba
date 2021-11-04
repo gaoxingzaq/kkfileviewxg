@@ -85,6 +85,7 @@ Const SENDMAILERROR				=	&quot;SENDMAILERROR&quot;
 &apos;	SF_TextStream
 Const FILENOTOPENERROR			=	&quot;FILENOTOPENERROR&quot;
 Const FILEOPENMODEERROR			=	&quot;FILEOPENMODEERROR&quot;
+Const ENDOFFILEERROR			=	&quot;ENDOFFILEERROR&quot;
 
 &apos;	SF_UI
 Const DOCUMENTERROR				=	&quot;DOCUMENTERROR&quot;
@@ -104,6 +105,14 @@ Const CALCADDRESSERROR			=	&quot;CALCADDRESSERROR&quot;
 Const DUPLICATESHEETERROR		=	&quot;DUPLICATESHEETERROR&quot;
 Const OFFSETADDRESSERROR		=	&quot;OFFSETADDRESSERROR&quot;
 
+&apos;	SF_Form
+Const FORMDEADERROR				=	&quot;FORMDEADERROR&quot;
+Const CALCFORMNOTFOUNDERROR		=	&quot;CALCFORMNOTFOUNDERROR&quot;
+Const WRITERFORMNOTFOUNDERROR	=	&quot;WRITERFORMNOTFOUNDERROR&quot;
+Const BASEFORMNOTFOUNDERROR		=	&quot;BASEFORMNOTFOUNDERROR&quot;
+Const SUBFORMNOTFOUNDERROR		=	&quot;SUBFORMNOTFOUNDERROR&quot;
+Const FORMCONTROLTYPEERROR		=	&quot;FORMCONTROLTYPEERROR&quot;
+
 &apos;	SF_Dialog
 Const DIALOGNOTFOUNDERROR		=	&quot;DIALOGNOTFOUNDERROR&quot;
 Const DIALOGDEADERROR			=	&quot;DIALOGDEADERROR&quot;
@@ -113,6 +122,9 @@ Const TEXTFIELDERROR			=	&quot;TEXTFIELDERROR&quot;
 &apos;	SF_Database
 Const DBREADONLYERROR			=	&quot;DBREADONLYERROR&quot;
 Const SQLSYNTAXERROR			=	&quot;SQLSYNTAXERROR&quot;
+
+&apos;	Python
+Const PYTHONSHELLERROR			=	&quot;PYTHONSHELLERROR&quot;
 
 REM ============================================================= PRIVATE MEMBERS
 
@@ -235,11 +247,14 @@ Catch:
 End Sub    &apos;   ScriptForge.SF_Exception.Clear
 
 REM -----------------------------------------------------------------------------
-Public Sub Console(Optional ByVal Modal As Variant)
+Public Sub Console(Optional ByVal Modal As Variant, _
+					Optional ByRef _Context As Variant _
+					)
 &apos;&apos;&apos;	Display the console messages in a modal or non-modal dialog
 &apos;&apos;&apos;	If the dialog is already active, when non-modal, it is brought to front
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		Modal: Boolean. Default = True
+&apos;&apos;&apos;		_Context: From Python, the XComponentXontext (FOR INTERNAL USE ONLY)
 &apos;&apos;&apos;	Example:
 &apos;&apos;&apos;		SF_Exception.Console()
 
@@ -254,6 +269,7 @@ Const cstSubArgs = &quot;[Modal=True]&quot;
 
 Check:
 	If IsMissing(Modal) Or IsEmpty(Modal) Then Modal = True
+	If IsMissing(_Context) Or IsEmpty(_Context) Then _Context = Nothing
 	If SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
 		If Not SF_Utils._Validate(Modal, &quot;Modal&quot;, V_BOOLEAN) Then GoTo Finally
 	End If
@@ -270,7 +286,7 @@ Try:
 			&apos;	The dual modes (modal and non-modal) require to have 2 close buttons o/w only 1 is visible
 			&apos;		- a usual OK button
 			&apos;		- a Default button triggering the Close action
-			Set .ConsoleDialog = CreateScriptService(&quot;SFDialogs.Dialog&quot;, &quot;GlobalScope&quot;, &quot;ScriptForge&quot;, &quot;dlgConsole&quot;)
+			Set .ConsoleDialog = CreateScriptService(&quot;SFDialogs.Dialog&quot;, &quot;GlobalScope&quot;, &quot;ScriptForge&quot;, &quot;dlgConsole&quot;, _Context)
 			&apos;	Setup labels and visibility
 			sClose = .Interface.GetText(&quot;CLOSEBUTTON&quot;)
 			Set oModalBtn = .ConsoleDialog.Controls(&quot;CloseModalButton&quot;)
@@ -299,7 +315,7 @@ Public Sub ConsoleClear(Optional ByVal Keep)
 &apos;&apos;&apos;	Clear the console keeping an optional number of recent messages
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		Keep: the number of messages to keep
-&apos;&apos;&apos;				If Keep is bigger than the the number of messages stored in the console,
+&apos;&apos;&apos;				If Keep is bigger than the number of messages stored in the console,
 &apos;&apos;&apos;				the console is not cleared
 &apos;&apos;&apos;	Example:
 &apos;&apos;&apos;		SF_Exception.ConsoleClear(5)
@@ -384,6 +400,49 @@ Catch:
 End Function    &apos;   ScriptForge.SF_Exception.ConsoleToFile
 
 REM -----------------------------------------------------------------------------
+Public Sub DebugDisplay(ParamArray pvArgs() As Variant)
+&apos;&apos;&apos;	Display the list of arguments in a readable form in a message box
+&apos;&apos;&apos;	Arguments are separated by a LINEFEED character
+&apos;&apos;&apos;	The maximum length of each individual argument = 1024 characters
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		Any number of arguments of any type
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		SF_Exception.DebugDisplay(a, Array(1, 2, 3), , &quot;line1&quot; &amp; Chr(10) &amp; &quot;Line2&quot;, DateSerial(2020, 04, 09))
+
+Dim sOutputMsg As String	&apos;	Line to display
+Dim sOutputCon As String	&apos;	Line to write in console
+Dim sArgMsg As String		&apos;	Single argument
+Dim sArgCon As String		&apos;	Single argument
+Dim i As Integer
+Const cstTab = 4
+Const cstMaxLength = 1024
+Const cstThisSub = &quot;Exception.DebugDisplay&quot;
+Const cstSubArgs = &quot;Arg0, [Arg1, ...]&quot;
+
+	If SF_Utils._ErrorHandling() Then On Local Error Goto Finally	&apos;	Never interrupt processing
+	SF_Utils._EnterFunction(cstThisSub, cstSubArgs)
+Try:
+	&apos;	Build new console line
+	sOutputMsg = &quot;&quot;		:	sOutputCon = &quot;&quot;
+	For i = 0 To UBound(pvArgs)
+		If IsError(pvArgs(i)) Then pvArgs(i) = &quot;&quot;
+		sArgMsg = Iif(i = 0, &quot;&quot;, SF_String.sfNEWLINE) &amp; SF_Utils._Repr(pvArgs(i), cstMaxLength)	&apos;Do not use SF_String.Represent()
+		sArgCon = Iif(i = 0, &quot;&quot;, SF_String.sfTAB) &amp; SF_Utils._Repr(pvArgs(i), cstMaxLength)
+		sOutputMsg = sOutputMsg &amp; sArgMsg
+		sOutputCon = sOutputCon &amp; sArgCon
+	Next i
+	
+	&apos;	Add to actual console
+	_SF_._AddToConsole(SF_String.ExpandTabs(sOutputCon, cstTab))
+	&apos;	Display the message
+	MsgBox(sOutputMsg, MB_OK + MB_ICONINFORMATION, &quot;DebugDisplay&quot;)
+	
+Finally:
+	SF_Utils._ExitFunction(cstThisSub)
+	Exit Sub
+End Sub			&apos;	ScriptForge.SF_Exception.DebugDisplay
+
+REM -----------------------------------------------------------------------------
 Public Sub DebugPrint(ParamArray pvArgs() As Variant)
 &apos;&apos;&apos;	Print the list of arguments in a readable form in the console
 &apos;&apos;&apos;	Arguments are separated by a TAB character (simulated by spaces)
@@ -395,7 +454,6 @@ Public Sub DebugPrint(ParamArray pvArgs() As Variant)
 
 Dim sOutput As String		&apos;	Line to write in console
 Dim sArg As String			&apos;	Single argument
-Dim sMainSub As String		&apos;	Temporary storage for main function
 Dim i As Integer
 Const cstTab = 4
 Const cstMaxLength = 1024
@@ -408,6 +466,7 @@ Try:
 	&apos;	Build new console line
 	sOutput = &quot;&quot;
 	For i = 0 To UBound(pvArgs)
+		If IsError(pvArgs(i)) Then pvArgs(i) = &quot;&quot;
 		sArg = Iif(i = 0, &quot;&quot;, SF_String.sfTAB) &amp; SF_Utils._Repr(pvArgs(i), cstMaxLength)	&apos;Do not use SF_String.Represent()
 		sOutput = sOutput &amp; sArg
 	Next i
@@ -567,7 +626,7 @@ Public Sub RaiseAbort(Optional ByVal Source As Variant)
 &apos;&apos;&apos;		Source: the line where the error occurred
 
 Dim sLocation As String		&apos;	Common header in error messages: location of error
-Dim vLocation As Variant	&apos;	Splitted array (library, module, method)
+Dim vLocation As Variant	&apos;	Split array (library, module, method)
 Dim sMessage As String		&apos;	Error message to log and to display
 Dim L10N As Object			&apos;	Alias to Interface
 Const cstTabSize = 4
@@ -631,7 +690,7 @@ Public Sub RaiseFatal(Optional ByVal ErrorCode As Variant _
 &apos;&apos;&apos;		pvArgs: the arguments to insert in the error message
 
 Dim sLocation As String		&apos;	Common header in error messages: location of error
-Dim vLocation As Variant	&apos;	Splitted array (library, module, method)
+Dim vLocation As Variant	&apos;	Split array (library, module, method)
 Dim sMessage As String		&apos;	Message to log and display
 Dim L10N As Object			&apos;	Alias of Interface
 Dim sAlt As String			&apos;	Alternative error messages
@@ -784,6 +843,9 @@ Try:
 			Case FILEOPENMODEERROR		&apos;	SF_TextStream._IsFileOpen(FileName)
 				sMessage = sLocation _
 					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;FILEOPENMODE&quot;, pvArgs(0), pvArgs(1))
+			Case ENDOFFILEERROR			&apos;	SF_TextStream.ReadLine/ReadAll/SkipLine(FileName)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;ENDOFFILE&quot;, pvArgs(0))
 			Case DOCUMENTERROR			&apos;	SF_UI.GetDocument(ArgName, WindowName)
 				sMessage = sLocation _
 					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;VALIDATEERROR&quot;, pvArgs(0)) _
@@ -824,6 +886,24 @@ Try:
 				sMessage = sLocation _
 					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;OFFSETADDRESS&quot;, pvArgs(0), pvArgs(1), pvArgs(2), pvArgs(3), pvArgs(4) _
 									, pvArgs(5), pvArgs(6), pvArgs(7), pvArgs(8), pvArgs(9), pvArgs(10), pvArgs(11))
+			Case FORMDEADERROR		&apos;	SF_Form._IsStillAlive(FormName, DocumentName)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;FORMDEAD&quot;, pvArgs(0), pvArgs(1))
+			Case CALCFORMNOTFOUNDERROR	&apos;	SF_Calc.Forms(Index, SheetName, Document)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;CALCFORMNOTFOUND&quot;, pvArgs(0), pvArgs(1), pvArgs(2))
+			Case WRITERFORMNOTFOUNDERROR	&apos;	SF_Document.Forms(Index, Document)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;WRITERFORMNOTFOUND&quot;, pvArgs(0), pvArgs(1))
+			Case BASEFORMNOTFOUNDERROR	&apos;	SF_Base.Forms(Index, FormDocument, BaseDocument)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;BASEFORMNOTFOUND&quot;, pvArgs(0), pvArgs(1), pvArgs(2))
+			Case SUBFORMNOTFOUNDERROR	&apos;	SF_Form.Subforms(Subform, Mainform)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;SUBFORMNOTFOUND&quot;, pvArgs(0), pvArgs(1))
+			Case FORMCONTROLTYPEERROR	&apos;	SF_FormControl._SetProperty(ControlName, FormName, ControlType, Property)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;FORMCONTROLTYPE&quot;, pvArgs(0), pvArgs(1), pvArgs(2), pvArgs(3))
 			Case DIALOGNOTFOUNDERROR	&apos;	SF_Dialog._NewDialog(Service, DialogName, WindowName)
 				sMessage = sLocation _
 					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;DIALOGNOTFOUND&quot;, pvArgs(0), pvArgs(1), pvArgs(2), pvArgs(3), pvArgs(4) _
@@ -843,6 +923,9 @@ Try:
 			Case SQLSYNTAXERROR	&apos;	SF_Database._ExecuteSql(SQL)
 				sMessage = sLocation _
 					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;SQLSYNTAX&quot;, pvArgs(0))
+			Case PYTHONSHELLERROR	&apos;	SF_Exception.PythonShell (Python only)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;PYTHONSHELL&quot;)
 			Case Else
 		End Select
 	End With

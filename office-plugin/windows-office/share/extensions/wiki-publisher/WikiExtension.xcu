@@ -3552,7 +3552,7 @@
         <prop oor:name="Dlg_EditSetting_SaveBox">
             <value xml:lang="en-US">~Save password</value>
         	<value xml:lang="af">~Stoor wagwoord</value>
-        	<value xml:lang="am">የመግቢያ ቃል ~ማስቀመጫ</value>
+        	<value xml:lang="am">የ መግቢያ ቃል ~ማስቀመጫ</value>
         	<value xml:lang="ar">احفظ ~كلمة السر</value>
         	<value xml:lang="as">পাছৱাৰ্ড সংৰক্ষণ কৰক (~S)</value>
         	<value xml:lang="ast">~Guardar contraseña</value>

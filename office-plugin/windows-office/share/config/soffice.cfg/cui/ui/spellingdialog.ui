@@ -43,11 +43,11 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="help">
-                <property name="label">gtk-help</property>
+                <property name="label" translatable="yes" context="stock">_Help</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -77,12 +77,11 @@
             </child>
             <child>
               <object class="GtkButton" id="undo">
-                <property name="label">gtk-undo</property>
+                <property name="label" translatable="yes" context="spellingdialog|undo">_Undo</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
-                <property name="use_stock">True</property>
                 <child internal-child="accessible">
                   <object class="AtkObject" id="undo-atkobject">
                     <property name="AtkObject::accessible-description" translatable="yes" context="spellingdialog|extended_tip|undo">Click to undo the last change in the current sentence. Click again to undo the previous change in the same sentence.</property>
@@ -97,13 +96,13 @@
             </child>
             <child>
               <object class="GtkButton" id="close">
-                <property name="label">gtk-close</property>
+                <property name="label" translatable="yes" context="stock">_Close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -249,7 +248,6 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_underline">True</property>
-                <property name="xalign">0</property>
                 <property name="draw_indicator">True</property>
                 <child internal-child="accessible">
                   <object class="AtkObject" id="checkgrammar-atkobject">
@@ -274,7 +272,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="hexpand">True</property>
-                    <property name="label" translatable="yes" context="spellingdialog|notindictft">_Not in dictionary</property>
+                    <property name="label" translatable="yes" context="spellingdialog|notindictft">_Not in Dictionary</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">sentence</property>
                     <property name="xalign">0</property>
@@ -296,7 +294,7 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes" context="spellingdialog|paste">Paste</property>
                         <property name="use_underline">True</property>
-                        <property name="stock_id">gtk-paste</property>
+                        <property name="icon-name">edit-paste</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -484,16 +482,17 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="autocorrect">
-                    <property name="label" translatable="yes" context="spellingdialog|autocorrect">Alwa_ys Correct</property>
+                    <property name="label" translatable="yes" context="spellingdialog|autocorrect">Add to _AutoCorrect</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes" context="spellingdialog|autocorrect|tooltip_text">Add selected suggestion as replacement for incorrect word in AutoCorrect replacement table.</property>
                     <property name="valign">center</property>
                     <property name="hexpand">True</property>
                     <property name="use_underline">True</property>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="autocorrect-atkobject">
-                        <property name="AtkObject::accessible-description" translatable="yes" context="spellingdialog|extended_tip|autocorrect">Adds the current combination of the incorrect word and the replacement word to the AutoCorrect replacements table.</property>
+                        <property name="AtkObject::accessible-description" translatable="yes" context="spellingdialog|extended_tip|autocorrect">Adds the current combination of the incorrect word and the replacement word to the AutoCorrect replacement table.</property>
                       </object>
                     </child>
                   </object>
@@ -577,13 +576,18 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="add">
-                    <property name="label" translatable="yes" context="spellingdialog|add">_Add to Dictionary</property>
+                    <property name="label" translatable="yes" context="spellingdialog|add">Add to _Dictionary</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="valign">center</property>
                     <property name="hexpand">True</property>
                     <property name="use_underline">True</property>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="add-atkobject">
+                        <property name="AtkObject::accessible-description" translatable="yes" context="spellingdialog|extended_tip|add">Adds the unknown word to a user-defined dictionary.</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -592,7 +596,7 @@
                 </child>
                 <child>
                   <object class="GtkMenuButton" id="addmb">
-                    <property name="label" translatable="yes" context="spellingdialog|addmb">_Add to Dictionary</property>
+                    <property name="label" translatable="yes" context="spellingdialog|addmb">Add to _Dictionary</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="no_show_all">True</property>
@@ -601,6 +605,7 @@
                     <property name="use_underline">True</property>
                     <property name="popup">addmenu</property>
                     <property name="use_popover">False</property>
+                    <property name="draw-indicator">True</property>
                     <child>
                       <placeholder/>
                     </child>

@@ -24,6 +24,29 @@ Option Explicit
 
 REM ================================================================== EXCEPTIONS
 
+REM ================================================================= DEFINITIONS
+
+&apos;&apos;&apos;	Strategy for management of Form and FormControl events:
+&apos;&apos;&apos;	------------------------------------------------------
+&apos;&apos;&apos;	At the contrary of Dialogs and DialogControls, which are always started from some code,
+&apos;&apos;&apos;	Forms and FormControls will be initiated most often by the user, even if the SFDocuments library
+&apos;&apos;&apos;	allows to start forms programmatically
+&apos;&apos;&apos;
+&apos;&apos;&apos;	For Forms started programmatically, the corresponding objects are built top-down
+&apos;&apos;&apos;	Event management of forms and their controls requires to being able to rebuild Form
+&apos;&apos;&apos;	and FormControl objects bottom-up
+&apos;&apos;&apos;
+&apos;&apos;&apos;	To avoid multiple rebuilds requested by multiple events,
+&apos;&apos;&apos;		1. The active form objects are cached in a global array of _FormCache types
+&apos;&apos;&apos;		2. FormControl objects are cached in Form objects
+&apos;&apos;&apos;		3. The bottom-up rebuild is executed only once, at instance creation
+
+Type _FormCache
+	Terminated				As Boolean
+	XUnoForm				As Object
+	BasicForm				As Object
+End Type
+
 REM ============================================================== PUBLIC METHODS
 
 REM -----------------------------------------------------------------------------
@@ -43,10 +66,10 @@ Public Sub RegisterScriptServices() As Variant
 
 	With GlobalScope.ScriptForge.SF_Services
 		.RegisterService(&quot;Document&quot;,			&quot;SFDocuments.SF_Register._NewDocument&quot;)		&apos;	Reference to the function initializing the service
-		.RegisterService(&quot;Calc&quot;,				&quot;SFDocuments.SF_Register._NewDocument&quot;)		&apos;	Same references, distinction is made inside the function
-		.RegisterService(&quot;Base&quot;,				&quot;SFDocuments.SF_Register._NewDocument&quot;)		&apos;	Same references, distinction is made inside the function
+		.RegisterService(&quot;Calc&quot;,				&quot;SFDocuments.SF_Register._NewDocument&quot;)		&apos;	Same reference, distinction is made inside the function
+		.RegisterService(&quot;Base&quot;,				&quot;SFDocuments.SF_Register._NewDocument&quot;)		&apos;	Same reference, distinction is made inside the function
 		.RegisterEventManager(&quot;DocumentEvent&quot;,	&quot;SFDocuments.SF_Register._EventManager&quot;)	&apos;	Reference to the events manager
-		&apos;TODO
+		.RegisterEventManager(&quot;FormEvent&quot;,		&quot;SFDocuments.SF_Register._FormEventManager&quot;)&apos;	Reference to the form and controls events manager
 	End With
 
 End Sub			&apos;	SFDocuments.SF_Register.RegisterScriptServices
@@ -54,8 +77,76 @@ End Sub			&apos;	SFDocuments.SF_Register.RegisterScriptServices
 REM =========================================================== PRIVATE FUNCTIONS
 
 REM -----------------------------------------------------------------------------
+Private Function _AddFormToCache(ByRef pvUnoForm As Object _
+										, ByRef pvBasicForm As Object _
+										) As Long
+&apos;&apos;&apos;	Add a new entry in the cache array with the references of the actual Form
+&apos;&apos;&apos;	If relevant, the last entry of the cache is reused.
+&apos;&apos;&apos;	The cache is located in the global _SF_ variable
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		pvUnoForm: com.sun.star.form.XForm or com.sun.star.comp.forms.ODatabaseForm
+&apos;&apos;&apos;		pvBasicForm: its corresponding Basic object
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The index of the new or modified entry
+
+Dim vCache As New _FormCache		&apos;	Entry to be added
+Dim lIndex As Long					&apos;	UBound of _SF_.SFForms
+Dim vCacheArray As Variant			&apos;	Alias of _SF_.SFForms
+
+Try:
+	vCacheArray = _SF_.SFForms
+
+	If IsEmpty(vCacheArray) Then vCacheArray = Array()
+	lIndex = UBound(vCacheArray)
+	If lIndex &lt; LBound(vCacheArray) Then
+		ReDim vCacheArray(0 To 0)
+		lIndex = 0
+	ElseIf Not vCacheArray(lIndex).Terminated Then		&apos;	Often last entry can be reused
+		lIndex = lIndex + 1
+		ReDim Preserve vCacheArray(0 To lIndex)
+	End If
+	
+	With vCache
+		.Terminated = False
+		Set .XUnoForm = pvUnoForm
+		Set .BasicForm = pvBasicForm
+	End With
+	Set vCacheArray(lIndex) = vCache
+	
+	_SF_.SFForms = vCacheArray
+
+Finally:
+	_AddFormToCache = lIndex
+	Exit Function
+End Function	&apos;	SFDocuments.SF_Register._AddFormToCache
+
+REM -----------------------------------------------------------------------------
+Private Sub _CleanCacheEntry(ByVal plIndex As Long)
+&apos;&apos;&apos;	Clean the plIndex-th entry in the Forms cache
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		plIndex: must fit within the actual boundaries of the cache, otherwise the request is ignored
+
+Dim vCache As New _FormCache		&apos;	Cleaned entry
+
+	With _SF_
+		If Not IsArray(.SFForms) Then Exit Sub
+		If plIndex &lt; LBound(.SFForms) Or plIndex &gt; UBound(.SFForms) Then Exit Sub
+
+		With vCache
+			.Terminated = True
+			Set .XUnoForm = Nothing
+			Set .BasicForm = Nothing
+		End With
+		.SFForms(plIndex) = vCache
+	End With
+	
+Finally:
+	Exit Sub
+End Sub	&apos;	SFDocuments.SF_Register._CleanCacheEntry
+
+REM -----------------------------------------------------------------------------
 Public Function _EventManager(Optional ByRef pvArgs As Variant) As Object
-&apos;&apos;&apos;	Returns a Document or Calc object corresponding with the active component
+&apos;&apos;&apos;	Returns a Document, Calc or Base object corresponding with the active component
 &apos;&apos;&apos;	which triggered the event in argument
 &apos;&apos;&apos;	This method should be triggered only thru the invocation of CreateScriptService
 &apos;&apos;&apos;	Args:
@@ -84,15 +175,167 @@ Check:
 
 Try:
 	If ScriptForge.SF_Session.UnoObjectType(vEvent) = &quot;com.sun.star.document.DocumentEvent&quot; Then
-		If ScriptForge.SF_Session.UnoObjectType(vEvent.Source) = &quot;SwXTextDocument&quot; Then
-			Set oSource = SF_Register._NewDocument(vEvent.Source)
-		End If
+		Set oSource = SF_Register._NewDocument(vEvent.Source)
 	End If
 
 Finally:
 	Set _EventManager = oSource
 	Exit Function
-End Function	&apos;	SFDocuments.SF_Documents._EventManager
+End Function	&apos;	SFDocuments.SF_Register._EventManager
+
+REM -----------------------------------------------------------------------------
+Private Function _FindFormInCache(ByRef poForm As Object) As Object
+&apos;&apos;&apos;	Find the Form based on its XUnoForm
+&apos;&apos;&apos;	The Form must not be terminated
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The corresponding Basic Form part or Nothing
+
+Dim oBasicForm As Object		&apos;	Return value
+Dim oCache As _FormCache		&apos;	Entry in the cache
+
+	Set oBasicForm = Nothing
+
+Try:
+	With _SF_
+		If Not IsEmpty(.SFForms) Then
+			For Each oCache In .SFForms
+				If EqualUnoObjects(poForm, oCache.XUnoForm) And Not oCache.Terminated Then
+					Set oBasicForm = oCache.BasicForm
+					Exit For
+				End If
+			Next oCache
+		End If
+	End With
+
+Finally:
+	Set _FindFormInCache = oBasicForm
+	Exit Function
+End Function	&apos;	SFDocuments.SF_Register._FindFormInCache
+
+REM -----------------------------------------------------------------------------
+Public Function _FormEventManager(Optional ByRef pvArgs As Variant) As Object
+&apos;&apos;&apos;	Returns a Form or FormControl object corresponding with the form or control
+&apos;&apos;&apos;	which triggered the event in argument
+&apos;&apos;&apos;	This method should be triggered only thru the invocation of CreateScriptService
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		pvEvent: com.sun.star.lang.EventObject
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		the output of a Form, FormControl service or Nothing
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;		Sub TriggeredByEvent(ByRef poEvent As Object)
+&apos;&apos;&apos;			Dim oForm As Object
+&apos;&apos;&apos;			Set oForm = CreateScriptService(&quot;SFDocuments.FormEvent&quot;, poEvent)
+&apos;&apos;&apos;			If Not IsNull(oForm) Then
+&apos;&apos;&apos;				&apos; ... (a valid form or subform has been identified)
+&apos;&apos;&apos;		End Sub
+
+Dim oSource As Object			&apos;	Return value
+Dim vEvent As Variant			&apos;	Alias of pvArgs(0)
+Dim oControlModel As Object		&apos;	com.sun.star.awt.XControlModel
+Dim oParent As Object			&apos;	com.sun.star.form.OGridControlModel or com.sun.star.comp.forms.ODatabaseForm
+Dim sParentType As String		&apos;	&quot;com.sun.star.form.OGridControlModel&quot; or &quot;com.sun.star.comp.forms.ODatabaseForm&quot;
+Dim oSFParent As Object			&apos;	The parent as a ScriptForge instance: SF_Form or SF_FormControl
+Dim oSFForm As Object			&apos;	The grand-parent SF_Form instance
+Dim oSession As Object			:	Set oSession = ScriptForge.SF_Session
+
+	&apos;	Never abort while an event is processed
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Finally
+	Set oSource = Nothing
+
+Check:
+	If IsMissing(pvArgs) Or IsEmpty(pvArgs) Then pvArgs = Array()
+	If UBound(pvArgs) &gt;= 0 Then vEvent = pvArgs(0) Else Set vEvent = Empty
+	If VarType(vEvent) &lt;&gt; ScriptForge.V_OBJECT Then GoTo Finally
+
+Try:
+	If oSession.HasUnoProperty(vEvent, &quot;Source&quot;) Then
+
+		&apos;	FORM EVENT
+		If oSession.UnoObjectType(vEvent.Source) = &quot;com.sun.star.comp.forms.ODatabaseForm&quot; Then
+			Set oSource = SF_Register._NewForm(vEvent.Source, pbForceInit := True)
+		
+		&apos;	CONTROL EVENT
+		Else
+			&apos;	A SF_FormControl instance is always created from its parent, either a form, a subform or a table control
+			Set oControlModel = vEvent.Source.Model		&apos;	The event source is a control view com.sun.star.awt.XControl
+			Set oParent = oControlModel.Parent
+			sParentType = oSession.UnoObjectType(oParent)
+			Select Case sParentType
+				Case &quot;com.sun.star.form.OGridControlModel&quot;
+					Set oSFForm = SF_Register._NewForm(oParent.Parent, pbForceInit := True)
+					Set oSFParent = oSFForm.Controls(oParent.Name)
+				Case &quot;com.sun.star.comp.forms.ODatabaseForm&quot;
+					Set oSFParent = SF_Register._NewForm(oParent, pbForceInit := True)
+			End Select
+			&apos;	The final instance is derived from its parent instance
+			Set oSource = oSFParent.Controls(oControlModel.Name)
+
+		End If
+
+	End If
+
+Finally:
+	Set _FormEventManager = oSource
+	Exit Function
+End Function	&apos;	SFDocuments.SF_Register._FormEventManager
+
+REM -----------------------------------------------------------------------------
+Public Function _GetEventScriptCode(poObject As Object _
+					, ByVal psEvent As String _
+					, ByVal psName As String _
+					) As String
+&apos;&apos;&apos;	Extract from the parent of poObject the Basic script linked to psEvent.
+&apos;&apos;&apos;	Helper function common to forms and form controls
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		poObject: a com.sun.star.form.XForm or XControl object
+&apos;&apos;&apos;		psEvent: the &quot;On...&quot; name of the event
+&apos;&apos;&apos;		psName: the name of the object to be identified from the parent object
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The script to trigger when psEvent occurs
+&apos;&apos;&apos;		See Scripting Framework URI Specification : https://wiki.openoffice.org/wiki/Documentation/DevGuide/Scripting/Scripting_Framework_URI_Specification
+
+Dim vEvents As Variant			&apos;	List of available events in the parent object
+								&apos;	Array of com.sun.star.script.ScriptEventDescriptor
+Dim sEvent As String			&apos;	The targeted event name
+Dim oParent As Object			&apos;	The parent object
+Dim lIndex As Long				&apos;	The index of the targeted event in the events list of the parent object
+Dim sName As String				&apos;	The corrected UNO event name
+Dim i As Long
+
+	_GetEventScriptCode = &quot;&quot;
+	On Local Error GoTo Catch
+	If Not ScriptForge.SF_Session.HasUnoMethod(poObject, &quot;getParent&quot;) Then GoTo Finally
+
+Try:
+	&apos;	Find form index i.e. find control via getByIndex()
+	&apos;	The name is known (= psName) but getByIndex() is not in the same sequence as getElementNames()
+	Set oParent = poObject.getParent()
+	lIndex = -1
+	For i = 0 To oParent.getCount() - 1
+		sName = oParent.getByIndex(i).Name
+		If (sName = psName) Then
+			lIndex = i
+			Exit For
+		End If
+	Next i
+	If lIndex &lt; 0 Then GoTo Finally		&apos;	Not found, should not happen
+	
+	&apos;	Find script triggered by event
+	vEvents = oParent.getScriptEvents(lIndex)				&apos;	Returns an array
+	&apos;	Fix historical typo error
+	sEvent = Replace(LCase(Mid(psEvent, 3, 1)) &amp; Mid(psEvent, 4), &quot;errorOccurred&quot;, &quot;errorOccured&quot;)
+	For i = 0 To UBound(vEvents)
+		If vEvents(i).EventMethod = sEvent Then
+			_GetEventScriptCode = vEvents(i).ScriptCode
+			Exit For
+		End If
+	Next i
+
+Finally:
+	Exit Function
+Catch:
+	GoTo Finally
+End Function	&apos;	SFDocuments.SF_Register._GetEventScriptCode
 
 REM -----------------------------------------------------------------------------
 Public Function _NewDocument(Optional ByVal pvArgs As Variant) As Object
@@ -158,10 +401,12 @@ Try:
 				Set oDocument = New SF_Base
 				Set oSuperDocument = New SF_Document
 				Set oDocument.[_Super] = oSuperDocument		&apos;	Now both super and subclass are twinned
+				Set oSuperDocument.[_SubClass] = oDocument
 			Case &quot;Calc&quot;
 				Set oDocument = New SF_Calc
 				Set oSuperDocument = New SF_Document
 				Set oDocument.[_Super] = oSuperDocument		&apos;	Now both super and subclass are twinned
+				Set oSuperDocument.[_SubClass] = oDocument
 			Case Else		&apos;	Only superclass
 				Set oDocument = New SF_Document
 				Set oSuperDocument = oDocument
@@ -193,6 +438,103 @@ Finally:
 Catch:
 	GoTo Finally
 End Function	&apos;	SFDocuments.SF_Register._NewDocument
+
+REM -----------------------------------------------------------------------------
+Public Function _NewForm(ByRef poForm As Object _
+							, Optional pbForceInit As Boolean _
+							) As Object
+&apos;&apos;&apos;	Returns an existing or a new SF_Form instance based on the argument
+&apos;&apos;&apos;	If the instance is new (not found in cache), the minimal members are initialized
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		poForm: com.sun.star.form.XForm or com.sun.star.comp.forms.ODatabaseForm
+&apos;&apos;&apos;		pbForceInit: when True, initialize the form instance. Default = False
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A SF_Form instance
+
+Dim oForm As Object				&apos;	Return value
+
+Try:
+	Set oForm = SF_Register._FindFormInCache(poForm)
+	If IsNull(oForm) Then		&apos;	Not found
+		If IsMissing(pbForceInit) Or IsEmpty(pbForceInit) Then pbForceInit = False
+		Set oForm = New SF_Form
+		With oForm
+			._Name = poForm.Name
+			Set .[Me] = oForm
+			Set ._Form = poForm
+			If pbForceInit Then ._Initialize()
+		End With
+	End If
+
+Finally:
+	Set _NewForm = oForm
+	Exit Function
+End Function	&apos;	SFDocuments.SF_Register._NewForm
+
+REM -----------------------------------------------------------------------------
+Public Function _RegisterEventScript(poObject As Object _
+								, ByVal psEvent As String _
+								, ByVal psListener As String _
+								, ByVal psScriptCode As String _
+								, ByVal psName As String _
+								) As Boolean
+&apos;&apos;&apos;	Register a script event (psEvent) to poObject (Form, SubForm or Control)
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		poObject: a com.sun.star.form.XForm or XControl object
+&apos;&apos;&apos;		psEvent: the &quot;On...&quot; name of the event
+&apos;&apos;&apos;		psListener: the listener name corresponding with the event
+&apos;&apos;&apos;		psScriptCode: The script to trigger when psEvent occurs
+&apos;&apos;&apos;			See Scripting Framework URI Specification : https://wiki.openoffice.org/wiki/Documentation/DevGuide/Scripting/Scripting_Framework_URI_Specification
+&apos;&apos;&apos;		psName: the name of the object to associate with the event
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		True when successful
+
+Dim oEvent As Object			&apos;	com.sun.star.script.ScriptEventDescriptor
+Dim sEvent As String			&apos;	The targeted event name
+Dim oParent As Object			&apos;	The parent object
+Dim lIndex As Long				&apos;	The index of the targeted event in the events list of the parent object
+Dim sName As String				&apos;	The corrected UNO event name
+Dim i As Long
+
+	_RegisterEventScript = False
+	On Local Error GoTo Catch
+	If Not ScriptForge.SF_Session.HasUnoMethod(poObject, &quot;getParent&quot;) Then GoTo Finally
+
+Try:
+	&apos;	Find object&apos;s internal index i.e. how to reach it via getByIndex() 
+	Set oParent = poObject.getParent()
+	lIndex = -1
+	For i = 0 To oParent.getCount() - 1
+		sName = oParent.getByIndex(i).Name
+		If (sName = psName) Then
+			lIndex = i
+			Exit For
+		End If
+	Next i
+	If lIndex &lt; 0 Then GoTo Finally		&apos;	Not found, should not happen
+
+	&apos;	Fix historical typo error
+	sEvent = Replace(LCase(Mid(psEvent, 3, 1)) &amp; Mid(psEvent, 4), &quot;errorOccurred&quot;, &quot;errorOccured&quot;)
+	&apos;	Apply new script code. Erasing it is done with a specific UNO method
+	If psScriptCode = &quot;&quot; Then
+		oParent.revokeScriptEvent(lIndex, psListener, sEvent, &quot;&quot;)
+	Else
+		Set oEvent = CreateUnoStruct(&quot;com.sun.star.script.ScriptEventDescriptor&quot;)
+		With oEvent
+			.ListenerType = psListener
+			.EventMethod = sEvent
+			.ScriptType = &quot;Script&quot;			&apos;	Better than &quot;Basic&quot;
+			.ScriptCode = psScriptCode
+		End With
+		oParent.registerScriptEvent(lIndex, oEvent)
+	End If
+	_RegisterEventScript = True
+
+Finally:
+	Exit Function
+Catch:
+	GoTo Finally
+End Function	&apos;	SFDocuments.SF_Register._RegisterEventScript
 
 REM ============================================== END OF SFDOCUMENTS.SF_REGISTER
 </script:module>

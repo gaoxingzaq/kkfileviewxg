@@ -391,7 +391,8 @@ Public Function Methods() As Variant
 &apos;&apos;&apos;	Return the list of public methods of the Database service as an array
 
 	Methods = Array( _
-					&quot;DAvg&quot; _
+					&quot;CloseDatabase&quot; _
+					, &quot;DAvg&quot; _
 					, &quot;DCount&quot; _
 					, &quot;DLookup&quot; _
 					, &quot;DMax&quot; _
@@ -432,7 +433,6 @@ Public Function RunSql(Optional ByVal SQLCommand As Variant _
 
 Dim bResult As Boolean			&apos;	Return value
 Dim oStatement As Object		&apos;	com.sun.star.sdbc.XStatement
-Dim iCommandType				&apos;	1 = Table, 2 = Query, 3 = SQL
 Dim oQuery As Object			&apos;	com.sun.star.ucb.XContent
 Dim sSql As String				&apos;	SQL statement
 Dim bDirect						&apos;	Alias of DirectSQL
@@ -751,25 +751,6 @@ Const cstMaxBinlength = 2 * 65535
 	_GetColumnValue = vValue
 	
 End Function	&apos;	SFDatabases.SF_Database.GetColumnValue
-
-REM -----------------------------------------------------------------------------
-Public Sub _Initialize()
-&apos;&apos;&apos;	Complete the object creation process:
-&apos;&apos;&apos;		- Initialization of private members
-&apos;&apos;&apos;		- Creation of the dialog graphical interface
-&apos;&apos;&apos;		- Addition of the new object in the Dialogs buffer
-
-Try:
-	&apos;	Create the graphical interface
-	Set _DialogControl = CreateUnoDialog(_DialogProvider)
-	Set _DialogModel = _DialogControl.Model
-
-	&apos;	Add dialog reference to cache
-	_CacheIndex = SF_Register._AddDialogToCache(_DialogControl, [Me])
-	85
-Finally:
-	Exit Sub
-End Sub			&apos;	SFDatabases.SF_Database._Initialize
 
 REM -----------------------------------------------------------------------------
 Private Function _PropertyGet(Optional ByVal psProperty As String) As Variant

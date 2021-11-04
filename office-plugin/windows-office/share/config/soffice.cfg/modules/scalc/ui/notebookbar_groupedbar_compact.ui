@@ -704,13 +704,6 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="MenuFile-ExportToEPUB">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="action_name">.uno:ExportToEPUB</property>
-      </object>
-    </child>
-    <child>
       <object class="GtkSeparatorMenuItem" id="MenuFile-separator2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -1129,10 +1122,10 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="MenuFormat-InsertZWNBSP">
+      <object class="GtkMenuItem" id="MenuFormat-InsertWJ">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="action_name">.uno:InsertZWNBSP</property>
+        <property name="action_name">.uno:InsertWJ</property>
       </object>
     </child>
     <child>
@@ -1427,6 +1420,13 @@
       <object class="GtkSeparatorMenuItem" id="MenuInsert-separator2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="MenuInsert-InsertQrCode">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="action_name">.uno:InsertQrCode</property>
       </object>
     </child>
     <child>
@@ -3234,13 +3234,13 @@
           <object class="sfxlo-PriorityHBox" id="Toolbar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-end">5</property>
             <child>
               <object class="sfxlo-DropdownBox" id="File">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">5</property>
+                <property name="margin-start">5</property>
                 <child>
                   <object class="GtkBox" id="Section">
                     <property name="visible">True</property>
@@ -3624,7 +3624,7 @@
                                   <object class="sfxlo-NotebookbarToolBox" id="SectionBottom4">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="margin_left">5</property>
+                                    <property name="margin-start">5</property>
                                     <property name="toolbar_style">icons</property>
                                     <property name="show_arrow">False</property>
                                     <child>
@@ -5212,7 +5212,7 @@
                                   <object class="sfxlo-NotebookbarToolBox" id="SectionBottom40">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="margin_left">5</property>
+                                    <property name="margin-start">5</property>
                                     <property name="toolbar_style">icons</property>
                                     <property name="show_arrow">False</property>
                                     <child>
@@ -10962,7 +10962,6 @@
                               <object class="sfxlo-NotebookbarToolBox" id="first25">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="resize_mode">immediate</property>
                                 <property name="toolbar_style">both-horiz</property>
                                 <property name="show_arrow">False</property>
                                 <child>
@@ -10987,7 +10986,6 @@
                               <object class="sfxlo-NotebookbarToolBox" id="second12">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="resize_mode">immediate</property>
                                 <property name="toolbar_style">both-horiz</property>
                                 <property name="show_arrow">False</property>
                                 <child>
@@ -11057,14 +11055,13 @@
                                   <object class="sfxlo-NotebookbarToolBox" id="second13">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="resize_mode">immediate</property>
                                     <property name="toolbar_style">icons</property>
                                     <property name="show_arrow">False</property>
                                     <child>
                                       <object class="GtkToolButton" id="Print-ZoomOut">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="action_name">.uno:ZoomOut</property>
+                                        <property name="action_name">.uno:ZoomMinus</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -11084,14 +11081,13 @@
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="resize_mode">immediate</property>
                                     <property name="toolbar_style">icons</property>
                                     <property name="show_arrow">False</property>
                                     <child>
                                       <object class="GtkToolButton" id="Print-ZoomIn">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="action_name">.uno:ZoomIn</property>
+                                        <property name="action_name">.uno:ZoomPlus</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -11121,7 +11117,6 @@
                                   <object class="sfxlo-NotebookbarToolBox" id="first29">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="resize_mode">immediate</property>
                                     <property name="toolbar_style">icons</property>
                                     <property name="show_arrow">False</property>
                                     <child>
@@ -11159,7 +11154,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="resize_mode">immediate</property>
                                     <property name="toolbar_style">icons</property>
                                     <property name="show_arrow">False</property>
                                     <child>

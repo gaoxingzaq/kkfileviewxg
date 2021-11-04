@@ -16,10 +16,10 @@ Option Explicit
 &apos;&apos;&apos;	=======
 &apos;&apos;&apos;
 &apos;&apos;&apos;		The SFDocuments library gathers a number of methods and properties making easy
-&apos;&apos;&apos;		the management and several manipulations of LibreOffice documents
+&apos;&apos;&apos;		managing and manipulating LibreOffice documents
 &apos;&apos;&apos;
 &apos;&apos;&apos;		Some methods are generic for all types of documents: they are combined in the SF_Document module.
-&apos;&apos;&apos;		Specific properties and methods are implemented in the concerned subclass(es) SF_Calc, SF_Writer, ...
+&apos;&apos;&apos;		Specific properties and methods are implemented in the concerned subclass(es) SF_Calc, SF_Base, ...
 &apos;&apos;&apos;
 &apos;&apos;&apos;		To workaround the absence of class inheritance in LibreOffice Basic, some redundancy is necessary
 &apos;&apos;&apos;		Each subclass MUST implement also the generic methods and properties, even if they only call
@@ -80,6 +80,7 @@ Private Const BASEDOCUMENTOPENERROR	=	&quot;BASEDOCUMENTOPENERROR&quot;
 Private Const CALCADDRESSERROR		=	&quot;CALCADDRESSERROR&quot;
 Private Const DUPLICATESHEETERROR	=	&quot;DUPLICATESHEETERROR&quot;
 Private Const OFFSETADDRESSERROR	=	&quot;OFFSETADDRESSERROR&quot;
+Private Const CALCFORMNOTFOUNDERROR	=	&quot;CALCFORMNOTFOUNDERROR&quot;
 
 REM ============================================================= PRIVATE MEMBERS
 
@@ -94,6 +95,7 @@ Private _Component				As Object		&apos;	com.sun.star.lang.XComponent
 
 Type _Address
 	ObjectType					As String		&apos;	Must be &quot;SF_CalcReference&quot;
+	ServiceName					As String		&apos;	Must be &quot;SFDocuments.CalcReference&quot;
 	RawAddress					As String
 	Component					As Object		&apos;	com.sun.star.lang.XComponent
 	SheetName					As String
@@ -114,8 +116,12 @@ Private Const MAXCOLS			= 2^10					&apos;	Max number of columns in a sheet
 Private Const MAXROWS			= 2^20					&apos;	Max number of rows in a sheet
 
 Private Const CALCREFERENCE		= &quot;SF_CalcReference&quot;	&apos;	Object type of _Address
+Private Const SERVICEREFERENCE	= &quot;SFDocuments.CalcReference&quot;
+														&apos;	Service name of _Address (used in Python)
 
-REM ===================================================== CONSTRUCTOR/DESTRUCTOR
+Private Const ISCALCFORM		= 2						&apos;	Form is stored in a Calc document
+
+REM ====================================================== CONSTRUCTOR/DESTRUCTOR
 
 REM -----------------------------------------------------------------------------
 Private Sub Class_Initialize()
@@ -163,7 +169,7 @@ Const cstSubArgs = &quot;Selection&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If IsArray(pvSelection) Then
 			If Not ScriptForge.SF_Utils._ValidateArray(pvSelection, &quot;pvSelection&quot;, 1, V_STRING, True)  Then GoTo Finally
 		Else
@@ -276,7 +282,7 @@ Const cstSubArgs = &quot;[SheetName]&quot;
 Check:
 	If IsMissing(SheetName) Or IsEmpty(SheetName) Then SheetName = &quot;&quot;
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , , True) Then GoTo Finally
 	End If
 
@@ -315,7 +321,7 @@ Const cstSubArgs = &quot;Range&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
 	End If
 
@@ -360,7 +366,7 @@ Const cstSubArgs = &quot;Range&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
 	End If
 
@@ -399,7 +405,7 @@ Const cstSubArgs = &quot;Range&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
 	End If
 
@@ -460,7 +466,7 @@ Const cstSubArgs = &quot;SheetName, NewName, [BeforeSheet=&quot;&quot;&quot;&quo
 Check:
 	If IsMissing(BeforeSheet) Or IsEmpty(BeforeSheet) Then BeforeSheet = 32768
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , True, , , True) Then GoTo Finally
 		If Not _ValidateSheet(NewName, &quot;NewName&quot;, True) Then GoTo Finally
 		If Not _ValidateSheet(BeforeSheet, &quot;BeforeSheet&quot;, , True, , True) Then GoTo Finally
@@ -523,7 +529,7 @@ Public Function CopySheetFromFile(Optional ByVal FileName As Variant _
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		FileName: Identifies the file to open. It must follow the SF_FileSystem.FileNaming notation
 &apos;&apos;&apos;			The file must not be protected with a password
-&apos;&apos;&apos;		SheetName: The name of the sheet to copy or its reference
+&apos;&apos;&apos;		SheetName: The name of the sheet to copy
 &apos;&apos;&apos;		NewName: Must not exist
 &apos;&apos;&apos;		BeforeSheet: The name (string) or index (numeric, starting from 1) of the sheet before which to insert
 &apos;&apos;&apos;	Returns:
@@ -549,7 +555,7 @@ Const cstSubArgs = &quot;FileName, SheetName, NewName, [BeforeSheet=&quot;&quot;
 Check:
 	If IsMissing(BeforeSheet) Or IsEmpty(BeforeSheet) Then BeforeSheet = 32768
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._ValidateFile(FileName, &quot;FileName&quot;) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(SheetName, &quot;SheetName&quot;, V_STRING) Then GoTo Finally
 		If Not _ValidateSheet(NewName, &quot;NewName&quot;, True) Then GoTo Finally
@@ -594,7 +600,7 @@ Public Function CopyToCell(Optional ByVal SourceRange As Variant _
 &apos;&apos;&apos;		SourceRange: the source range as a string if it belongs to the same document
 &apos;&apos;&apos;			or as a reference if it belongs to another open Calc document
 &apos;&apos;&apos;		DestinationCell: the destination of the copied range of cells, as a string
-&apos;&apos;&apos;			If given as range, the destination will be reduced to its top-left cell
+&apos;&apos;&apos;			If given as a range of cells, the destination will be reduced to its top-left cell
 &apos;&apos;&apos;	Returns:
 &apos;&apos;&apos;		A string representing the modified range of cells
 &apos;&apos;&apos;		The modified area depends only on the size of the source area
@@ -623,7 +629,7 @@ Const cstSubArgs = &quot;SourceRange, DestinationCell&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(SourceRange, &quot;SourceRange&quot;, Array(V_STRING, ScriptForge.V_OBJECT), , , CALCREFERENCE) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(DestinationCell, &quot;DestinationCell&quot;, V_STRING) Then GoTo Finally
 	End If
@@ -714,7 +720,7 @@ Const cstSubArgs = &quot;SourceRange, DestinationRange&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(SourceRange, &quot;SourceRange&quot;, Array(V_STRING, ScriptForge.V_OBJECT), , , CALCREFERENCE) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(DestinationRange, &quot;DestinationRange&quot;, V_STRING) Then GoTo Finally
 	End If
@@ -786,7 +792,7 @@ Public Function DCount(Optional ByVal Range As Variant) As Long
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		Range : the range as a string where to get the values from
 &apos;&apos;&apos;	Returns:
-&apos;&apos;&apos;		The number of numeric values a Long
+&apos;&apos;&apos;		The number of numeric values as a Long
 &apos;&apos;&apos;	Examples:
 &apos;&apos;&apos;		Val = oDoc.DCount(&quot;~.A1:A1000&quot;)
 
@@ -849,6 +855,84 @@ Finally:
 End Function	&apos;	SF_Documents.SF_Calc.DSum
 
 REM -----------------------------------------------------------------------------
+Public Function Forms(Optional ByVal SheetName As Variant _
+							, Optional ByVal Form As Variant _
+							) As Variant
+&apos;&apos;&apos;	Return either
+&apos;&apos;&apos;		- the list of the Forms contained in the given sheet
+&apos;&apos;&apos;		- a SFDocuments.Form object based on its name or its index
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		SheetName: the name of the sheet containing the requested form or forms
+&apos;&apos;&apos;		Form: a form stored in the document given by its name or its index
+&apos;&apos;&apos;			When absent, the list of available forms is returned
+&apos;&apos;&apos;			To get the first (unique ?) form stored in the form document, set Form = 0
+&apos;&apos;&apos;	Exceptions:
+&apos;&apos;&apos;		CALCFORMNOTFOUNDERROR		Form not found
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A zero-based array of strings if Form is absent
+&apos;&apos;&apos;		An instance of the SF_Form class if Form exists
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;			Dim myForm As Object, myList As Variant
+&apos;&apos;&apos;				myList = oDoc.Forms(&quot;ThisSheet&quot;)
+&apos;&apos;&apos;				Set myForm = oDoc.Forms(&quot;ThisSheet&quot;, 0)
+
+Dim oForm As Object					&apos;	The new Form class instance
+Dim oMainForm As Object				&apos;	com.sun.star.comp.sdb.Content
+Dim oXForm As Object				&apos;	com.sun.star.form.XForm or com.sun.star.comp.forms.ODatabaseForm
+Dim vFormNames As Variant			&apos;	Array of form names
+Dim oForms As Object				&apos;	Forms collection
+Const cstDrawPage = -1				&apos;	There is no DrawPages collection in Calc sheets
+
+Const cstThisSub = &quot;SFDocuments.Calc.Forms&quot;
+Const cstSubArgs = &quot;SheetName, [Form=&quot;&quot;&quot;&quot;]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+
+Check:
+	If IsMissing(Form) Or IsEmpty(Form) Then Form = &quot;&quot;
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Form, &quot;Form&quot;, Array(V_STRING, ScriptForge.V_NUMERIC)) Then GoTo Finally
+	End If
+
+Try:
+	&apos;	Start from the Calc sheet and go down to forms
+	Set oForms = _Component.getSheets.getByName(SheetName).DrawPage.Forms
+	vFormNames = oForms.getElementNames()
+
+	If Len(Form) = 0 Then	&apos;	Return the list of valid form names
+		Forms = vFormNames
+	Else
+		If VarType(Form) = V_STRING Then	&apos;	Find the form by name
+		If Not ScriptForge.SF_Utils._Validate(Form, &quot;Form&quot;, V_STRING, vFormNames) Then GoTo Finally
+			Set oXForm = oForms.getByName(Form)
+		Else								&apos;	Find the form by index
+			If Form &lt; 0 Or Form &gt;= oForms.Count Then GoTo CatchNotFound
+			Set oXForm = oForms.getByIndex(Form)
+		End If
+		&apos;	Create the new Form class instance
+		Set oForm = SF_Register._NewForm(oXForm)
+		With oForm
+			Set .[_Parent] = [Me]
+			._SheetName = SheetName
+			._FormType = ISCALCFORM
+			Set ._Component = _Component
+			._Initialize()
+		End With
+		Set Forms = oForm
+	End If
+
+Finally:
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+CatchNotFound:
+	ScriptForge.SF_Exception.RaiseFatal(CALCFORMNOTFOUNDERROR, Form, _FileIdent())
+End Function	&apos;	SFDocuments.SF_Calc.Forms
+
+REM -----------------------------------------------------------------------------
 Function GetColumnName(Optional ByVal ColumnNumber As Variant) As String
 &apos;&apos;&apos;	Convert a column number (range 1, 2,..1024) into its letter counterpart (range &apos;A&apos;, &apos;B&apos;,..&apos;AMJ&apos;).
 &apos;&apos;&apos;	Args:
@@ -905,7 +989,7 @@ Const cstSubArgs = &quot;Range&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
 	End If
 
@@ -955,8 +1039,10 @@ Try:
 	&apos;	Superclass or subclass property ?
 	If ScriptForge.SF_Array.Contains([_Super].Properties(), PropertyName) Then
 		GetProperty = [_Super].GetProperty(PropertyName)
-	Else
+	ElseIf Len(ObjectName) = 0 Then
 		GetProperty = _PropertyGet(PropertyName)
+	Else
+		GetProperty = _PropertyGet(PropertyName, ObjectName)
 	End If
 
 Finally:
@@ -988,7 +1074,7 @@ Const cstSubArgs = &quot;Range&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
 	End If
 
@@ -1053,7 +1139,7 @@ Const cstSubArgs = &quot;FileName, DestinationCell, [FilterOptions]=&quot;&quot;
 Check:
 	If IsMissing(FilterOptions) Or IsEmpty(FilterOptions) Then FilterOptions = cstFilterOptions
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._ValidateFile(FileName, &quot;FileName&quot;) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(DestinationCell, &quot;DestinationCell&quot;, V_STRING) Then GoTo Finally
 	End If
@@ -1097,7 +1183,7 @@ Public Sub ImportFromDatabase(Optional ByVal FileName As Variant _
 &apos;&apos;&apos;		RegistrationName: the name of a registered database
 &apos;&apos;&apos;			It is ignored if FileName &lt;&gt; &quot;&quot;
 &apos;&apos;&apos;		DestinationCell: the destination of the copied range of cells, as a string
-&apos;&apos;&apos;			If given as range, the destination will be reduced to its top-left cell
+&apos;&apos;&apos;			If given as a range of cells, the destination will be reduced to its top-left cell
 &apos;&apos;&apos;		SQLCommand: either a table or query name (without square brackets)
 &apos;&apos;&apos;			or a full SQL commands where table and fieldnames are preferably surrounded with square brackets
 &apos;&apos;&apos;	Returns:
@@ -1129,7 +1215,7 @@ Check:
 	If IsMissing(RegistrationName) Or IsEmpty(RegistrationName) Then RegistrationName = &quot;&quot;
 	If IsMissing(DirectSQL) Or IsEmpty(DirectSQL) Then DirectSQL = False
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._ValidateFile(FileName, &quot;FileName&quot;, , True) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(DestinationCell, &quot;DestinationCell&quot;, V_STRING) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(SQLCommand, &quot;SQLCommand&quot;, V_STRING) Then GoTo Finally
@@ -1219,7 +1305,7 @@ Const cstSubArgs = &quot;SheetName, [BeforeSheet=&quot;&quot;&quot;&quot;]&quot;
 Check:
 	If IsMissing(BeforeSheet) Or IsEmpty(BeforeSheet) Then BeforeSheet = 32768
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, True) Then GoTo Finally
 		If Not _ValidateSheet(BeforeSheet, &quot;BeforeSheet&quot;, , True, , True) Then GoTo Finally
 	End If
@@ -1246,7 +1332,7 @@ End Function    &apos;   SFDocuments.SF_Calc.InsertSheet
 
 REM -----------------------------------------------------------------------------
 Public Function Methods() As Variant
-&apos;&apos;&apos;	Return the list of public methods of the Model service as an array
+&apos;&apos;&apos;	Return the list of public methods of the Calc service as an array
 
 	Methods = Array( _
 					&quot;Activate&quot; _
@@ -1295,6 +1381,7 @@ Public Function MoveRange(Optional ByVal Source As Variant _
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		Source: the source range of cells as a string
 &apos;&apos;&apos;		Destination: the destination of the moved range of cells, as a string
+&apos;&apos;&apos;			If given as a range of cells, the destination will be reduced to its top-left cell
 &apos;&apos;&apos;	Returns:
 &apos;&apos;&apos;		A string representing the modified range of cells
 &apos;&apos;&apos;		The modified area depends only on the size of the source area
@@ -1321,7 +1408,7 @@ Const cstSubArgs = &quot;Source, Destination&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not _Validate(Source, &quot;Source&quot;, V_STRING) Then GoTo Finally
 		If Not _Validate(Destination, &quot;Destination&quot;, V_STRING) Then GoTo Finally
 	End If
@@ -1375,7 +1462,7 @@ Const cstSubArgs = &quot;SheetName, [BeforeSheet=&quot;&quot;&quot;&quot;]&quot;
 Check:
 	If IsMissing(BeforeSheet) Or IsEmpty(BeforeSheet) Then BeforeSheet = 32768
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , True) Then GoTo Finally
 		If Not _ValidateSheet(BeforeSheet, &quot;BeforeSheet&quot;, , True, , True) Then GoTo Finally
 	End If
@@ -1442,7 +1529,7 @@ Check:
 	If IsMissing(Height) Or IsEmpty(Height) Then Height = 0
 	If IsMissing(Width) Or IsEmpty(Width) Then Width = 0
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Rows, &quot;Rows&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Columns, &quot;Columns&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
@@ -1465,7 +1552,7 @@ End Function	&apos;	SF_Documents.SF_Calc.Offset
 
 REM -----------------------------------------------------------------------------
 Public Function Properties() As Variant
-&apos;&apos;&apos;	Return the list or properties of the Timer class as an array
+&apos;&apos;&apos;	Return the list or properties of the Calc class as an array
 
 	Properties = Array( _
 					&quot;CurrentSelection&quot; _
@@ -1476,7 +1563,7 @@ Public Function Properties() As Variant
 					, &quot;Height&quot; _
 					, &quot;IsBase&quot; _
 					, &quot;IsCalc&quot; _
-					, &quot;IsDraw &quot; _
+					, &quot;IsDraw&quot; _
 					, &quot;IsImpress&quot; _
 					, &quot;IsMath&quot; _
 					, &quot;IsWriter&quot; _
@@ -1517,7 +1604,7 @@ Const cstSubArgs = &quot;SheetName&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , True) Then GoTo Finally
 	End If
 
@@ -1557,7 +1644,7 @@ Const cstSubArgs = &quot;SheetName, NewName&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive(True) Then GoTo Finally
+		If Not _IsStillAlive(True) Then GoTo Finally
 		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , True) Then GoTo Finally
 		If Not _ValidateSheet(NewName, &quot;NewName&quot;, True) Then GoTo Finally
 	End If
@@ -1604,7 +1691,7 @@ Const cstSubArgs = &quot;TargetCell, Value&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(TargetCell, &quot;TargetCell&quot;, V_STRING) Then GoTo Finally
 		If IsArray(Value) Then
 			If Not ScriptForge.SF_Utils._ValidateArray(Value, &quot;Value&quot;) Then GoTo Finally
@@ -1659,7 +1746,7 @@ Const cstSubArgs = &quot;TargetRange, Style&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(TargetRange, &quot;TargetRange&quot;, V_STRING) Then GoTo Finally
 		Set oStyleFamilies = _Component.StyleFamilies
 		If oStyleFamilies.hasByName(cstStyle) Then vStyles = oStyleFamilies.getByName(cstStyle).getElementNames() Else vStyles = Array()
@@ -1714,7 +1801,7 @@ Const cstSubArgs = &quot;TargetRange, Formula&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(TargetRange, &quot;TargetRange&quot;, V_STRING) Then GoTo Finally
 		If IsArray(Formula) Then
 			If Not ScriptForge.SF_Utils._ValidateArray(Formula, &quot;Formula&quot;, 0, V_STRING) Then GoTo Finally
@@ -1831,7 +1918,7 @@ Const cstSubArgs = &quot;TargetRange, Value&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(TargetRange, &quot;TargetRange&quot;, V_STRING) Then GoTo Finally
 		If IsArray(Value) Then
 			If Not ScriptForge.SF_Utils._ValidateArray(Value, &quot;Value&quot;) Then GoTo Finally
@@ -1878,7 +1965,7 @@ Public Function SortRange(Optional ByVal Range As Variant _
 &apos;&apos;&apos;		DestinationCell: the destination of the sorted range of cells, as a string
 &apos;&apos;&apos;			If given as range, the destination will be reduced to its top-left cell
 &apos;&apos;&apos;			By default, Range is overwritten with its sorted content
-&apos;&apos;&apos;		ContainsHeader: when True, the first row/column is not sorted
+&apos;&apos;&apos;		ContainsHeader: when True, the first row/column is not sorted. Default = False
 &apos;&apos;&apos;		CaseSensitive: only for string comparisons, default = False
 &apos;&apos;&apos;		SortColumns: when True, the columns are sorted from left to right
 &apos;&apos;&apos;			Default = False: rows are sorted from top to bottom.
@@ -1899,7 +1986,7 @@ Dim vSortFields As Variant			&apos;	Array of com.sun.star.table.TableSortField
 Dim sOrder As String				&apos;	Item in SortOrder
 Dim i As Long
 Const cstThisSub = &quot;SFDocuments.Calc.SortRange&quot;
-Const cstSubArgs = &quot;Range, SortKeys, [TargetRange=&quot;&quot;&quot;&quot;], [SortOrder=&quot;&quot;ASC&quot;&quot;], [ContainsHeader=False], [CaseSensitive=False], [SortColumns=False]&quot;
+Const cstSubArgs = &quot;Range, SortKeys, [TargetRange=&quot;&quot;&quot;&quot;], [SortOrder=&quot;&quot;ASC&quot;&quot;], [DestinationCell=&quot;&quot;&quot;&quot;], [ContainsHeader=False], [CaseSensitive=False], [SortColumns=False]&quot;
 
 	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
 	sSort = &quot;&quot;
@@ -1920,7 +2007,7 @@ Check:
 	If IsMissing(CaseSensitive) Or IsEmpty(CaseSensitive) Then CaseSensitive = False
 	If IsMissing(SortColumns) Or IsEmpty(SortColumns) Then SortColumns = False
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._ValidateArray(SortKeys, &quot;SortKeys&quot;, 1, V_NUMERIC, True) Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(DestinationCell, &quot;DestinationCell&quot;, V_STRING) Then GoTo Finally
@@ -2214,6 +2301,7 @@ Private Function _ConvertToDataArray(ByRef pvArray As Variant _
 								) As Variant
 &apos;&apos;&apos;	Create a 2-dimensions nested array (compatible with the ranges .DataArray property)
 &apos;&apos;&apos;	from a scalar, a 1D array or a 2D array
+&apos;&apos;&apos;	Input may be a 1D array of arrays, typically when call issued by a Python script
 &apos;&apos;&apos;	Array items are converted to (possibly empty) strings or doubles
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		pvArray: the input scalar or array. If array, must be 1 or 2D otherwise it is ignored.
@@ -2233,13 +2321,14 @@ Dim vDataArray() As Variant			&apos;	Return value
 Dim vVector() As Variant			&apos;	A temporary 1D array
 Dim vItem As Variant				&apos;	A single input item
 Dim iDims As Integer				&apos;	Number of dimensions of the input argument
-Dim lMin1 As Long					&apos;	Lower bound of input array
-Dim lMax1 As Long					&apos;	Upper bound
-Dim lMin2 As Long					&apos;	Lower bound
-Dim lMax2 As Long					&apos;	Upper bound
+Dim lMin1 As Long					&apos;	Lower bound (1) of input array
+Dim lMax1 As Long					&apos;	Upper bound (1)
+Dim lMin2 As Long					&apos;	Lower bound (2)
+Dim lMax2 As Long					&apos;	Upper bound (2)
 Dim lRows As Long					&apos;	Upper bound of vDataArray
 Dim lCols As Long					&apos;	Upper bound of vVector
 Dim bHorizontal As Boolean			&apos;	Horizontal vector
+Dim bDataArray As Boolean			&apos;	Input array is already an array of arrays
 Dim i As Long
 Dim j As Long
 
@@ -2259,11 +2348,18 @@ Try:
 	Select Case iDims
 		Case -1													&apos;	Scalar value
 		Case 1
-			bHorizontal = ( plRows = 0 And plColumns &gt; 0)
-			If Not bHorizontal Then
-				lMin1 = LBound(pvArray)	:	lMax1 = UBound(pvArray)
+			bHorizontal = ( plRows = 0 And plColumns &gt; 0 )
+			bDataArray = IsArray(pvArray(0))
+			If Not bDataArray Then
+				If Not bHorizontal Then
+					lMin1 = LBound(pvArray)	:	lMax1 = UBound(pvArray)
+				Else
+					lMin2 = LBound(pvArray)	:	lMax2 = UBound(pvArray)
+				End If
 			Else
-				lMin2 = LBound(pvArray)	:	lMax2 = UBound(pvArray)
+				iDims = 2
+				lMin1 = LBound(pvArray)	:	lMax1 = UBound(pvArray)
+				lMin2 = LBound(pvArray(0))	:	lMax2 = UBound(pvArray(0))
 			End If
 		Case 2
 			lMin1 = LBound(pvArray, 1)	:	lMax1 = UBound(pvArray, 1)
@@ -2305,7 +2401,11 @@ Try:
 							vItem = _ConvertToCellValue(pvArray(i + lMin1))
 						End If
 					Case 2
-						vItem = _ConvertToCellValue(pvArray(i + lMin1, j + lMin2))
+						If bDataArray Then
+							vItem = _ConvertToCellValue(pvArray(i + lMin1)(j + lMin2))
+						Else
+							vItem = _ConvertToCellValue(pvArray(i + lMin1, j + lMin2))
+						End If
 				End Select
 				vVector(j) = vItem
 			End If
@@ -2339,7 +2439,7 @@ Const cstSubArgs = &quot;Range&quot;
 
 Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not [_Super]._IsStillAlive() Then GoTo Finally
+		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
 	End If
 
@@ -2363,6 +2463,15 @@ Finally:
 Catch:
 	GoTo Finally
 End Function	&apos;	SF_Documents.SF_Calc._DFunction
+
+REM -----------------------------------------------------------------------------
+Private Function _FileIdent() As String
+&apos;&apos;&apos;	Returns a file identification from the information that is currently available
+&apos;&apos;&apos;	Useful e.g. for display in error messages
+
+	_FileIdent = [_Super]._FileIdent()
+
+End Function	&apos;	SFDocuments.SF_Calc._FileIdent
 
 REM -----------------------------------------------------------------------------
 Function _GetColumnName(ByVal plColumnNumber As Long) As String
@@ -2389,6 +2498,29 @@ Try:
 Finally:
 	_GetColumnName = sCol
 End Function	&apos;	SFDocuments.SF_Calc._GetColumnName
+
+REM -----------------------------------------------------------------------------
+Private Function _IsStillAlive(Optional ByVal pbForUpdate As Boolean _
+									, Optional ByVal pbError As Boolean _
+									) As Boolean
+&apos;&apos;&apos;	Returns True if the document has not been closed manually or incidentally since the last use
+&apos;&apos;&apos;	If dead the actual instance is disposed. The execution is cancelled when pbError = True (default)
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		pbForUpdate: if True (default = False), check additionally if document is open for editing
+&apos;&apos;&apos;		pbError: if True (default), raise a fatal error
+
+Dim bAlive As Boolean			&apos;	Return value
+
+	If IsMissing(pbForUpdate) Then pbForUpdate = False
+	If IsMissing(pbError) Then pbError = True
+
+Try:
+	bAlive = [_Super]._IsStillAlive(pbForUpdate, pbError)
+
+Finally:
+	_IsStillAlive = bAlive
+	Exit Function
+End Function	&apos;	SFDocuments.SF_Calc._IsStillAlive
 
 REM -----------------------------------------------------------------------------
 Private Function _LastCell(ByRef poSheet As Object) As Variant
@@ -2469,6 +2601,7 @@ Try:
 	Set oOffset = New _Address
 	With oOffset
 		.ObjectType = CALCREFERENCE
+		.ServiceName = SERVICEREFERENCE
 		.RawAddress = oNewRange.AbsoluteName
 		.Component = _Component
 		.XSpreadsheet = oNewRange.Spreadsheet
@@ -2519,6 +2652,7 @@ Dim oSelect As Object				&apos;	Current selection
 		.SheetName = &quot;&quot;			:	.RangeName = &quot;&quot;
 
 		.ObjectType = CALCREFERENCE
+		.ServiceName = SERVICEREFERENCE
 		.RawAddress = psAddress
 		Set .XSpreadSheet = Nothing	:	Set .XCellRange = Nothing
 		
@@ -2632,7 +2766,7 @@ Const cstSubArgs = &quot;&quot;
 
 	cstThisSub = &quot;SFDocuments.SF_Calc.get&quot; &amp; psProperty
 	ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs)
-	If Not [_Super]._IsStillAlive() Then GoTo Finally
+	If Not _IsStillAlive() Then GoTo Finally
 
 	Select Case psProperty
 		Case &quot;CurrentSelection&quot;
@@ -2782,6 +2916,7 @@ Private Function _ValidateSheet(Optional ByRef pvSheetName As Variant _
 &apos;&apos;&apos;	Sheet designation validation function similar to the SF_Utils._ValidateXXX functions
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		pvSheetName: string or numeric position
+&apos;&apos;&apos;		pvArgName: the name of the variable to be used in the error message
 &apos;&apos;&apos;		pvNew: if True, sheet must not exist (default = False)
 &apos;&apos;&apos;		pvActive: if True, the shortcut &quot;~&quot; is accepted (default = False)
 &apos;&apos;&apos;		pvOptional: if True, a zero-length string is accepted (default = False)

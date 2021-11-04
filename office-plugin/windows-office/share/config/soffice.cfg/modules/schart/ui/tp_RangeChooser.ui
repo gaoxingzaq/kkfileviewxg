@@ -106,7 +106,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
-            <property name="xalign">0</property>
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
             <child internal-child="accessible">
@@ -127,7 +126,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
-            <property name="xalign">0</property>
             <property name="draw_indicator">True</property>
             <property name="group">RB_DATAROWS</property>
             <child internal-child="accessible">
@@ -148,7 +146,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
-            <property name="xalign">0</property>
             <property name="draw_indicator">True</property>
             <child internal-child="accessible">
               <object class="AtkObject" id="CB_FIRST_ROW_ASLABELS-atkobject">
@@ -168,7 +165,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
-            <property name="xalign">0</property>
             <property name="draw_indicator">True</property>
             <child internal-child="accessible">
               <object class="AtkObject" id="CB_FIRST_COLUMN_ASLABELS-atkobject">
@@ -198,7 +194,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
-            <property name="xalign">0</property>
             <property name="draw_indicator">True</property>
           </object>
           <packing>
@@ -245,7 +240,6 @@
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xpad">4</property>
                 <property name="label" translatable="yes" context="tp_RangeChooser|label1">Start Table Index</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">ED_TIME_BASED_START</property>
@@ -259,7 +253,6 @@
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xpad">8</property>
                 <property name="label" translatable="yes" context="tp_RangeChooser|label2">End Table Index</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">ED_TIME_BASED_END</property>

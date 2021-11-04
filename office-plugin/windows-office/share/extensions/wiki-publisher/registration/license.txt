@@ -63,13 +63,6 @@ Creative Commons Attribution-ShareAlike 4.0 International
 
 # Libraries
 
-## Apache Commons
-
-The following software may be included in this product: Apache Commons (codec, httpclient, lang, logging).
-        Use of any of this software is governed by the terms of the license below:
-
-Jump to Apache License Version 2.0
-
 ## beanshell
 
 The following software may be included in this product: beanshell. Use of any of this software is governed
@@ -1621,6 +1614,48 @@ The following software may be included in this product: poppler. Use of any of t
 
 Jump to GPL Version 2
 
+The cidToUnicode, nameToUnicode and unicodeMap data files
+        installed by the poppler-data package are Copyright Glyph & Cog, LLC
+        and are licensed under the GNU General Public License (GPL), version 2
+        or version 3.
+
+The cMap data files installed by the poppler-data package are governed by the terms of the license below:
+
+Copyright 1990-2019 Adobe.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or
+        without modification, are permitted provided that the
+        following conditions are met:
+
+Redistributions of source code must retain the above
+        copyright notice, this list of conditions and the following
+        disclaimer.
+
+Redistributions in binary form must reproduce the above
+        copyright notice, this list of conditions and the following
+        disclaimer in the documentation and/or other materials
+        provided with the distribution.
+
+Neither the name of Adobe nor the names of its contributors
+        may be used to endorse or promote products derived from
+        this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+        CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+        INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+        MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+        CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+        SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+        NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+        LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+        HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+        OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+        SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 ## PostgreSQL
 
 The following software may be included in this product: PostgreSQL. Use of any of this software is governed
@@ -1822,32 +1857,6 @@ STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFT
         SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
         PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
         WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-## QR-Code-Generator
-
-The following software may be included in this product: QR Code Generator.
-
-The libqrcodegen project code is covered by the MIT license:
-
- Copyright © 2019 Project Nayuki. (MIT License) [https://www.nayuki.io/page/qr-code-generator-library]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-    this software and associated documentation files (the "Software"), to deal in
-    the Software without restriction, including without limitation the rights to
-    use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-    the Software, and to permit persons to whom the Software is furnished to do so,
-    subject to the following conditions:
-
-*The above copyright notice and this permission notice shall be included in
-    all copies or substantial portions of the Software.
-
-*The Software is provided "as is", without warranty of any kind, express or
-    implied, including but not limited to the warranties of merchantability,
-    fitness for a particular purpose and noninfringement. In no event shall the
-    authors or copyright holders be liable for any claim, damages or other
-    liability, whether in an action of contract, tort or otherwise, arising from,
-    out of or in connection with the Software or the use or other dealings in the
-    Software.
 
 ## dtoa
 
@@ -4085,6 +4094,15 @@ Jump to LGPL Version 3
 
 Jump to MPL Version 1.1
 
+## Esperanto
+
+### Spelling dictionary, hyphenation patterns, and thesaurus
+
+The following software may be included in this product: Esperanto spelling dictionary, hyphenation patterns,
+        and thesaurus. Use of any of this software is governed by the terms of the license below:
+
+GNU General Public License version 3.
+
 ## Estonian
 
 ### Spelling dictionary
@@ -4525,6 +4543,15 @@ Origin: TeX hyphenation tables by Sigitas Tolusis and Vytas Statulevicius. The o
 Author: Converted to OOo format by Albertas Agejevas <alga@akl.lt>
 
 License: LaTeX Project Public Licence
+
+Jump to LPPL
+
+## Mongolian
+
+### Spelling dictionary and hyphenation patterns
+
+The following software may be included in this product: Mongolian spelling dictionary and hyphenation patterns.
+        Use of any of this software is governed by the terms of the license below:
 
 Jump to LPPL
 

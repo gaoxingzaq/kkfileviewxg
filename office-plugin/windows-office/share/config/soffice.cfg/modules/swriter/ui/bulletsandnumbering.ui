@@ -52,13 +52,13 @@
             </child>
             <child>
               <object class="GtkButton" id="ok">
-                <property name="label">gtk-ok</property>
+                <property name="label" translatable="yes" context="stock">_OK</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -68,11 +68,11 @@
             </child>
             <child>
               <object class="GtkButton" id="cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label" translatable="yes" context="stock">_Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -82,11 +82,11 @@
             </child>
             <child>
               <object class="GtkButton" id="help">
-                <property name="label">gtk-help</property>
+                <property name="label" translatable="yes" context="stock">_Help</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -159,7 +159,8 @@
               <object class="GtkLabel" id="bullets">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes" context="bulletsandnumbering|bullets">Bullets</property>
+                <property name="label" translatable="yes" context="bulletsandnumbering|bullets">Unordered</property>
+                <property name="tooltip_text" translatable="yes" context="bulletsandnumbering|bullets">Select a bullet type for an unordered list.</property>
               </object>
               <packing>
                 <property name="tab_fill">False</property>
@@ -206,7 +207,8 @@
               <object class="GtkLabel" id="singlenum">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes" context="bulletsandnumbering|singlenum">Numbering</property>
+                <property name="label" translatable="yes" context="bulletsandnumbering|singlenum">Ordered</property>
+                <property name="tooltip_text" translatable="yes" context="bulletsandnumbering|singlenum">Select a numbering scheme for an ordered list.</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -255,6 +257,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="bulletsandnumbering|outlinenum">Outline</property>
+                <property name="tooltip_text" translatable="yes" context="bulletsandnumbering|outlinenum">Select an outline format for an ordered list.</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -303,6 +306,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="bulletsandnumbering|graphics">Image</property>
+                <property name="tooltip_text" translatable="yes" context="bulletsandnumbering|graphics">Select a graphic bullet symbol for an unordered list.</property>
               </object>
               <packing>
                 <property name="position">3</property>
@@ -351,6 +355,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="bulletsandnumbering|position">Position</property>
+                <property name="tooltip_text" translatable="yes" context="bulletsandnumbering|position">Modify indent, spacing, and alignment options for ordered and unordered lists.</property>
               </object>
               <packing>
                 <property name="position">4</property>
@@ -399,6 +404,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="bulletsandnumbering|customize">Customize</property>
+                <property name="tooltip_text" translatable="yes" context="bulletsandnumbering|customize">Design your own bullet or numbering scheme.</property>
               </object>
               <packing>
                 <property name="position">5</property>

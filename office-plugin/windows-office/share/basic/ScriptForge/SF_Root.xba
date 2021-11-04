@@ -38,6 +38,12 @@ Private DisplayEnabled		As Boolean	&apos; When True, display of console or error
 Private StopWhenError		As Boolean	&apos; When True, process stops after error &gt; &quot;WARNING&quot;
 Private DebugMode			As Boolean	&apos; When True, log enter/exit each official Sub
 
+&apos;	Progress and status bars
+Private ProgressBarDialog	As Object	&apos; SFDialogs.Dialog object
+Private ProgressBarText		As Object	&apos; SFDialogs.DialogControl object
+Private ProgressBarBar		As Object	&apos; SFDialogs.DialogControl object
+Private Statusbar			As Object
+
 &apos;	Services management
 Private ServicesList		As Variant	&apos; Dictionary of provided services
 
@@ -64,6 +70,7 @@ Private DatabaseContext		As Object	&apos; com.sun.star.sdb.DatabaseContext
 Private ConfigurationProvider _
 							As Object	&apos; com.sun.star.configuration.ConfigurationProvider
 Private MailService			As Object	&apos; com.sun.star.system.SimpleCommandMail or com.sun.star.system.SimpleSystemMail
+Private TreeDataModel		As Object	&apos; com.sun.star.awt.tree.MutableTreeDataModel
 
 &apos;	Specific persistent services objects or properties
 Private FileSystemNaming	As String	&apos; If &quot;SYS&quot;, file and folder naming is based on operating system notation
@@ -71,6 +78,9 @@ Private PythonHelper		As String	&apos; File name of Python helper functions (sto
 Private Interface			As Object	&apos; ScriptForge own L10N service
 Private OSName				As String	&apos; WIN, LINUX, MACOS
 Private SFDialogs			As Variant	&apos; Persistent storage for the SFDialogs library
+Private SFForms				As Variant	&apos; Persistent storage for the SF_Form class in the SFDocuments library
+Private PythonStorage		As Variant	&apos; Persistent storage for the objects created and processed in Python
+Private PythonPermanent		As Long		&apos; Number of permanent entries in PythonStorage containing standard module objects
 
 REM ====================================================== CONSTRUCTOR/DESTRUCTOR
 
@@ -89,6 +99,10 @@ Private Sub Class_Initialize()
 	DisplayEnabled = True
 	StopWhenError = True
 	DebugMode = False
+	Set ProgressBarDialog = Nothing
+	Set ProgressBarText = Nothing
+	Set progressBarBar = Nothing
+	Set Statusbar = Nothing
 	ServicesList = Empty
 	Set FunctionAccess = Nothing
 	Set PathSettings = Nothing
@@ -114,8 +128,12 @@ Private Sub Class_Initialize()
 	Set DatabaseContext = Nothing
 	Set ConfigurationProvider = Nothing
 	Set MailService = Nothing
+	Set TreeDataModel = Nothing
 	OSName = &quot;&quot;
 	SFDialogs = Empty
+	SFForms = Empty
+	PythonStorage = Empty
+	PythonPermanent = -1
 End Sub		&apos;	ScriptForge.SF_Root Constructor
 
 REM -----------------------------------------------------------------------------
@@ -152,7 +170,7 @@ Dim sLine As String			&apos;	Alias of psLine
 
 	&apos;	Add a timestamp to the line and insert it (without date)
 	sLine = Mid(SF_Utils._Repr(Now()), 12) &amp; &quot; -&gt; &quot; &amp; psLine
-	ConsoleLines(lConsole + 1) = Mid(SF_Utils._Repr(Now()), 12) &amp; &quot; -&gt; &quot; &amp; psLine
+	ConsoleLines(lConsole + 1) = sLine
 
 	&apos;	Add the new line to the actual (probably non-modal) console, if active
 	If Not IsNull(ConsoleDialog) Then
@@ -163,6 +181,74 @@ Dim sLine As String			&apos;	Alias of psLine
 	End If
 
 End Sub		&apos;	ScriptForge.SF_Root._AddToConsole
+
+REM -----------------------------------------------------------------------------
+Public Function _AddToPythonStorage(ByRef poObject As Object) As Long
+&apos;&apos;&apos;	Insert a newly created object in the Python persistent storage
+&apos;&apos;&apos;	and return the index of the used entry
+&apos;&apos;&apos;	The persistent storage is a simple array of objects
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		poObject: the object to insert
+
+Dim lIndex As Long			&apos;	Return value
+Dim lSize As Long			&apos;	UBound of the persistent storage
+Dim i As Long
+
+Check:
+	lIndex = -1
+	If IsNull(poObject) Then Exit Function
+	On Local Error GoTo Finally
+	lSize = UBound(PythonStorage)
+
+Try:
+	&apos;	Can an empty entry be reused ?
+	For i = PythonPermanent + 1 To lSize
+		If IsNull(PythonStorage(i)) Then
+			lIndex = i
+			Exit For
+		End If
+	Next i
+
+	&apos;	Resize Python storage if no empty space
+	If lIndex &lt; 0 Then
+		lSize = lSize + 1
+		ReDim Preserve PythonStorage(0 To lSize)
+		lIndex = lSize
+	End If
+
+	&apos;	Insert new object
+	Set PythonStorage(lIndex) = poObject
+
+Finally:
+	_AddToPythonStorage = lIndex
+	Exit Function
+End Function	&apos;	ScriptForge.SF_Root._AddToPythonStorage
+
+REM -----------------------------------------------------------------------------
+Public Sub _InitPythonStorage()
+&apos;&apos;&apos;	Make PythonStorage an array
+&apos;&apos;&apos;	In prevision to an abundant use of those objects in Python, hardcode to optimize the performance and memory :
+&apos;&apos;&apos;	Initialize the first entries with the standard module objects located in the ScriptForge library
+
+Try:
+	If Not IsArray(PythonStorage) Then
+		PythonPermanent = 7
+		PythonStorage = Array()
+		ReDim PythonStorage(0 To PythonPermanent)
+		&apos;	Initialize each entry
+		PythonStorage(0) = ScriptForge.SF_Array
+		PythonStorage(1) = ScriptForge.SF_Exception
+		PythonStorage(2) = ScriptForge.SF_FileSystem
+		PythonStorage(3) = ScriptForge.SF_Platform
+		PythonStorage(4) = ScriptForge.SF_Services
+		PythonStorage(5) = ScriptForge.SF_Session
+		PythonStorage(6) = ScriptForge.SF_String
+		PythonStorage(7) = ScriptForge.SF_UI
+	End If
+
+Finally:
+	Exit Sub
+End Sub		&apos;	ScriptForge.SF_Root._InitPythonStorage
 
 REM -----------------------------------------------------------------------------
 Public Sub _LoadLocalizedInterface(Optional ByVal psMode As String)
@@ -376,13 +462,13 @@ Try:
 	&apos;	SF_Array.ExtractColumn, ExtractRow
 			.AddText(	Context := &quot;ARRAYINDEX2&quot; _
 						, MsgId := &quot;The given slice limits do not fit within the bounds of the array.\n\n&quot; _
-									&amp; &quot;\t« Array_2D » = %1\n&quot; _
+									&amp; &quot;\t« Array_1D » = %1\n&quot; _
 									&amp; &quot;\t« From »     = %2\n&quot; _
 									&amp; &quot;\t« UpTo »     = %3&quot; _
 						, Comment :=	&quot;SF_Array.ExtractColumn (...) error message\n&quot; _
 									&amp;	&quot;%1: &apos;Column&apos; or &apos;Row&apos; of a matrix\n&quot; _
 									&amp;	&quot;%2, %3: array contents\n&quot; _
-									&amp;	&quot;&apos;Array_2D&apos;, &apos;From&apos; and &apos;UpTo&apos; should not be translated&quot; _
+									&amp;	&quot;&apos;Array_1D&apos;, &apos;From&apos; and &apos;UpTo&apos; should not be translated&quot; _
 					)
 	&apos;	SF_Array.ImportFromCSVFile
 			.AddText(	Context := &quot;CSVPARSING&quot; _
@@ -561,6 +647,13 @@ Try:
 									&amp;	&quot;%1: A file name\n&quot; _
 									&amp;	&quot;%2: READ, WRITE or APPEND&quot; _
 					)
+	&apos;	SF_TextStream.ReadLine, ReadAll, SkipLine
+			.AddText(	Context := &quot;ENDOFFILE&quot; _
+						, MsgId := &quot;The requested file read operation could not be completed because an unexpected end-of-file was encountered.\n\n&quot; _
+									&amp; &quot;File name = &apos;%1&apos;&quot; _
+						, Comment :=	&quot;SF_TextStream.ReadLine/ReadAll/SkipLine error message\n&quot; _
+									&amp;	&quot;%1: A file name&quot; _
+					)
 	&apos;	SF_UI.Document
 			.AddText(	Context := &quot;DOCUMENT&quot; _
 						, MsgId := &quot;The requested document could not be found.\n\n&quot; _
@@ -723,6 +816,63 @@ Try:
 									&amp;	&quot;%11: An identifier\n&quot; _
 									&amp;	&quot;%12: A file name&quot; _
 					)
+	&apos;	SF_Form._IsStillAlive
+			.AddText(	Context := &quot;FORMDEAD&quot; _
+						, MsgId := &quot;The requested action could not be executed because the form is not open or the document was closed inadvertently.\n\n&quot; _
+									&amp; &quot;The concerned form is &apos;%1&apos; in document &apos;%2&apos;.&quot; _
+						, Comment :=	&quot;SF_Dialog._IsStillAlive error message\n&quot; _
+									&amp;	&quot;%1: An identifier&quot; _
+									&amp;	&quot;%2: A file name&quot; _
+					)
+	&apos;	SF_Calc.Forms
+			.AddText(	Context := &quot;CALCFORMNOTFOUND&quot; _
+						, MsgId := &quot;The requested form could not be found in the Calc sheet. The given index is off-limits.\n\n&quot; _
+									&amp; &quot;The concerned Calc document is &apos;%3&apos;.\n\n&quot; _
+									&amp; &quot;The name of the sheet = &apos;%2&apos;\n&quot; _
+									&amp; &quot;The index = %1.&quot; _
+						, Comment :=	&quot;SF_Form determination\n&quot; _
+									&amp;	&quot;%1: A number\n&quot; _
+									&amp;	&quot;%2: A sheet name\n&quot; _
+									&amp;	&quot;%3: A file name&quot; _
+					)
+	&apos;	SF_Document.Forms
+			.AddText(	Context := &quot;WRITERFORMNOTFOUND&quot; _
+						, MsgId := &quot;The requested form could not be found in the Writer document. The given index is off-limits.\n\n&quot; _
+									&amp; &quot;The concerned Writer document is &apos;%2&apos;.\n\n&quot; _
+									&amp; &quot;The index = %1.&quot; _
+						, Comment :=	&quot;SF_Form determination\n&quot; _
+									&amp;	&quot;%1: A number\n&quot; _
+									&amp;	&quot;%2: A file name&quot; _
+					)
+	&apos;	SF_Base.Forms
+			.AddText(	Context := &quot;BASEFORMNOTFOUND&quot; _
+						, MsgId := &quot;The requested form could not be found in the form document &apos;%2&apos;. The given index is off-limits.\n\n&quot; _
+									&amp; &quot;The concerned Base document is &apos;%3&apos;.\n\n&quot; _
+									&amp; &quot;The index = %1.&quot; _
+						, Comment :=	&quot;SF_Form determination\n&quot; _
+									&amp;	&quot;%1: A number\n&quot; _
+									&amp;	&quot;%2: A string\n&quot; _
+									&amp;	&quot;%3: A file name&quot; _
+					)
+	&apos;	SF_Form.Subforms
+			.AddText(	Context := &quot;SUBFORMNOTFOUND&quot; _
+						, MsgId := &quot;The requested subform could not be found below the given main form.\n\n&quot; _
+									&amp; &quot;The main form = &apos;%2&apos;.\n&quot; _
+									&amp; &quot;The subform = &apos;%1&apos;.&quot; _
+						, Comment :=	&quot;SF_Form determination\n&quot; _
+									&amp;	&quot;%1: A form name\n&quot; _
+									&amp;	&quot;%2: A form name&quot; _
+					)
+	&apos;	SF_FormControl._SetProperty
+			.AddText(	Context := &quot;FORMCONTROLTYPE&quot; _
+						, MsgId := &quot;The control &apos;%1&apos; in form &apos;%2&apos; is of type &apos;%3&apos;.\n&quot; _
+									&amp; &quot;The property or method &apos;%4&apos; is not applicable on that type of form controls.&quot; _
+						, Comment :=	&quot;SF_FormControl property setting\n&quot; _
+									&amp;	&quot;%1: An identifier\n&quot; _
+									&amp;	&quot;%2: An identifier\n&quot; _
+									&amp;	&quot;%3: A string\n&quot; _
+									&amp;	&quot;%4: An identifier&quot; _
+					)
 	&apos;	SF_Dialog._NewDialog
 			.AddText(	Context := &quot;DIALOGNOTFOUND&quot; _
 						, MsgId := &quot;The requested dialog could not be located in the given container or library.\n&quot; _
@@ -750,7 +900,7 @@ Try:
 	&apos;	SF_DialogControl._SetProperty
 			.AddText(	Context := &quot;CONTROLTYPE&quot; _
 						, MsgId := &quot;The control &apos;%1&apos; in dialog &apos;%2&apos; is of type &apos;%3&apos;.\n&quot; _
-									&amp; &quot;The property &apos;%4&apos; is not applicable on that type of dialog controls.&quot; _
+									&amp; &quot;The property or method &apos;%4&apos; is not applicable on that type of dialog controls.&quot; _
 						, Comment :=	&quot;SF_DialogControl property setting\n&quot; _
 									&amp;	&quot;%1: An identifier\n&quot; _
 									&amp;	&quot;%2: An identifier\n&quot; _
@@ -779,6 +929,12 @@ Try:
 									&amp; &quot;SQL Statement : « %1 »&quot; _
 						, Comment :=	&quot;SF_Database can&apos;t interpret SQL statement\n&quot; _
 									&amp;	&quot;%1: The statement&quot; _
+					)
+	&apos;	SF_Exception.PythonShell (Python only)
+			.AddText(	Context := &quot;PYTHONSHELL&quot; _
+						, MsgId := &quot;The APSO extension could not be located in your LibreOffice installation.&quot; _
+						, Comment :=	&quot;SF_Exception.PythonShell error message&quot; _
+									&amp;	&quot;APSO: to leave unchanged&quot; _
 					)
 		End With
 	End If

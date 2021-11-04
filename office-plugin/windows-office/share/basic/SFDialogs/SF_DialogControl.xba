@@ -23,6 +23,12 @@ Option Explicit
 &apos;&apos;&apos;		Essentially a single property &quot;Value&quot; maps many alternative UNO properties depending each on
 &apos;&apos;&apos;		the control type.
 &apos;&apos;&apos;
+&apos;&apos;&apos;		A special attention is given to controls with type TreeControl.
+&apos;&apos;&apos;		It is easy with the API proposed in the current class to populate a tree, either
+&apos;&apos;&apos;			- branch by branch (CreateRoot and AddSubNode), or
+&apos;&apos;&apos;			- with a set of branches at once (AddSubtree)
+&apos;&apos;&apos;		Additionally populating a TreeControl can be done statically or dynamically
+&apos;&apos;&apos;
 &apos;&apos;&apos;		Service invocation:
 &apos;&apos;&apos;			Dim myDialog As Object, myControl As Object
 &apos;&apos;&apos;				Set myDialog = CreateScriptService(&quot;SFDialogs.Dialog&quot;, &quot;GlobalScope&quot;, myLibrary, DialogName)
@@ -48,15 +54,24 @@ Private ServiceName 		As String
 
 &apos;	Control naming
 Private _Name				As String
+Private _IndexOfNames		As Long			&apos; Index in ElementNames array. Used to access SF_Dialog._ControlCache
 Private _DialogName			As String		&apos; Parent dialog name
 
 &apos;	Control UNO references
 Private _ControlModel		As Object		&apos; com.sun.star.awt.XControlModel
 Private _ControlView		As Object		&apos; com.sun.star.awt.XControl - stardiv.Toolkit.UnoDialogControl
+Private _TreeDataModel		As Object		&apos; com.sun.star.awt.tree.MutableTreeDataModel
 
 &apos;	Control attributes
 Private	_ImplementationName	As String
 Private _ControlType		As String		&apos; One of the CTLxxx constants
+
+&apos;	Tree control on-select and on-expand attributes
+&apos;	Tree controls may be associated with events not defined in the Basic IDE
+Private _OnNodeSelected		As String		&apos; Script to invoke when a node is selected
+Private _OnNodeExpanded		As String		&apos; Script to invoke when a node is expanded
+Private _SelectListener		As Object		&apos; com.sun.star.view.XSelectionChangeListener
+Private _ExpandListener		As Object		&apos; com.sun.star.awt.tree.XTreeExpansionListener
 
 REM ============================================================ MODULE CONSTANTS
 
@@ -79,8 +94,9 @@ Private Const CTLRADIOBUTTON	= &quot;RadioButton&quot;
 Private Const CTLSCROLLBAR		= &quot;ScrollBar&quot;
 Private Const CTLTEXTFIELD		= &quot;TextField&quot;
 Private Const CTLTIMEFIELD		= &quot;TimeField&quot;
+Private Const CTLTREECONTROL	= &quot;TreeControl&quot;
 
-REM ===================================================== CONSTRUCTOR/DESTRUCTOR
+REM ====================================================== CONSTRUCTOR/DESTRUCTOR
 
 REM -----------------------------------------------------------------------------
 Private Sub Class_Initialize()
@@ -89,11 +105,17 @@ Private Sub Class_Initialize()
 	ObjectType = &quot;DIALOGCONTROL&quot;
 	ServiceName = &quot;SFDialogs.DialogControl&quot;
 	_Name = &quot;&quot;
+	_IndexOfNames = -1
 	_DialogName = &quot;&quot;
 	Set _ControlModel = Nothing
 	Set _ControlView = Nothing
+	Set _TreeDataModel = Nothing
 	_ImplementationName = &quot;&quot;
 	_ControlType = &quot;&quot;
+	_OnNodeSelected = &quot;&quot;
+	_OnNodeExpanded = &quot;&quot;
+	Set _SelectListener = Nothing
+	Set _ExpandListener = Nothing
 End Sub		&apos;	SFDialogs.SF_DialogControl Constructor
 
 REM -----------------------------------------------------------------------------
@@ -138,6 +160,20 @@ Property Get ControlType() As String
 &apos;&apos;&apos;	Return the type of the actual control: &quot;CheckBox&quot;, &quot;TextField&quot;, &quot;DateField&quot;, ...
 	ControlType = _PropertyGet(&quot;ControlType&quot;)
 End Property	&apos;	SFDialogs.SF_DialogControl.ControlType
+
+REM -----------------------------------------------------------------------------
+Property Get CurrentNode() As Variant
+&apos;&apos;&apos;	The CurrentNode property returns the currently selected node
+&apos;&apos;&apos;	It returns Empty when there is no node selected
+&apos;&apos;&apos;	When there are several selections, it returns the topmost node among the selected ones
+	CurrentNode = _PropertyGet(&quot;CurrentNode&quot;, &quot;&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.CurrentNode (get)
+
+REM -----------------------------------------------------------------------------
+Property Let CurrentNode(Optional ByVal pvCurrentNode As Variant)
+&apos;&apos;&apos;	Set a single selection in a tree control
+	_PropertySet(&quot;CurrentNode&quot;, pvCurrentNode)
+End Property	&apos;	SFDialogs.SF_DialogControl.CurrentNode (let)
 
 REM -----------------------------------------------------------------------------
 Property Get Default() As Variant
@@ -226,6 +262,114 @@ Property Get Name() As String
 End Property	&apos;	SFDialogs.SF_DialogControl.Name
 
 REM -----------------------------------------------------------------------------
+Property Get OnActionPerformed() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnActionPerformed event
+	OnActionPerformed = _PropertyGet(&quot;OnActionPerformed&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnActionPerformed (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnAdjustmentValueChanged() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnAdjustmentValueChanged event
+	OnAdjustmentValueChanged = _PropertyGet(&quot;OnAdjustmentValueChanged&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnAdjustmentValueChanged (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnFocusGained() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnFocusGained event
+	OnFocusGained = _PropertyGet(&quot;OnFocusGained&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnFocusGained (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnFocusLost() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnFocusLost event
+	OnFocusLost = _PropertyGet(&quot;OnFocusLost&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnFocusLost (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnItemStateChanged() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnItemStateChanged event
+	OnItemStateChanged = _PropertyGet(&quot;OnItemStateChanged&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnItemStateChanged (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnKeyPressed() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnKeyPressed event
+	OnKeyPressed = _PropertyGet(&quot;OnKeyPressed&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnKeyPressed (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnKeyReleased() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnKeyReleased event
+	OnKeyReleased = _PropertyGet(&quot;OnKeyReleased&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnKeyReleased (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnMouseDragged() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnMouseDragged event
+	OnMouseDragged = _PropertyGet(&quot;OnMouseDragged&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnMouseDragged (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnMouseEntered() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnMouseEntered event
+	OnMouseEntered = _PropertyGet(&quot;OnMouseEntered&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnMouseEntered (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnMouseExited() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnMouseExited event
+	OnMouseExited = _PropertyGet(&quot;OnMouseExited&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnMouseExited (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnMouseMoved() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnMouseMoved event
+	OnMouseMoved = _PropertyGet(&quot;OnMouseMoved&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnMouseMoved (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnMousePressed() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnMousePressed event
+	OnMousePressed = _PropertyGet(&quot;OnMousePressed&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnMousePressed (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnMouseReleased() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnMouseReleased event
+	OnMouseReleased = _PropertyGet(&quot;OnMouseReleased&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnMouseReleased (get)
+
+REM -----------------------------------------------------------------------------
+Property Get OnNodeExpanded() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnNodeExpanded event
+	OnNodeExpanded = _PropertyGet(&quot;OnNodeExpanded&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnNodeExpanded (get)
+
+REM -----------------------------------------------------------------------------
+Property Let OnNodeExpanded(Optional ByVal pvOnNodeExpanded As Variant)
+&apos;&apos;&apos;	Set the updatable property OnNodeExpanded
+	_PropertySet(&quot;OnNodeExpanded&quot;, pvOnNodeExpanded)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnNodeExpanded (let)
+
+REM -----------------------------------------------------------------------------
+Property Get OnNodeSelected() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnNodeSelected event
+	OnNodeSelected = _PropertyGet(&quot;OnNodeSelected&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnNodeSelected (get)
+
+REM -----------------------------------------------------------------------------
+Property Let OnNodeSelected(Optional ByVal pvOnNodeSelected As Variant)
+&apos;&apos;&apos;	Set the updatable property OnNodeSelected
+	_PropertySet(&quot;OnNodeSelected&quot;, pvOnNodeSelected)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnNodeSelected (let)
+
+REM -----------------------------------------------------------------------------
+Property Get OnTextChanged() As Variant
+&apos;&apos;&apos;	Get the script associated with the OnTextChanged event
+	OnTextChanged = _PropertyGet(&quot;OnTextChanged&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.OnTextChanged (get)
+
+REM -----------------------------------------------------------------------------
 Property Get Page() As Variant
 &apos;&apos;&apos;	A dialog may have several pages that can be traversed by the user step by step. The Page property of the Dialog object defines which page of the dialog is active.
 &apos;&apos;&apos;	The Page property of a control defines the page of the dialog on which the control is visible.
@@ -257,6 +401,12 @@ Property Let Picture(Optional ByVal pvPicture As Variant)
 &apos;&apos;&apos;	Set the updatable property Picture
 	_PropertySet(&quot;Picture&quot;, pvPicture)
 End Property	&apos;	SFDialogs.SF_DialogControl.Picture (let)
+
+REM -----------------------------------------------------------------------------
+Property Get RootNode() As Variant
+&apos;&apos;&apos;	The RootNode property returns the last root node of a tree control
+	RootNode = _PropertyGet(&quot;RootNode&quot;, &quot;&quot;)
+End Property	&apos;	SFDialogs.SF_DialogControl.RootNode (get)
 
 REM -----------------------------------------------------------------------------
 Property Get RowSource() As Variant
@@ -339,7 +489,314 @@ Property Get XControlView() As Object
 	XControlView = _PropertyGet(&quot;XControlView&quot;, Nothing)
 End Property	&apos;	SFDialogs.SF_DialogControl.XControlView (get)
 
+REM -----------------------------------------------------------------------------
+Property Get XTreeDataModel() As Object
+&apos;&apos;&apos;	The XTreeDataModel property returns the mutable data model UNO object of the tree control
+	XTreeDataModel = _PropertyGet(&quot;XTreeDataModel&quot;, Nothing)
+End Property	&apos;	SFDialogs.SF_DialogControl.XTreeDataModel (get)
+
 REM ===================================================================== METHODS
+
+REM -----------------------------------------------------------------------------
+Public Function AddSubNode(Optional ByRef ParentNode As Variant _
+								, Optional ByVal DisplayValue As Variant _
+								, Optional ByRef DataValue As Variant _
+								) As Variant
+&apos;&apos;&apos;	Return a new node of the tree control subordinate to a parent node
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		ParentNode: A node UNO object, of type com.sun.star.awt.tree.XMutableTreeNode
+&apos;&apos;&apos;		DisplayValue: the text appearing in the control box
+&apos;&apos;&apos;		DataValue: any value associated with the new node. Default = Empty
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The new node UNO object: com.sun.star.awt.tree.XMutableTreeNode
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Dim myTree As Object, myNode As Object, theRoot As Object
+&apos;&apos;&apos;			Set myTree = myDialog.Controls(&quot;myTreeControl&quot;)
+&apos;&apos;&apos;			Set theRoot = myTree.CreateRoot(&quot;Tree top&quot;)
+&apos;&apos;&apos;			Set myNode = myTree.AddSubNode(theRoot, &quot;A branch ...&quot;)
+
+Dim oNode As Object				&apos;	Return value
+Const cstThisSub = &quot;SFDialogs.DialogControl.AddSubNode&quot;
+Const cstSubArgs = &quot;ParentNode, DisplayValue, [DataValue=Empty]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	Set oNode = Nothing
+
+Check:
+	If IsMissing(DataValue) Then DataValue = Empty
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If _ControlType &lt;&gt; CTLTREECONTROL Then GoTo CatchType
+		If Not ScriptForge.SF_Utils._Validate(ParentNode, &quot;ParentNode&quot;, V_OBJECT) Then GoTo Catch
+		If ScriptForge.SF_Session.UnoObjectType(ParentNode) &lt;&gt; &quot;toolkit.MutableTreeNode&quot; Then GoTo Catch
+		If Not ScriptForge.SF_Utils._Validate(DisplayValue, &quot;DisplayValue&quot;, V_STRING) Then GoTo Catch
+	End If
+
+Try:
+	With _TreeDataModel
+		Set oNode = .createNode(DisplayValue, True)
+		oNode.DataValue = DataValue
+		ParentNode.appendChild(oNode)
+	End With
+
+Finally:
+	Set AddSubNode = oNode
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+CatchType:
+	ScriptForge.SF_Exception.RaiseFatal(CONTROLTYPEERROR, _Name, _DialogName, _ControlType, &quot;AddSubNode&quot;)
+	GoTo Finally
+End Function	&apos;	SFDialogs.SF_DialogControl.AddSubNode
+
+REM -----------------------------------------------------------------------------
+Public Function AddSubTree(Optional ByRef ParentNode As Variant _
+								, Optional ByRef FlatTree As Variant _
+								, Optional ByVal WithDataValue As Variant _
+								) As Boolean
+&apos;&apos;&apos;	Return True when a subtree, subordinate to a parent node, could be inserted successfully in a tree control
+&apos;&apos;&apos;	If the parent node had already child nodes before calling this method, the child nodes are erased
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		ParentNode: A node UNO object,  of type com.sun.star.awt.tree.XMutableTreeNode
+&apos;&apos;&apos;		FlatTree: a 2D array sorted on the columns containing the DisplayValues
+&apos;&apos;&apos;				Flat tree		&gt;&gt;&gt;&gt;		Resulting subtree
+&apos;&apos;&apos;				A1	B1	C1					|__	A1		
+&apos;&apos;&apos;				A1	B1	C2						|__	B1	
+&apos;&apos;&apos;				A1	B2	C3							|__	C1
+&apos;&apos;&apos;				A2	B3	C4							|__	C2
+&apos;&apos;&apos;				A2	B3	C5						|__	B2	
+&apos;&apos;&apos;				A3	B4	C6							|__	C3
+&apos;&apos;&apos;											|__	A2		
+&apos;&apos;&apos;												|__	B3	
+&apos;&apos;&apos;													|__	C4
+&apos;&apos;&apos;													|__	C5
+&apos;&apos;&apos;											|__	A3		
+&apos;&apos;&apos;												|__	B4	
+&apos;&apos;&apos;													|__	C6
+&apos;&apos;&apos;			Typically, such an array can be issued by the GetRows method applied on the SFDatabases.Database service
+&apos;&apos;&apos;			when an array item containing the text to be displayed is = &quot;&quot; or is empty/null,
+&apos;&apos;&apos;				no new subnode is created and the remainder of the row is skipped
+&apos;&apos;&apos;			When AddSubTree() is called from a Python script, FlatTree may be an array of arrays
+&apos;&apos;&apos;		WithDataValue:
+&apos;&apos;&apos;			When False (default), every column of FlatTree contains the text to be displayed in the tree control
+&apos;&apos;&apos;			When True, the texts to be displayed (DisplayValue) are in columns 0, 2, 4, ...
+&apos;&apos;&apos;				while the DataValues are in columns 1, 3, 5, ...
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		True when successful
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Dim myTree As Object, theRoot As Object, oDb As Object, vData As Variant
+&apos;&apos;&apos;			Set myTree = myDialog.Controls(&quot;myTreeControl&quot;)
+&apos;&apos;&apos;			Set theRoot = myTree.CreateRoot(&quot;By product category&quot;)
+&apos;&apos;&apos;			Set oDb = CreateScriptService(&quot;SFDatabases.Database&quot;, &quot;/home/.../mydatabase.odb&quot;)
+&apos;&apos;&apos;			vData = oDb.GetRows(&quot;SELECT [Category].[Name], [Category].[ID], [Product].[Name], [Product].[ID] &quot; _
+&apos;&apos;&apos;				&amp; &quot;FROM [Category], [Product] WHERE [Product].[CategoryID] = [Category].[ID] &quot; _
+&apos;&apos;&apos;				&amp; &quot;ORDER BY [Category].[Name], [Product].[Name]&quot;)
+&apos;&apos;&apos;			myTree.AddSubTree(theRoot, vData, WithDataValue := True)
+
+Dim bSubTree As Boolean				&apos;	Return value
+Dim oNode As Object					&apos;	com.sun.star.awt.tree.XMutableTreeNode
+Dim oNewNode As Object				&apos;	com.sun.star.awt.tree.XMutableTreeNode
+Dim lChildCount As Long				&apos;	Number of children nodes of a parent node
+Dim iStep As Integer				&apos;	1 when WithDataValue = False, 2 otherwise
+Dim iDims As Integer				&apos;	Number of dimensions of FlatTree
+Dim lMin1 As Long					&apos;	Lower bound (rows)
+Dim lMin2 As Long					&apos;	Lower bounds (cols)
+Dim lMax1 As Long					&apos;	Upper bound (rows)
+Dim lMax2 As Long					&apos;	Upper bounds (cols)
+Dim vFlatItem As Variant			&apos;	A single FlatTree item: FlatTree(i, j)
+Dim vFlatItem2 As Variant			&apos;	A single FlatTree item
+Dim bChange As Boolean				&apos;	When True, the item in FlatTree is different from the item above
+Dim sValue As String				&apos;	Alias for display values
+Dim i As Long, j As Long
+Const cstThisSub = &quot;SFDialogs.DialogControl.AddSubTree&quot;
+Const cstSubArgs = &quot;ParentNode, FlatTree, [WithDataValue=False]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	bSubTree = False
+
+Check:
+	If IsMissing(WithDataValue) Or IsEmpty(WithDataValue) Then WithDataValue = False
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If _ControlType &lt;&gt; CTLTREECONTROL Then GoTo CatchType
+		If Not ScriptForge.SF_Utils._Validate(ParentNode, &quot;ParentNode&quot;, V_OBJECT) Then GoTo Catch
+		If ScriptForge.SF_Session.UnoObjectType(ParentNode) &lt;&gt; &quot;toolkit.MutableTreeNode&quot; Then GoTo Catch
+		If Not ScriptForge.SF_Utils._ValidateArray(FlatTree, &quot;FlatTree&quot;) Then GoTo Catch	&apos;	Dimensions checked below
+		If Not ScriptForge.SF_Utils._Validate(WithDataValue, &quot;WithDataValue&quot;, V_BOOLEAN) Then GoTo Catch
+	End If
+
+Try:
+	With _TreeDataModel
+		&apos;	Clean subtree
+		lChildCount = ParentNode.getChildCount()
+		For i = 1 To lChildCount
+			ParentNode.removeChildByIndex(0)		&apos;	This cleans all subtrees too
+		Next i
+
+		&apos;	Determine bounds
+		iDims = ScriptForge.SF_Array.CountDims(FlatTree)
+		Select Case iDims
+			Case -1, 0		:	GoTo Catch
+			Case 1					&apos;	Called probably from Python
+				lMin1 = LBound(FlatTree, 1)			:	lMax1 = UBound(FlatTree, 1)
+				If Not IsArray(FlatTree(0)) Then GoTo Catch
+				If UBound(FlatTree(0)) &lt; LBound(FlatTree(0)) Then GoTo Catch	&apos;	No columns
+				lMin2 = LBound(FlatTree(0))			:	lMax2 = UBound(FlatTree(0))
+			Case 2
+				lMin1 = LBound(FlatTree, 1)			:	lMax1 = UBound(FlatTree, 1)
+				lMin2 = LBound(FlatTree, 2)			:	lMax2 = UBound(FlatTree, 2)
+			Case Else		:	GoTo Catch
+		End Select
+
+		&apos;	Build a new subtree
+		iStep = Iif(WithDataValue, 2, 1)
+		For i = lMin1 To lMax1
+			bChange = ( i = 0 )
+			&apos;	Restart from the parent node at each i-iteration
+			Set oNode = ParentNode
+			For j = lMin2 To lMax2 Step iStep	&apos;	Array columns
+				If iDims = 1 Then vFlatItem = FlatTree(i)(j) Else vFlatItem = FlatTree(i, j)
+				If vFlatItem = &quot;&quot; Or IsNull(vFlatItem) Or IsEmpty(vFlatItem) Then
+					Set oNode = Nothing
+					Exit For		&apos;	Exit j-loop
+				End If
+				If Not bChange Then
+					If iDims = 1 Then vFlatItem2 = FlatTree(i - 1)(j) Else vFlatItem2 = FlatTree(i - 1, j)
+					bChange = ( vFlatItem &lt;&gt; vFlatItem2 )
+				End If
+				If bChange Then		&apos;	Create new subnode at tree depth = j
+					If VarType(vFlatItem) = V_STRING Then sValue = vFlatItem Else sValue = ScriptForge.SF_String.Represent(vFlatItem)
+					Set oNewNode = .createNode(sValue, True)
+					If WithDataValue Then
+						If iDims = 1 Then vFlatItem2 = FlatTree(i)(j + 1) Else vFlatItem2 = FlatTree(i, j + 1)
+						oNewNode.DataValue = vFlatItem2
+					End If
+					oNode.appendChild(oNewNode)
+					Set oNode = oNewNode
+				Else
+					&apos;	Position next current node on last child of actual current node
+					lChildCount = oNode.getChildCount()
+					If lChildCount &gt; 0 Then Set oNode = oNode.getChildAt(lChildCount - 1) Else Set oNode = Nothing
+				End If
+			Next j
+		Next i
+		bSubTree = True
+	End With
+
+Finally:
+	AddSubTree = bSubTree
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+CatchType:
+	ScriptForge.SF_Exception.RaiseFatal(CONTROLTYPEERROR, _Name, _DialogName, _ControlType, &quot;AddSubTree&quot;)
+	GoTo Finally
+End Function	&apos;	SFDialogs.SF_DialogControl.AddSubTree
+
+REM -----------------------------------------------------------------------------
+Public Function CreateRoot(Optional ByVal DisplayValue As Variant _
+								, Optional ByRef DataValue As Variant _
+								) As Variant
+&apos;&apos;&apos;	Return a new root node of the tree control. The new tree root is inserted below pre-existing root nodes
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		DisplayValue: the text appearing in the control box
+&apos;&apos;&apos;		DataValue: any value associated with the root node. Default = Empty
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The new root node as a UNO object of type com.sun.star.awt.tree.XMutableTreeNode
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Dim myTree As Object, myNode As Object
+&apos;&apos;&apos;			Set myTree = myDialog.Controls(&quot;myTreeControl&quot;)
+&apos;&apos;&apos;			Set myNode = myTree.CreateRoot(&quot;Tree starts here ...&quot;)
+
+Dim oRoot As Object				&apos;	Return value
+Const cstThisSub = &quot;SFDialogs.DialogControl.CreateRoot&quot;
+Const cstSubArgs = &quot;DisplayValue, [DataValue=Empty]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	Set oRoot = Nothing
+
+Check:
+	If IsMissing(DataValue) Then DataValue = Empty
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If _ControlType &lt;&gt; CTLTREECONTROL Then GoTo CatchType
+		If Not ScriptForge.SF_Utils._Validate(DisplayValue, &quot;DisplayValue&quot;, V_STRING) Then GoTo Catch
+	End If
+
+Try:
+	With _TreeDataModel
+		Set oRoot = .createNode(DisplayValue, True)
+		oRoot.DataValue = DataValue
+		.setRoot(oRoot)
+		&apos;	To be visible, a root must have contained at least 1 child. Create a fictive one and erase it.
+		&apos;	This behaviour does not seem related to the RootDisplayed property ??
+		oRoot.appendChild(.createNode(&quot;Something&quot;, False))
+		oRoot.removeChildByIndex(0)
+	End With
+
+Finally:
+	Set CreateRoot = oRoot
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+CatchType:
+	ScriptForge.SF_Exception.RaiseFatal(CONTROLTYPEERROR, _Name, _DialogName, _ControlType, &quot;CreateRoot&quot;)
+	GoTo Finally
+End Function	&apos;	SFDialogs.SF_DialogControl.CreateRoot
+
+REM -----------------------------------------------------------------------------
+Public Function FindNode(Optional ByVal DisplayValue As String _
+							, Optional ByRef DataValue As Variant _
+							, Optional ByVal CaseSensitive As Boolean _
+							) As Object
+&apos;&apos;&apos;	Traverses the tree and find recursively, starting from the root, a node meeting some criteria
+&apos;&apos;&apos;	Either (1 match is enough):
+&apos;&apos;&apos;		having its DisplayValue like DisplayValue
+&apos;&apos;&apos;		having its DataValue = DataValue
+&apos;&apos;&apos;	Comparisons may be or not case-sensitive
+&apos;&apos;&apos;	The first matching occurrence is returned
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		DisplayValue: the pattern to be matched
+&apos;&apos;&apos;		DataValue: a string, a numeric value or a date or Empty (if not applicable)
+&apos;&apos;&apos;		CaseSensitive: applicable on both criteria. Default = False
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The found node of type com.sun.star.awt.tree.XMutableTreeNode or Nothing if not found
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Dim myTree As Object, myNode As Object
+&apos;&apos;&apos;			Set myTree = myDialog.Controls(&quot;myTreeControl&quot;)
+&apos;&apos;&apos;			Set myNode = myTree.FindNode(&quot;*Sophie*&quot;, CaseSensitive := True)
+
+
+Dim oNode As Object				&apos;	Return value
+Const cstThisSub = &quot;SFDialogs.DialogControl.FindNode&quot;
+Const cstSubArgs = &quot;[DisplayValue=&quot;&quot;&quot;&quot;], [DataValue=Empty], [CaseSensitive=False]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	Set oNode = Nothing
+
+Check:
+	If IsMissing(DisplayValue) Or IsEmpty(DisplayValue) Then DisplayValue = &quot;&quot;
+	If IsMissing(DataValue) Then DataValue = Empty
+	If IsMissing(CaseSensitive) Or IsEmpty(CaseSensitive) Then CaseSensitive = False
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If _ControlType &lt;&gt; CTLTREECONTROL Then GoTo CatchType
+		If Not ScriptForge.SF_Utils._Validate(DisplayValue, &quot;DisplayValue&quot;, V_STRING) Then GoTo Catch
+		If Not ScriptForge.SF_Utils._Validate(CaseSensitive, &quot;CaseSensitive&quot;, ScriptForge.V_BOOLEAN) Then GoTo Catch
+	End If
+
+Try:
+	Set oNode = _FindNode(_TreeDataModel.getRoot(), DisplayValue, DataValue, CaseSensitive)
+
+Finally:
+	Set FindNode = oNode
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+CatchType:
+	ScriptForge.SF_Exception.RaiseFatal(CONTROLTYPEERROR, _Name, _DialogName, _ControlType, &quot;FindNode&quot;)
+	GoTo Finally
+End Function	&apos;	SFDialogs.SF_DialogControl.FindNode
 
 REM -----------------------------------------------------------------------------
 Public Function GetProperty(Optional ByVal PropertyName As Variant) As Variant
@@ -380,7 +837,11 @@ Public Function Methods() As Variant
 &apos;&apos;&apos;	Return the list of public methods of the Model service as an array
 
 	Methods = Array( _
-					&quot;SetFocus&quot; _
+					&quot;AddSubNode&quot; _
+					, &quot;AddSubTree&quot; _
+					, &quot;CreateRoot&quot; _
+					, &quot;FindNode&quot; _
+					, &quot;SetFocus&quot; _
 					, &quot;WriteLine&quot; _
 					)
 
@@ -394,6 +855,7 @@ Public Function Properties() As Variant
 					&quot;Cancel&quot; _
 					, &quot;Caption&quot; _
 					, &quot;ControlType&quot; _
+					, &quot;CurrentNode&quot; _
 					, &quot;Default&quot; _
 					, &quot;Enabled&quot; _
 					, &quot;Format&quot; _
@@ -402,9 +864,26 @@ Public Function Properties() As Variant
 					, &quot;Locked&quot; _
 					, &quot;MultiSelect&quot; _
 					, &quot;Name&quot; _
+					, &quot;OnActionPerformed&quot; _
+					, &quot;OnAdjustmentValueChanged&quot; _
+					, &quot;OnFocusGained&quot; _
+					, &quot;OnFocusLost&quot; _
+					, &quot;OnItemStateChanged&quot; _
+					, &quot;OnKeyPressed&quot; _
+					, &quot;OnKeyReleased&quot; _
+					, &quot;OnMouseDragged&quot; _
+					, &quot;OnMouseEntered&quot; _
+					, &quot;OnMouseExited&quot; _
+					, &quot;OnMouseMoved&quot; _
+					, &quot;OnMousePressed&quot; _
+					, &quot;OnMouseReleased&quot; _
+					, &quot;OnNodeExpanded&quot; _
+					, &quot;OnNodeSelected&quot; _
+					, &quot;OnTextChanged&quot; _
 					, &quot;Page&quot; _
 					, &quot;Parent&quot; _
 					, &quot;Picture&quot; _
+					, &quot;RootNode&quot; _
 					, &quot;RowSource&quot; _
 					, &quot;Text&quot; _
 					, &quot;TipText&quot; _
@@ -413,6 +892,7 @@ Public Function Properties() As Variant
 					, &quot;Visible&quot; _
 					, &quot;XControlModel&quot; _
 					, &quot;XControlView&quot; _
+					, &quot;XTreeDataModel&quot; _
 					)
 
 End Function	&apos;	SFDialogs.SF_DialogControl.Properties
@@ -556,6 +1036,67 @@ End Function	&apos;	SFControls.SF_DialogControl.WriteLine
 REM =========================================================== PRIVATE FUNCTIONS
 
 REM -----------------------------------------------------------------------------
+Private Function _FindNode(ByRef poNode As Object _
+							, ByVal psDisplayValue As String _
+							, ByRef pvDataValue As Variant _
+							, ByVal pbCaseSensitive As Boolean _
+							) As Object
+&apos;&apos;&apos;	Traverses the tree and find recursively, starting from the root, a node meeting some criteria
+&apos;&apos;&apos;	Either (1 match is enough):
+&apos;&apos;&apos;		having its DisplayValue like psDisplayValue
+&apos;&apos;&apos;		having its DataValue = pvDataValue
+&apos;&apos;&apos;	Comparisons may be or not case-sensitive
+&apos;&apos;&apos;	The first matching occurrence is returned
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		poNode: the current node, the root at 1st call
+&apos;&apos;&apos;		psDisplayValue: the pattern to be matched
+&apos;&apos;&apos;		pvDataValue: a string, a numeric value or a date or Empty (if not applicable)
+&apos;&apos;&apos;		pbCaseSensitive: applicable on both criteria
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The found node of type com.sun.star.awt.tree.XMutableTreeNode
+
+Dim oChild As Object			&apos;	Child node com.sun.star.awt.tree.XMutableTreeNode
+Dim oFind As Object				&apos;	Found node com.sun.star.awt.tree.XMutableTreeNode
+Dim lChildCount As Long			&apos;	Number of children of a node
+Dim bFound As Boolean			&apos;	True when node found
+Dim i As Long
+
+	Set _FindNode = Nothing
+	On Local Error GoTo Finally		&apos;	Better not found than raise an error
+
+Check:
+	&apos;	Does the actual node match the criteria ?
+	bFound = False
+	If Len(psDisplayValue) &gt; 0 Then
+		bFound = ScriptForge.SF_String.IsLike(poNode.DisplayValue, psDisplayValue, pbCaseSensitive)
+	End If
+	If Not bFound And Not IsEmpty(poNode.DataValue) Then
+		If Not IsEmpty(pvdataValue) Then bFound = ( ScriptForge.SF_Array._ValCompare(poNode.DataValue, pvDataB-Value, pbCaseSensitive) = 0 )
+	End If
+	If bFound Then
+		Set _FindNode = poNode
+		Exit Function
+	End If
+
+Try:
+	&apos;	Explore sub-branches
+	lChildCount = poNode.getChildCount
+	If lChildCount &gt; 0 Then
+		For i = 0 To lChildCount - 1
+			Set oChild = poNode.getChildAt(i)
+			Set oFind = _FindNode(oChild, psDisplayValue, pvDataValue, pbCaseSensitive)		&apos;	Recursive call
+			If Not IsNull(oFind) Then
+				Set _FindNode = oFind
+				Exit For
+			End If
+		Next i
+	End If
+
+Finally:
+	Exit Function
+End Function	&apos;	SFDialogs.SF_DialogControl._FindNode
+
+REM -----------------------------------------------------------------------------
 Private Function _FormatsList() As Variant
 &apos;&apos;&apos;	Return the allowed format entries as a zero-based array for Date and Time control types
 
@@ -593,13 +1134,59 @@ Dim vFormats() As Variant		&apos;	Return value
 End Function	&apos;	SFDialogs.SF_DialogControl._FormatsList
 
 REM -----------------------------------------------------------------------------
+Public Function _GetEventName(ByVal psProperty As String) As String
+&apos;&apos;&apos;	Return the LO internal event name derived from the SF property name
+&apos;&apos;&apos;	The SF property name is not case sensitive, while the LO name is case-sensitive
+&apos;	Corrects the typo on ErrorOccur(r?)ed, if necessary
+
+Dim vProperties As Variant			&apos;	Array of class properties
+Dim sProperty As String				&apos;	Correctly cased property name
+
+	vProperties = Properties()
+	sProperty = vProperties(ScriptForge.SF_Array.IndexOf(vProperties, psProperty, SortOrder := &quot;ASC&quot;))
+
+	_GetEventName = LCase(Mid(sProperty, 3, 1)) &amp; Right(sProperty, Len(sProperty) - 3)
+	
+End Function	&apos;	SFDialogs.SF_DialogControl._GetEventName
+
+REM -----------------------------------------------------------------------------
+Private Function _GetListener(ByVal psEventName As String) As String
+&apos;&apos;&apos;	Getting/Setting macros triggered by events requires a Listener-EventName pair
+&apos;&apos;&apos;	Return the X...Listener corresponding with the event name in argument
+
+	Select Case UCase(psEventName)
+		Case UCase(&quot;OnActionPerformed&quot;)
+			_GetListener = &quot;XActionListener&quot;
+		Case UCase(&quot;OnAdjustmentValueChanged&quot;)
+			_GetListener = &quot;XAdjustmentListener&quot;
+		Case UCase(&quot;OnFocusGained&quot;), UCase(&quot;OnFocusLost&quot;)
+			_GetListener = &quot;XFocusListener&quot;
+		Case UCase(&quot;OnItemStateChanged&quot;)
+			_GetListener = &quot;XItemListener&quot;
+		Case UCase(&quot;OnKeyPressed&quot;), UCase(&quot;OnKeyReleased&quot;)
+			_GetListener = &quot;XKeyListener&quot;
+		Case UCase(&quot;OnMouseDragged&quot;), UCase(&quot;OnMouseMoved&quot;)
+			_GetListener = &quot;XMouseMotionListener&quot;
+		Case UCase(&quot;OnMouseEntered&quot;), UCase(&quot;OnMouseExited&quot;), UCase(&quot;OnMousePressed&quot;), UCase(&quot;OnMouseReleased&quot;)
+			_GetListener = &quot;XMouseListener&quot;
+		Case UCase(&quot;OnTextChanged&quot;)
+			_GetListener = &quot;XTextListener&quot;
+		Case Else
+			_GetListener = &quot;&quot;
+	End Select
+	
+End Function	&apos;	SFDialogs.SF_DialogControl._GetListener
+
+REM -----------------------------------------------------------------------------
 Public Sub _Initialize()
 &apos;&apos;&apos;	Complete the object creation process:
 &apos;&apos;&apos;		- Initialization of private members
-&apos;&apos;&apos;		- Collection of main attributes
+&apos;&apos;&apos;		- Collection of specific attributes
+&apos;&apos;&apos;		- synchronization with parent dialog instance
 
-Dim vServiceName As Variant		&apos;	Splitted service name
+Dim vServiceName As Variant		&apos;	Split service name
 Dim sType As String				&apos;	Last component of service name
+
 Try:
 	_ImplementationName = _ControlModel.getImplementationName()
 
@@ -607,12 +1194,20 @@ Try:
 	vServiceName = Split(_ControlModel.getServiceName(), &quot;.&quot;)
 	sType = vServiceName(UBound(vServiceName))
 	Select Case sType
-		Case &quot;UnoControlSpinButtonModel&quot;, &quot;TreeControlModel&quot;
-			_ControlType = &quot;&quot;	&apos;	Not supported
-		Case &quot;Edit&quot;				:	_ControlType = CTLTEXTFIELD
-		Case Else				:	_ControlType = sType
+		Case &quot;UnoControlSpinButtonModel&quot;
+			_ControlType = &quot;&quot;	&apos; Not supported
+		Case &quot;Edit&quot;					:	_ControlType = CTLTEXTFIELD
+		Case &quot;TreeControlModel&quot;
+			&apos;	Initialize the data model
+			_ControlType = CTLTREECONTROL
+			Set _ControlModel.DataModel = ScriptForge.SF_Utils._GetUNOService(&quot;TreeDataModel&quot;)
+			_TreeDataModel = _ControlModel.DataModel
+		Case Else					:	_ControlType = sType
 	End Select
-	
+
+	&apos;	Store  the SF_DialogControl object in the parent cache
+	Set _Parent._ControlCache(_IndexOfNames) = [Me]
+
 Finally:
 	Exit Sub
 End Sub			&apos;	SFDialogs.SF_DialogControl._Initialize
@@ -630,12 +1225,14 @@ Private Function _PropertyGet(Optional ByVal psProperty As String _
 
 Dim vGet As Variant							&apos;	Return value
 Static oSession As Object					&apos;	Alias of SF_Session
-Dim vSelection As Variant					&apos;	Alias of Model.SelectedItems
+Dim vSelection As Variant					&apos;	Alias of Model.SelectedItems or Model.Selection
 Dim vList As Variant						&apos;	Alias of Model.StringItemList
 Dim lIndex As Long							&apos;	Index in StringItemList
 Dim sItem As String							&apos;	A single item
 Dim vDate As Variant						&apos;	com.sun.star.util.Date or com.sun.star.util.Time
 Dim vValues As Variant						&apos;	Array of listbox values
+Dim oControlEvents As Object				&apos;	com.sun.star.container.XNameContainer
+Dim sEventName As String					&apos;	Internal event name
 Dim i As Long
 Dim cstThisSub As String
 Const cstSubArgs = &quot;&quot;
@@ -650,30 +1247,46 @@ Const cstSubArgs = &quot;&quot;
 	_PropertyGet = pvDefault
 
 	If IsNull(oSession) Then Set oSession = ScriptForge.SF_Services.CreateScriptService(&quot;Session&quot;)
-	Select Case psProperty
-		Case &quot;Cancel&quot;
+	Select Case UCase(psProperty)
+		Case UCase(&quot;Cancel&quot;)
 			Select Case _ControlType
 				Case CTLBUTTON
 					If oSession.HasUNOProperty(_ControlModel, &quot;PushButtonType&quot;) Then _PropertyGet = ( _ControlModel.PushButtonType = com.sun.star.awt.PushButtonType.CANCEL )
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;Caption&quot;
+		Case UCase(&quot;Caption&quot;)
 			Select Case _ControlType
 				Case CTLBUTTON, CTLCHECKBOX, CTLFIXEDLINE, CTLFIXEDTEXT, CTLGROUPBOX, CTLRADIOBUTTON
 					If oSession.HasUNOProperty(_ControlModel, &quot;Label&quot;) Then _PropertyGet = _ControlModel.Label
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;ControlType&quot;
+		Case UCase(&quot;ControlType&quot;)
 			_PropertyGet = _ControlType
-		Case &quot;Default&quot;
+		Case UCase(&quot;CurrentNode&quot;)
+			Select Case _ControlType
+				Case CTLTREECONTROL
+					If oSession.HasUNOMethod(_ControlView, &quot;getSelection&quot;) Then
+						_PropertyGet = Empty
+						If _ControlModel.SelectionType &lt;&gt; com.sun.star.view.SelectionType.NONE Then
+							vSelection = _ControlView.getSelection()
+							If IsArray(vSelection) Then
+								If UBound(vSelection) &gt;= 0 Then Set _PropertyGet = vSelection(0)
+							Else
+								Set _PropertyGet = vSelection
+							End If
+						End If
+					End If
+				Case Else	:	GoTo CatchType
+			End Select
+		Case UCase(&quot;Default&quot;)
 			Select Case _ControlType
 				Case CTLBUTTON
 					If oSession.HasUNOProperty(_ControlModel, &quot;DefaultButton&quot;) Then _PropertyGet = _ControlModel.DefaultButton
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;Enabled&quot;
+		Case UCase(&quot;Enabled&quot;)
 			If oSession.HasUnoProperty(_ControlModel, &quot;Enabled&quot;) Then _PropertyGet = _ControlModel.Enabled
-		Case &quot;Format&quot;
+		Case UCase(&quot;Format&quot;)
 			Select Case _ControlType
 				Case CTLDATEFIELD
 					If oSession.HasUNOProperty(_ControlModel, &quot;DateFormat&quot;) Then _PropertyGet = _FormatsList()(_ControlModel.DateFormat)
@@ -685,13 +1298,13 @@ Const cstSubArgs = &quot;&quot;
 					End If
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;ListCount&quot;
+		Case UCase(&quot;ListCount&quot;)
 			Select Case _ControlType
 				Case CTLCOMBOBOX, CTLLISTBOX
 					If oSession.HasUNOProperty(_ControlModel, &quot;StringItemList&quot;) Then _PropertyGet = UBound(_ControlModel.StringItemList) + 1
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;ListIndex&quot;
+		Case UCase(&quot;ListIndex&quot;)
 			Select Case _ControlType
 				Case CTLCOMBOBOX
 					_PropertyGet = -1	&apos;	Not found, multiselection
@@ -706,14 +1319,14 @@ Const cstSubArgs = &quot;&quot;
 					End If
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;Locked&quot;
+		Case UCase(&quot;Locked&quot;)
 			Select Case _ControlType
 				Case CTLCOMBOBOX, CTLCURRENCYFIELD, CTLDATEFIELD, CTLFILECONTROL, CTLFORMATTEDFIELD, CTLLISTBOX _
 						, CTLNUMERICFIELD, CTLPATTERNFIELD, CTLTEXTFIELD, CTLTIMEFIELD
 					If oSession.HasUnoProperty(_ControlModel, &quot;ReadOnly&quot;) Then _PropertyGet = _ControlModel.ReadOnly
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;MultiSelect&quot;
+		Case UCase(&quot;MultiSelect&quot;)
 			Select Case _ControlType
 				Case CTLLISTBOX
 					If oSession.HasUnoProperty(_ControlModel, &quot;MultiSelection&quot;) Then
@@ -723,19 +1336,48 @@ Const cstSubArgs = &quot;&quot;
 					End If
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;Name&quot;
+		Case UCase(&quot;Name&quot;)
 			_PropertyGet = _Name
-		Case &quot;Page&quot;
+		Case UCase(&quot;OnActionPerformed&quot;), UCase(&quot;OnAdjustmentValueChanged&quot;), UCase(&quot;OnFocusGained&quot;), UCase(&quot;OnFocusLost&quot;) _
+				, UCase(&quot;OnItemStateChanged&quot;), UCase(&quot;OnKeyPressed&quot;), UCase(&quot;OnKeyReleased&quot;) _
+				, UCase(&quot;OnMouseDragged&quot;), UCase(&quot;OnMouseEntered&quot;), UCase(&quot;OnMouseExited&quot;), UCase(&quot;OnMouseMoved&quot;) _
+				, UCase(&quot;OnMousePressed&quot;), UCase(&quot;OnMouseReleased&quot;), UCase(&quot;OnTextChanged&quot;)
+			Set oControlEvents = _ControlModel.getEvents()
+			sEventName = &quot;com.sun.star.awt.&quot; &amp; _GetListener(psProperty) &amp; &quot;::&quot; &amp; _GetEventName(psProperty)
+			If oControlEvents.hasByName(sEventName) Then
+				_PropertyGet = oControlEvents.getByName(sEventName).ScriptCode
+			Else
+				_PropertyGet = &quot;&quot;
+			End If
+		Case UCase(&quot;OnNodeExpanded&quot;)
+			Select Case _ControlType
+				Case CTLTREECONTROL
+					_PropertyGet = _OnNodeExpanded
+				Case Else	:	GoTo CatchType
+			End Select
+		Case UCase(&quot;OnNodeSelected&quot;)
+			Select Case _ControlType
+				Case CTLTREECONTROL
+					_PropertyGet = _OnNodeSelected
+				Case Else	:	GoTo CatchType
+			End Select
+		Case UCase(&quot;Page&quot;)
 			If oSession.HasUnoProperty(_ControlModel, &quot;Step&quot;) Then _PropertyGet = _ControlModel.Step
-		Case &quot;Parent&quot;
+		Case UCase(&quot;Parent&quot;)
 			Set _PropertyGet = [_Parent]
-		Case &quot;Picture&quot;
+		Case UCase(&quot;Picture&quot;)
 			Select Case _ControlType
 				Case CTLBUTTON, CTLIMAGECONTROL
 					If oSession.HasUnoProperty(_ControlModel, &quot;ImageURL&quot;) Then _PropertyGet = ScriptForge.SF_FileSystem._ConvertFromUrl(_ControlModel.ImageURL)
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;RowSource&quot;
+		Case UCase(&quot;RootNode&quot;)
+			Select Case _ControlType
+				Case CTLTREECONTROL
+					_PropertyGet = _TreeDataModel.getRoot()
+				Case Else	:	GoTo CatchType
+			End Select
+		Case UCase(&quot;RowSource&quot;)
 			Select Case _ControlType
 				Case CTLCOMBOBOX, CTLLISTBOX
 					If oSession.HasUnoProperty(_ControlModel, &quot;StringItemList&quot;) Then
@@ -743,21 +1385,21 @@ Const cstSubArgs = &quot;&quot;
 					End If
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;Text&quot;
+		Case UCase(&quot;Text&quot;)
 			Select Case _ControlType
 				Case CTLCOMBOBOX, CTLFILECONTROL, CTLFORMATTEDFIELD, CTLPATTERNFIELD, CTLTEXTFIELD
 					If oSession.HasUnoProperty(_ControlModel, &quot;Text&quot;) Then _PropertyGet = _ControlModel.Text
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;TipText&quot;
+		Case UCase(&quot;TipText&quot;)
 			If oSession.HasUnoProperty(_ControlModel, &quot;HelpText&quot;) Then _PropertyGet = _ControlModel.HelpText
-		Case &quot;TripleState&quot;
+		Case UCase(&quot;TripleState&quot;)
 			Select Case _ControlType
 				Case CTLCHECKBOX
 					If oSession.HasUnoProperty(_ControlModel, &quot;TriState&quot;) Then _PropertyGet = _ControlModel.TriState
 				Case Else	:	GoTo CatchType
 			End Select
-		Case &quot;Value&quot;	&apos;	Default values are set here by control type, not in the 2nd argument
+		Case UCase(&quot;Value&quot;)	&apos;	Default values are set here by control type, not in the 2nd argument
 			vGet = pvDefault
 			Select Case _ControlType
 				Case CTLBUTTON		&apos;Boolean, toggle buttons only
@@ -822,12 +1464,14 @@ Const cstSubArgs = &quot;&quot;
 				Case Else	:	GoTo CatchType
 			End Select
 			_PropertyGet = vGet
-		Case &quot;Visible&quot;
+		Case UCase(&quot;Visible&quot;)
 			If oSession.HasUnoMethod(_ControlView, &quot;isVisible&quot;) Then _PropertyGet = CBool(_ControlView.isVisible())
-		Case &quot;XControlModel&quot;
+		Case UCase(&quot;XControlModel&quot;)
 			Set _PropertyGet = _ControlModel
-		Case &quot;XControlView&quot;
+		Case UCase(&quot;XControlView&quot;)
 			Set _PropertyGet = _ControlView
+		Case UCase(&quot;XTreeDataModel&quot;)
+			Set _PropertyGet = _TreeDataModel
 		Case Else
 			_PropertyGet = Null
 	End Select
@@ -859,6 +1503,7 @@ Dim vSelection As Variant					&apos;	Alias of Model.SelectedItems
 Dim vList As Variant						&apos;	Alias of Model.StringItemList
 Dim lIndex As Long							&apos;	Index in StringItemList
 Dim sItem As String							&apos;	A single item
+Dim vCtlTypes As Variant					&apos;	Array of allowed control types
 Dim i As Long
 Dim cstThisSub As String
 Const cstSubArgs = &quot;Value&quot;
@@ -888,6 +1533,23 @@ Const cstSubArgs = &quot;Value&quot;
 				Case CTLBUTTON, CTLCHECKBOX, CTLFIXEDLINE, CTLFIXEDTEXT, CTLGROUPBOX, CTLRADIOBUTTON
 					If Not ScriptForge.SF_Utils._Validate(pvValue, &quot;Caption&quot;, V_STRING) Then GoTo Finally
 					If oSession.HasUNOProperty(_ControlModel, &quot;Label&quot;) Then _ControlModel.Label = pvValue
+				Case Else	:	GoTo CatchType
+			End Select
+		Case UCase(&quot;CurrentNode&quot;)
+			Select Case _ControlType
+				Case CTLTREECONTROL
+					If Not ScriptForge.SF_Utils._Validate(pvValue, &quot;Selection&quot;, ScriptForge.V_OBJECT) Then GoTo Finally
+					If oSession.UnoObjectType(pvValue) &lt;&gt; &quot;toolkit.MutableTreeNode&quot; Then GoTo CatchType
+					With _ControlView
+						.clearSelection()
+						If Not IsNull(pvValue) Then
+							.addSelection(pvValue)
+							&apos;	Suspending temporarily the expansion listener avoids conflicts
+							If Len(_OnNodeExpanded) &gt; 0 Then _ControlView.removeTreeExpansionListener(_ExpandListener)
+							.makeNodeVisible(pvValue)	&apos; Expand parent nodes and put node in the display area
+							If Len(_OnNodeExpanded) &gt; 0 Then _ControlView.addTreeExpansionListener(_ExpandListener)
+						End If
+					End With
 				Case Else	:	GoTo CatchType
 			End Select
 		Case UCase(&quot;Default&quot;)
@@ -943,6 +1605,42 @@ Const cstSubArgs = &quot;Value&quot;
 							lIndex = _ControlModel.SelectedItems(0)
 							_ControlModel.SelectedItems = Array(lIndex)
 						End If
+					End If
+				Case Else	:	GoTo CatchType
+			End Select
+		Case UCase(&quot;OnNodeExpanded&quot;)
+			Select Case _ControlType
+				Case CTLTREECONTROL
+					If Not ScriptForge.SF_Utils._Validate(pvValue, psProperty, V_STRING) Then GoTo Finally
+					&apos;	If the listener was already set, then stop it
+					If Len(_OnNodeExpanded) &gt; 0 Then
+						_ControlView.removeTreeExpansionListener(_ExpandListener)
+						Set _ExpandListener = Nothing
+						_OnNodeExpanded = &quot;&quot;
+					End If
+					&apos;	Setup a new fresh listener
+					If Len(pvValue) &gt; 0 Then
+						Set _ExpandListener = CreateUnoListener(&quot;_SFEXP_&quot;, &quot;com.sun.star.awt.tree.XTreeExpansionListener&quot;)
+						_ControlView.addTreeExpansionListener(_ExpandListener)
+						_OnNodeExpanded = pvValue
+					End If
+				Case Else	:	GoTo CatchType
+			End Select
+		Case UCase(&quot;OnNodeSelected&quot;)
+			Select Case _ControlType
+				Case CTLTREECONTROL
+					If Not ScriptForge.SF_Utils._Validate(pvValue, psProperty, V_STRING) Then GoTo Finally
+					&apos;	If the listener was already set, then stop it
+					If Len(_OnNodeSelected) &gt; 0 Then
+						_ControlView.removeSelectionChangeListener(_SelectListener)
+						Set _SelectListener = Nothing
+						_OnNodeSelected = &quot;&quot;
+					End If
+					&apos;	Setup a new fresh listener
+					If Len(pvValue) &gt; 0 Then
+						Set _SelectListener = CreateUnoListener(&quot;_SFSEL_&quot;, &quot;com.sun.star.view.XSelectionChangeListener&quot;)
+						_ControlView.addSelectionChangeListener(_SelectListener)
+						_OnNodeSelected = pvValue
 					End If
 				Case Else	:	GoTo CatchType
 			End Select

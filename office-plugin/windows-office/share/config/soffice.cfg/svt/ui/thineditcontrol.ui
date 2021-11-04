@@ -5,7 +5,7 @@
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">sc/res/date.png</property>
+    <property name="icon_name">x-office-calendar</property>
     <property name="icon_size">2</property>
   </object>
   <object class="GtkBox" id="EditControl">
@@ -62,13 +62,16 @@
             <property name="no_show_all">True</property>
             <property name="halign">end</property>
             <property name="image">image7</property>
-            <property name="margin_left">1</property>
+            <property name="margin-start">1</property>
             <property name="always_show_image">True</property>
             <child internal-child="accessible">
               <object class="AtkObject" id="button-atkobject">
                 <property name="AtkObject::accessible-name" translatable="yes" context="thineditcontrol|button">Pick Date</property>
               </object>
             </child>
+            <style>
+              <class name="small-button"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">1</property>

@@ -60,13 +60,13 @@
             </child>
             <child>
               <object class="GtkButton" id="ok">
-                <property name="label">gtk-ok</property>
+                <property name="label" translatable="yes" context="stock">_OK</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -76,11 +76,11 @@
             </child>
             <child>
               <object class="GtkButton" id="cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label" translatable="yes" context="stock">_Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
                 <child internal-child="accessible">
                   <object class="AtkObject" id="cancel-atkobject">
                     <property name="AtkObject::accessible-description" translatable="yes" context="hyperlinkdialog|extended_tip|cancel">Closes the dialog without saving.</property>
@@ -95,11 +95,11 @@
             </child>
             <child>
               <object class="GtkButton" id="help">
-                <property name="label">gtk-help</property>
+                <property name="label" translatable="yes" context="stock">_Help</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -180,7 +180,9 @@
                   <object class="GtkLabel" id="RID_SVXSTR_HYPERDLG_HLINETTP">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes" context="hyperlinkdialog|RID_SVXSTR_HYPERDLG_HLINETTP">Internet</property>
+                    <property name="label" translatable="yes" context="hyperlinkdialog|RID_SVXSTR_HYPERDLG_HLINETTP">_Internet</property>
+                    <property name="use_underline">True</property>
+                    <property name="mnemonic_widget">internet</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -253,7 +255,9 @@
                   <object class="GtkLabel" id="RID_SVXSTR_HYPERDLG_HLMAILTP">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes" context="hyperlinkdialog|RID_SVXSTR_HYPERDLG_HLMAILTP">Mail</property>
+                    <property name="label" translatable="yes" context="hyperlinkdialog|RID_SVXSTR_HYPERDLG_HLMAILTP">_Mail</property>
+                    <property name="use_underline">True</property>
+                    <property name="mnemonic_widget">mail</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -327,7 +331,9 @@
                   <object class="GtkLabel" id="RID_SVXSTR_HYPERDLG_HLDOCTP">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes" context="hyperlinkdialog|RID_SVXSTR_HYPERDLG_HLDOCTP">Document</property>
+                    <property name="label" translatable="yes" context="hyperlinkdialog|RID_SVXSTR_HYPERDLG_HLDOCTP">_Document</property>
+                    <property name="use_underline">True</property>
+                    <property name="mnemonic_widget">document</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -401,7 +407,9 @@
                   <object class="GtkLabel" id="RID_SVXSTR_HYPERDLG_HLDOCNTP">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes" context="hyperlinkdialog|RID_SVXSTR_HYPERDLG_HLDOCNTP">New Document</property>
+                    <property name="label" translatable="yes" context="hyperlinkdialog|RID_SVXSTR_HYPERDLG_HLDOCNTP">_New Document</property>
+                    <property name="use_underline">True</property>
+                    <property name="mnemonic_widget">newdocument</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

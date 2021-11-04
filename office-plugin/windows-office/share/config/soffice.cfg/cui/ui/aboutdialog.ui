@@ -5,7 +5,7 @@
   <object class="GtkImage" id="imCopy">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="stock">gtk-copy</property>
+    <property name="icon-name">edit-copy</property>
   </object>
   <object class="GtkDialog" id="AboutDialog">
     <property name="can-focus">False</property>
@@ -28,12 +28,11 @@
             <property name="layout-style">end</property>
             <child>
               <object class="GtkButton" id="btnClose">
-                <property name="label">gtk-close</property>
+                <property name="label" translatable="yes" context="stock">_Close</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="use-underline">True</property>
-                <property name="use-stock">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>

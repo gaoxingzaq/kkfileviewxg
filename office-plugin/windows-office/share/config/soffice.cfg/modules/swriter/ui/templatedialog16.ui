@@ -5,7 +5,7 @@
   <object class="GtkDialog" id="TemplateDialog16">
     <property name="can_focus">False</property>
     <property name="border_width">6</property>
-    <property name="title" translatable="yes" context="templatedialog16|TemplateDialog16">Numbering Style</property>
+    <property name="title" translatable="yes" context="templatedialog16|TemplateDialog16">List Style</property>
     <property name="modal">True</property>
     <property name="default_width">0</property>
     <property name="default_height">0</property>
@@ -24,11 +24,11 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="help">
-                <property name="label">gtk-help</property>
+                <property name="label" translatable="yes" context="stock">_Help</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -39,11 +39,11 @@
             </child>
             <child>
               <object class="GtkButton" id="reset">
-                <property name="label">gtk-revert-to-saved</property>
+                <property name="label" translatable="yes" context="stock">_Reset</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -53,12 +53,12 @@
             </child>
             <child>
               <object class="GtkButton" id="apply">
-                <property name="label">gtk-apply</property>
+                <property name="label" translatable="yes" context="stock">_Apply</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -82,13 +82,13 @@
             </child>
             <child>
               <object class="GtkButton" id="ok">
-                <property name="label">gtk-ok</property>
+                <property name="label" translatable="yes" context="stock">_OK</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -98,11 +98,11 @@
             </child>
             <child>
               <object class="GtkButton" id="cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label" translatable="yes" context="stock">_Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -165,6 +165,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="templatedialog16|organizer">Organizer</property>
+                <property name="tooltip_text" translatable="yes" context="templatedialog16|organizer">Name and hide user-defined styles</property>
               </object>
               <packing>
                 <property name="tab_fill">False</property>
@@ -211,7 +212,8 @@
               <object class="GtkLabel" id="bullets">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes" context="templatedialog16|bullets">Bullets</property>
+                <property name="label" translatable="yes" context="templatedialog16|bullets">Unordered</property>
+                <property name="tooltip_text" translatable="yes" context="templatedialog16|bullets">Choose a predefined bullet type</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -259,7 +261,8 @@
               <object class="GtkLabel" id="numbering">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes" context="templatedialog16|numbering">Numbering Style</property>
+                <property name="label" translatable="yes" context="templatedialog16|numbering">Ordered</property>
+                <property name="tooltip_text" translatable="yes" context="templatedialog16|numbering">Choose a predefined ordered list</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -308,6 +311,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="templatedialog16|outline">Outline</property>
+                <property name="tooltip_text" translatable="yes" context="templatedialog16|outline">Choose a predefined outline format</property>
               </object>
               <packing>
                 <property name="position">3</property>
@@ -356,6 +360,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="templatedialog16|graphics">Image</property>
+                <property name="tooltip_text" translatable="yes" context="templatedialog16|graphics">Choose a predefined graphic bullet symbol</property>
               </object>
               <packing>
                 <property name="position">4</property>
@@ -404,6 +409,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="templatedialog16|position">Position</property>
+                <property name="tooltip_text" translatable="yes" context="templatedialog16|position">Modify indent, spacing, and alignment for list numbers or symbols</property>
               </object>
               <packing>
                 <property name="position">5</property>
@@ -452,6 +458,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes" context="templatedialog16|customize">Customize</property>
+                <property name="tooltip_text" translatable="yes" context="templatedialog16|customize">Design your own list or outline format</property>
               </object>
               <packing>
                 <property name="position">6</property>

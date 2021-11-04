@@ -36,6 +36,7 @@ public enum FileType {
     private static final String[] OFD_TYPES = {"ofd"};
 	private static final String[] SVG_TYPES = {"svg"};
 	private static final String[] EML_TYPES = {"eml"};
+    private static final String[] CAD_TYPES = {"dwg"};
     private static final String[] SSIM_TEXT_TYPES = ConfigConstants.getSimText();
     private static final String[] CODES = {"java", "c", "php", "go", "python", "py", "js", "html", "ftl", "css", "lua", "sh", "rb", "yaml", "yml", "json", "h", "cpp", "cs", "aspx", "jsp"};
     private static final String[] MEDIA_TYPES = ConfigConstants.getMedia();
@@ -76,10 +77,12 @@ public enum FileType {
 		for (String eml : EML_TYPES) {
             FILE_TYPE_MAPPER.put(eml, FileType.EML);
         }
+        for (String cad : CAD_TYPES) {
+            FILE_TYPE_MAPPER.put(cad, FileType.CAD);
+        }
         FILE_TYPE_MAPPER.put("md", FileType.MARKDOWN);
         FILE_TYPE_MAPPER.put("xml", FileType.XML);
         FILE_TYPE_MAPPER.put("pdf", FileType.PDF);
-        FILE_TYPE_MAPPER.put("dwg", FileType.CAD);
         FILE_TYPE_MAPPER.put("flv", FileType.FLV);
     }
 

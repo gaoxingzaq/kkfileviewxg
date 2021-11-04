@@ -738,13 +738,6 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="ExportToEPUBD">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="action_name">.uno:ExportToEPUB</property>
-      </object>
-    </child>
-    <child>
       <object class="GtkSeparatorMenuItem" id="separator44">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -1163,10 +1156,10 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="InsertZWNBSPD">
+      <object class="GtkMenuItem" id="InsertWJD">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="action_name">.uno:InsertZWNBSP</property>
+        <property name="action_name">.uno:InsertWJ</property>
       </object>
     </child>
     <child>
@@ -1660,6 +1653,13 @@
       <object class="GtkSeparatorMenuItem" id="MenuInsert-separator2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="MenuInsert-InsertQrCode">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="action_name">.uno:InsertQrCode</property>
       </object>
     </child>
     <child>
@@ -2757,20 +2757,6 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="MenuSlide-DisplayMasterBackground">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="action_name">.uno:DisplayMasterBackground</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="MenuSlide-DisplayMasterObjects">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="action_name">.uno:DisplayMasterObjects</property>
-      </object>
-    </child>
-    <child>
       <object class="GtkSeparatorMenuItem" id="MenuSlide-separator5">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -2977,13 +2963,13 @@
           <object class="sfxlo-PriorityHBox" id="Toolbar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-end">5</property>
             <child>
               <object class="sfxlo-DropdownBox" id="File">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">5</property>
+                <property name="margin-start">5</property>
                 <child>
                   <object class="GtkBox" id="Section">
                     <property name="visible">True</property>
@@ -4449,7 +4435,7 @@
                                   <object class="sfxlo-NotebookbarToolBox" id="SectionBottom10">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="margin_left">5</property>
+                                    <property name="margin-start">5</property>
                                     <property name="toolbar_style">icons</property>
                                     <property name="show_arrow">False</property>
                                     <child>
@@ -5404,7 +5390,7 @@
                                   <object class="sfxlo-NotebookbarToolBox" id="SectionBottom9">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="margin_left">5</property>
+                                    <property name="margin-start">5</property>
                                     <property name="toolbar_style">icons</property>
                                     <property name="show_arrow">False</property>
                                     <child>
@@ -9796,7 +9782,7 @@
                       <object class="VclOptionalBox" id="Image-Section-ColorSettings2">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">5</property>
+                        <property name="margin-start">5</property>
                         <child>
                           <object class="GtkBox" id="GroupB90">
                             <property name="visible">True</property>
@@ -14307,7 +14293,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
-                <property name="margin_right">5</property>
+                <property name="margin-end">5</property>
                 <child>
                   <object class="GtkBox" id="Ext2">
                     <property name="visible">True</property>

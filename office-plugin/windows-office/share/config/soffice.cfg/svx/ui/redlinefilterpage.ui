@@ -39,7 +39,6 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_underline">True</property>
-        <property name="xalign">0</property>
         <property name="draw_indicator">True</property>
         <child internal-child="accessible">
           <object class="AtkObject" id="date-atkobject">
@@ -59,7 +58,6 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_underline">True</property>
-        <property name="xalign">0</property>
         <property name="draw_indicator">True</property>
         <child internal-child="accessible">
           <object class="AtkObject" id="author-atkobject">
@@ -79,7 +77,6 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_underline">True</property>
-        <property name="xalign">0</property>
         <property name="draw_indicator">True</property>
         <accessibility>
           <relation type="label-for" target="commentedit"/>
@@ -100,7 +97,7 @@
         <property name="visible">True</property>
         <property name="sensitive">False</property>
         <property name="can_focus">True</property>
-        <property name="margin_left">24</property>
+        <property name="margin-start">24</property>
         <property name="hexpand">True</property>
         <property name="activates_default">True</property>
         <property name="truncate-multiline">True</property>
@@ -123,7 +120,6 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_underline">True</property>
-        <property name="xalign">0</property>
         <property name="draw_indicator">True</property>
         <child internal-child="accessible">
           <object class="AtkObject" id="range-atkobject">
@@ -141,7 +137,7 @@
         <property name="visible">True</property>
         <property name="sensitive">False</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">24</property>
+        <property name="margin-start">24</property>
         <property name="hexpand">True</property>
         <accessibility>
           <relation type="labelled-by" target="action"/>
@@ -165,7 +161,6 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_underline">True</property>
-        <property name="xalign">0</property>
         <property name="draw_indicator">True</property>
         <child internal-child="accessible">
           <object class="AtkObject" id="action-atkobject">
@@ -183,7 +178,7 @@
         <property name="visible">True</property>
         <property name="sensitive">False</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">24</property>
+        <property name="margin-start">24</property>
         <property name="hexpand">True</property>
         <accessibility>
           <relation type="labelled-by" target="author"/>
@@ -204,7 +199,7 @@
       <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">24</property>
+        <property name="margin-start">24</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkEntry" id="rangeedit">
@@ -255,7 +250,7 @@
       <object class="GtkBox" id="box3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">24</property>
+        <property name="margin-start">24</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>

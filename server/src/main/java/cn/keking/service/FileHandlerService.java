@@ -254,9 +254,10 @@ public class FileHandlerService {
         try {
             stream = new FileOutputStream(outputFile);
             cadImage.save(stream, pdfOptions);
+            stream.close();
             cadImage.close();
             return true;
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             logger.error("PDFFileNotFoundException，inputFilePath：{}", inputFilePath, e);
             return false;
         }
