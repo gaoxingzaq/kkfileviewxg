@@ -109,7 +109,8 @@ public class WebUtils {
      * @return 文件名编码后的url
      */
     public static String encodeUrlFileName(String url) {
-        String noQueryUrl = url.substring(0, url.contains("?") ? url.indexOf("?") : url.length());
+       // String noQueryUrl = url.substring(0, url.contains("?") ? url.indexOf("?") : url.length());
+        String noQueryUrl = url;
         int fileNameStartIndex = noQueryUrl.lastIndexOf('/') + 1;
         int fileNameEndIndex = noQueryUrl.lastIndexOf('.');
         String encodedFileName;
