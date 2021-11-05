@@ -1,4 +1,4 @@
-1、修复openoffice 或lieboffice转换内核模式下PPT PPTX图片页码和水印问题 4.01
+﻿1、修复openoffice 或lieboffice转换内核模式下PPT PPTX图片页码和水印问题 4.01
 2、修复PDF浏览模式有的发票不显示文字 4.01
 3、增加OFD模式打印功能 4.01
 4、增加转换内核POI  转换为HTML 4.01
@@ -29,5 +29,5 @@
 27、更新了一些组件
 28、更新windows下OFFICE版本7.22
 29、修复文件流截取问题   文件流方式修改为&fullfilename=/test.txt   斜杠必须有   这块以后有时间重新写个方法吧 
-
+30、修复了pdfbox 转图片出现图片元素丢失问题
 重要提示配置文件必须更新 或者自行对比添加新增内容

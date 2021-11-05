@@ -172,6 +172,13 @@
       <artifactId>pdfbox-tools</artifactId>
       <version>2.0.24</version>
         </dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-jpeg2000 -->
+<dependency>
+    <groupId>com.github.jai-imageio</groupId>
+    <artifactId>jai-imageio-jpeg2000</artifactId>
+    <version>1.4.0</version>
+</dependency>
+
 		 <!-- CAD转换 -->
          <dependency>
             <groupId>com.aspose</groupId>
