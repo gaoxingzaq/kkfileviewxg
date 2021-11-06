@@ -62,8 +62,8 @@
                     } else {
                         fulls += ",resizable"; // 对于不支持screen属性的浏览器，可以手工进行最大化。 manually
                     }
-                    var previewUrl = baseUrl + treeNode.fileName +"?fileKey="+ treeNode.fileKey;
-                    window.open("onlinePreview?url=" + encodeURIComponent(Base64.encode(previewUrl)), "_blank",fulls);
+                    var previewUrl = baseUrl + treeNode.fileName
+                    window.open("onlinePreview?url=" + encodeURIComponent(Base64.encode(previewUrl)) +"&fileKey="+ treeNode.fileKey, "_blank",fulls);
                 }
             }
         }

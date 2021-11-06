@@ -48,7 +48,7 @@ public class CompressFileReader {
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String archiveFileName = fileHandlerService.getFileNameFromPath(filePath);
         try {
-            ZipFile zipFile = new ZipFile(filePath, KkFileUtils.getFileEncode(filePath));
+            ZipFile zipFile = new ZipFile(filePath, "GBK");
             Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
             // 排序
             entries = sortZipEntries(entries);
