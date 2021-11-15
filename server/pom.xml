@@ -101,6 +101,7 @@
       <artifactId>commons-compress</artifactId>
       <version>1.21</version>
        </dependency>
+	   
         <!-- 解压(rar)-->
         <dependency>
        <groupId>com.github.junrar</groupId>
@@ -172,11 +173,28 @@
       <artifactId>pdfbox-tools</artifactId>
       <version>2.0.24</version>
         </dependency>
+		<dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>itextpdf</artifactId>
+      <version>5.5.13</version>
+</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-jpeg2000 -->
 <dependency>
     <groupId>com.github.jai-imageio</groupId>
     <artifactId>jai-imageio-jpeg2000</artifactId>
     <version>1.4.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-core -->
+<dependency>
+    <groupId>com.github.jai-imageio</groupId>
+    <artifactId>jai-imageio-core</artifactId>
+    <version>1.4.0</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.pdfbox</groupId>
+    <artifactId>jbig2-imageio</artifactId>
+    <version>3.0.3</version>
 </dependency>
 
 		 <!-- CAD转换 -->

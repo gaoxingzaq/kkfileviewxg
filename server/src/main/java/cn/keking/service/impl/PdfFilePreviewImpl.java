@@ -7,10 +7,18 @@ import cn.keking.service.FilePreview;
 import cn.keking.utils.DownloadUtils;
 import cn.keking.service.FileHandlerService;
 import cn.keking.web.filter.BaseUrlFilter;
+import com.itextpdf.text.pdf.PdfReader;
 import jodd.util.StringUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +36,8 @@ public class PdfFilePreviewImpl implements FilePreview {
         this.fileHandlerService = fileHandlerService;
         this.otherFilePreview = otherFilePreview;
     }
-
+    @Value("${pdffy:false}")
+    private String pdffy;
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         String gengxin=fileAttribute.getgengxin();
@@ -83,10 +92,25 @@ public class PdfFilePreviewImpl implements FilePreview {
                         fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
                     }
                 } else {
+
+                    if( pdffy.equalsIgnoreCase("false")){
+
+                    }else {
+                     pdfName =baseUrl+"download?urlPath="+pdfName;
+                    }
+
                     model.addAttribute("pdfUrl", pdfName);
                 }
             } else {
-                model.addAttribute("pdfUrl", url);
+
+                if( pdffy.equalsIgnoreCase("false")){
+
+                }else {
+                 url =baseUrl+"download?urlPath="+url;
+
+                }
+
+                model.addAttribute("pdfUrl",url);
             }
         }
         return PDF_FILE_PREVIEW_PAGE;

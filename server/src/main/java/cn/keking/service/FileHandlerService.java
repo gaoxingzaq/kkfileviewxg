@@ -9,9 +9,9 @@ import cn.keking.utils.WebUtils;
 import com.aspose.cad.CodePages;
 import com.aspose.cad.Color;
 import com.aspose.cad.LoadOptions;
-import com.aspose.cad.fileformats.cad.CadDrawTypeMode;
 import com.aspose.cad.imageoptions.CadRasterizationOptions;
 import com.aspose.cad.imageoptions.PdfOptions;
+import com.itextpdf.text.pdf.PdfReader;
 import jodd.util.StringUtil;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
@@ -26,7 +26,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URLEncoder;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,6 @@ import java.util.Map;
 
 /**
  * @author yudian-it
- * @date 2017/11/13
  */
 @Component
 public class FileHandlerService {
@@ -44,28 +43,22 @@ public class FileHandlerService {
     private static final String DEFAULT_CONVERTER_CHARSET = System.getProperty("sun.jnu.encoding");
     private final String fileDir = ConfigConstants.getFileDir();
     private final CacheService cacheService;
-
-    @Value("${server.tomcat.uri-encoding:UTF-8}")
-    private String uriEncoding;
-
+    private static final String FILE_DIR = ConfigConstants.getFileDir();
     public FileHandlerService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
-
     /**
      * @return 已转换过的文件集合(缓存)
      */
     public Map<String, String> listConvertedFiles() {
         return cacheService.getPDFCache();
     }
-
     /**
      * @return 已转换过的文件，根据文件名获取
      */
     public String getConvertedFile(String key) {
         return cacheService.getPDFCache(key);
     }
-
     /**
      * @param key pdf本地路径
      * @return 已将pdf转换成图片的图片本地相对路径
@@ -73,8 +66,6 @@ public class FileHandlerService {
     public Integer getConvertedPdfImage(String key) {
         return cacheService.getPdfImageCache(key);
     }
-
-
     /**
      * 从路径中获取文件负
      *
@@ -158,7 +149,6 @@ public class FileHandlerService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         // 重新写入文件
         try (FileOutputStream fos = new FileOutputStream(outFilePath);
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
@@ -169,33 +159,113 @@ public class FileHandlerService {
     }
 
     /**
-     *  pdf文件转换成jpg图片集
-     * @param pdfFilePath pdf文件路径
-     * @param pdfName pdf文件名称
-     * @param baseUrl 基础访问地址
-     * @return 图片访问集合
+     * 获取PDF 页数
+     *
+     * @return
      */
+    public static int pdfpage(String pdfName) {
+        File file = new File(FILE_DIR+pdfName);
+        PdfReader pdfReader = null;
+        try {
+            pdfReader = new PdfReader(new FileInputStream(file)); //获取PDF页数 如果小于等于1就不进行分割
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int pages = pdfReader.getNumberOfPages();
+        return pages;
+    }
 
+    /**
+     * 对分割的PDF文件下载到本地
+     */
+    private File getNetUrlHttp(String newUrl, String fileName){
+        //保存到本地的路径
+        String filePath=FILE_DIR+"ls"+fileName;
+        File file = null;
+        URL urlfile;
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try{
+            //判断文件的父级目录是否存在，不存在则创建
+            file = new File(filePath);
+            if(!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
+            try{
+                //创建文件
+                file.createNewFile();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            //下载
+            urlfile = new URL(newUrl.replace(" ", "%20"));
+            inputStream = urlfile.openStream();
+            outputStream = new FileOutputStream(file);
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead=inputStream.read(buffer,0,8192))!=-1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (null != outputStream) {
+                    outputStream.close();
+                }
+                if (null != inputStream) {
+                    inputStream.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return file;
+    }
+    /**
+     *  pdf文件转换成jpg图片集
+     * pdfFilePath pdf文件路径
+     * pdfName pdf文件名称
+     * baseUrl 基础访问地址
+     * 图片访问集合
+     */
     @Value("${pdfjpg:144}")  //转换图片清晰度
     private int pdfjpg;
+    @Value("${pdffy:false}")
+    private String pdffy;
     public List<String> pdf2jpg(String pdfFilePath, String pdfName, String baseUrl, FileAttribute fileAttribute) {
         String gengxin=fileAttribute.getgengxin();
         List<String> imageUrls = new ArrayList<>();
         Integer imageCount;
         String imageFileSuffix = ".jpg";
         String pdfFolder = pdfName.substring(0, pdfName.length() - 4);
-        String urlPrefix;
-        try {
-            urlPrefix = baseUrl + URLEncoder.encode(pdfFolder, uriEncoding).replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException e) {
-            logger.error("UnsupportedEncodingException", e);
-            urlPrefix = baseUrl + pdfFolder;
-        }
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) {  //去缓存更新
             imageCount = Integer.valueOf("0");
         }else {
-            imageCount = this.getConvertedPdfImage(pdfFilePath);
+            if(pdffy.equalsIgnoreCase("false")){    //是否开启分片功能
+                imageCount = this.getConvertedPdfImage(pdfFilePath);
+            }else {
+                imageCount = this.getConvertedPdfImage(FILE_DIR+"ls"+pdfName);
+            }
         }
+        String urlPrefix;
+        if(pdffy.equalsIgnoreCase("false")){    //是否开启分片功能
+            urlPrefix = baseUrl + pdfFolder;   //不改变路径
+        }else {
+            if(pdfpage(pdfName)<=1){
+                urlPrefix = baseUrl + pdfFolder;   //不改变路径
+            }else {
+                if (imageCount != null && imageCount > 0) {
+                    urlPrefix = baseUrl +"ls"+ pdfFolder;  //改变路径 添加LS路径
+                    pdfFilePath = FILE_DIR+"ls"+pdfName;
+                }else {
+                    urlPrefix = baseUrl +"ls"+ pdfFolder;  //改变路径 添加LS路径
+                    pdfFilePath =baseUrl +"download?urlPath="+"file:///" + pdfFilePath;    //链接到PDF分割功能
+                    pdfFilePath = String.valueOf(getNetUrlHttp(pdfFilePath,pdfName));
+                }
+            }
+        }
+      //  System.out.println(urlPrefix);
         if (imageCount != null && imageCount > 0) {
             for (int i = 0; i < imageCount; i++) {
                 imageUrls.add(urlPrefix + "/" + i + imageFileSuffix);
@@ -207,10 +277,8 @@ public class FileHandlerService {
             PDDocument doc = PDDocument.load(pdfFile);
             int pageCount = doc.getNumberOfPages();
             PDFRenderer pdfRenderer = new PDFRenderer(doc);
-
             int index = pdfFilePath.lastIndexOf(".");
             String folder = pdfFilePath.substring(0, index);
-
             File path = new File(folder);
             if (!path.exists() && !path.mkdirs()) {
                 logger.error("创建转换文件【{}】目录失败，请检查目录权限！", folder);
@@ -315,8 +383,8 @@ public class FileHandlerService {
 
     /**
      * 添加转换后的视频文件缓存
-     * @param fileName
-     * @param value
+     * fileName
+     * value
      */
     public void addConvertedMedias(String fileName, String value) {
         cacheService.putMediaConvertCache(fileName, value);

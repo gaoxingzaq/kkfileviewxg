@@ -37,6 +37,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
     private String officexh;
     @Value("${PPTXTP:1}")
     private int pptx;
+    @Value("${pdffy:false}")
+    private String pdffy;
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         // 预览Type，参数传了就取参数的，没传取系统默认
@@ -73,7 +75,6 @@ public class OfficeFilePreviewImpl implements FilePreview {
             if (response.isFailure()) {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
             }
-
             filePath = response.getContent();
             if (officexh.equals("1")) {   //开源openoffice 或  LibreOffice转换
                 if (StringUtils.hasText(outFilePath)) {
@@ -109,8 +110,21 @@ public class OfficeFilePreviewImpl implements FilePreview {
                 fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
             }
         }
+
         if (!isHtml && baseUrl != null && (OFFICE_PREVIEW_TYPE_IMAGE.equals(officePreviewType) || OFFICE_PREVIEW_TYPE_ALL_IMAGES.equals(officePreviewType))) {
             return getPreviewType(model, fileAttribute, officePreviewType, baseUrl, pdfName, outFilePath, fileHandlerService, OFFICE_PREVIEW_TYPE_IMAGE, otherFilePreview);
+        }
+
+        if(isHtml || pdffy.equalsIgnoreCase("false")){  //是否开启PDF分割功能
+
+        }else {
+
+          if(FileHandlerService.pdfpage(pdfName) <=1){  //判断PDF文件 当文件小于等于1就不进行分割
+
+          }else {
+              pdfName ="download?urlPath="+pdfName;   //分割PDF文件
+          }
+
         }
         model.addAttribute("pdfUrl", pdfName);
         return isHtml ? EXEL_FILE_PREVIEW_PAGE : PDF_FILE_PREVIEW_PAGE;

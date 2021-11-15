@@ -48,10 +48,17 @@ public class CompressFileReader {
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String archiveFileName = fileHandlerService.getFileNameFromPath(filePath);
         try {
-            ZipFile zipFile = new ZipFile(filePath, "GBK");
+            String bianma =  KkFileUtils.getFileEncode(filePath);
+           if (bianma.equalsIgnoreCase("UTF-8") ){  //识别压缩包编码
+               bianma= "UTF-8";
+            }else {
+               bianma= "GBK";
+           }
+            ZipFile zipFile = new ZipFile(filePath,bianma );
             Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
             // 排序
             entries = sortZipEntries(entries);
+
             List<Map<String, ZipArchiveEntry>> entriesToBeExtracted = new LinkedList<>();
             while (entries.hasMoreElements()) {
                 ZipArchiveEntry entry = entries.nextElement();

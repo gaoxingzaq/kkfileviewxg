@@ -1,5 +1,6 @@
 package cn.keking.web.controller;
 
+import cn.keking.config.ConfigConstants;
 import cn.keking.model.FileAttribute;
 import cn.keking.service.FilePreview;
 import cn.keking.service.FilePreviewFactory;
@@ -8,6 +9,9 @@ import cn.keking.service.cache.CacheService;
 import cn.keking.service.impl.OtherFilePreviewImpl;
 import cn.keking.service.FileHandlerService;
 import cn.keking.utils.WebUtils;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 import fr.opensagres.xdocreport.core.io.IOUtils;
 import io.mola.galimatias.GalimatiasParseException;
 import jodd.io.NetUtil;
@@ -18,9 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static cn.keking.service.FilePreview.PICTURE_FILE_PREVIEW_PAGE;
 
@@ -38,11 +41,11 @@ import static cn.keking.service.FilePreview.PICTURE_FILE_PREVIEW_PAGE;
  * @author yudian-it
  */
 @Controller
-public class OnlinePreviewController {
+public class OnlinePreviewController implements OnlinePreviewController1 {
 
     public static final String BASE64_DECODE_ERROR_MSG = "Base64解码失败，请检查你的 %s 是否采用 Base64 + urlEncode 双重编码了！";
     private final Logger logger = LoggerFactory.getLogger(OnlinePreviewController.class);
-
+    private static final String FILE_DIR = ConfigConstants.getFileDir();
     private final FilePreviewFactory previewFactory;
     private final CacheService cacheService;
     private final FileHandlerService fileHandlerService;
@@ -57,6 +60,9 @@ public class OnlinePreviewController {
 
     @Value("${url.base64:true}")
     private String base641;
+
+    @Value("${pdfpage:0}")
+    private String pdfpage;
 
     @RequestMapping(value = "/onlinePreview")
     public String onlinePreview(String url, Model model, HttpServletRequest req) {
@@ -119,22 +125,70 @@ public class OnlinePreviewController {
     @RequestMapping(value = "/getCorsFile", method = RequestMethod.GET)
     public void getCorsFile( HttpServletRequest request, HttpServletResponse response) {
         String query = request.getQueryString();
-               query = query.replace("+", "%20");
+               query = query.replace("%20", " ");
         try {
             query = URLDecoder.decode(query, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         String urlPath = query.replaceFirst("urlPath=","");
-        logger.info("读取跨域文件url：{}", urlPath);
-        try {
-            URL url = WebUtils.normalizedURL(urlPath);
-            byte[] bytes = NetUtil.downloadBytes(url.toString());
-            IOUtils.write(bytes, response.getOutputStream());
-        } catch (IOException | GalimatiasParseException e) {
-            logger.error("读取跨域文件异常，url：{}", urlPath, e);
+        if (urlPath == null || urlPath.toLowerCase().startsWith("file") || !urlPath.toLowerCase().startsWith("http")) {
+            logger.info("读取跨域文件异常", urlPath);
+        }else {
+            logger.info("读取跨域文件url：{}", urlPath);
+            try {
+                URL url = WebUtils.normalizedURL(urlPath);
+                byte[] bytes = NetUtil.downloadBytes(url.toString());
+                IOUtils.write(bytes, response.getOutputStream());
+            } catch (IOException | GalimatiasParseException e) {
+                logger.error("读取跨域文件异常，url：{}", urlPath, e);
+            }
         }
     }
+    /**
+     * PDF分片功能
+     */
+
+    @RequestMapping( value = "/download", method = RequestMethod.GET)
+    public void pdf(HttpServletRequest request, HttpServletResponse response) throws IOException, DocumentException {
+        //文件路径
+        String query = request.getQueryString();
+        String urlPath = query.replaceFirst("urlPath=","");
+     //   String page = urlPath .substring(urlPath .lastIndexOf("=")+1);
+        logger.info("读取PDF分页文件url：{}", URLDecoder.decode(urlPath, "UTF-8"));
+        String pdfname = urlPath.substring(urlPath.lastIndexOf("."));
+        if(pdfname.equalsIgnoreCase(".pdf")){ //判断是否PDF文件
+        // 读取pdf文档
+        if(urlPath.toLowerCase().startsWith("file")){
+
+        }else if(!urlPath.toLowerCase().startsWith("http")){
+           urlPath ="file:///"+  FILE_DIR + urlPath;
+
+       }
+     //   System.out.println(urlPath);
+        PdfReader reader = new PdfReader(urlPath); //这里获取不到数据
+        //总页数
+        int numberOfPages = reader.getNumberOfPages();
+        // 截取开始页
+        int start = Integer.parseInt(pdfpage.substring(0, 1));
+        //截取pdf部分页，格式"2-5" 第2页到第5页 页码超出范围（10页，你选择"15-20"）只会读最后一页
+        // 参数为String型，可让前端传值，控制读取第几页
+        // reader.selectPages("2-5");
+        reader.selectPages(pdfpage);
+        //源码没怎么看懂，但是需要内存中存放文件流，所以用了HttpServletResponse
+        PdfStamper stamp = new PdfStamper(reader, response.getOutputStream());
+        // 开始页 如果大于pdf总页数，不返回文件流，stamp.close()结果返回1
+        if(start <= numberOfPages){
+            stamp.close();
+        }
+        reader.close();
+        }else {
+            logger.info("文件异常", urlPath);
+        }
+    }
+
+
+
 
     /**
      * 通过api接口入队
