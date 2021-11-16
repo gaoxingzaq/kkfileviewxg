@@ -132,6 +132,7 @@ public class OnlinePreviewController {
             e.printStackTrace();
         }
         String urlPath = query.replaceFirst("urlPath=","");
+               urlPath = urlPath.replaceFirst("&disabledownload=true","");
         if (urlPath == null || urlPath.toLowerCase().startsWith("file") || !urlPath.toLowerCase().startsWith("http")) {
             logger.info("读取跨域文件异常", urlPath);
         }else {
@@ -163,7 +164,6 @@ public class OnlinePreviewController {
 
         }else if(!urlPath.toLowerCase().startsWith("http")){
            urlPath ="file:///"+  FILE_DIR + urlPath;
-
        }
      //   System.out.println(urlPath);
         PdfReader reader = new PdfReader(urlPath); //这里获取不到数据
@@ -186,10 +186,6 @@ public class OnlinePreviewController {
             logger.info("文件异常", urlPath);
         }
     }
-
-
-
-
     /**
      * 通过api接口入队
      *

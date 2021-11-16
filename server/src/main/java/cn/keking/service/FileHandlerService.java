@@ -222,6 +222,17 @@ public class FileHandlerService {
         }
         return file;
     }
+    public static String zhuanyii(String fuhao) {
+        fuhao = fuhao.replace("%","%25");
+        fuhao = fuhao.replace("+","%2B");
+        fuhao = fuhao.replace(" ","%20");
+        fuhao = fuhao.replace("?","%3F");
+        fuhao = fuhao.replace("#","%23");
+        fuhao = fuhao.replace("&","%26");
+        fuhao = fuhao.replace("=","%3D");
+        return fuhao;
+    }
+
     /**
      *  pdf文件转换成jpg图片集
      * pdfFilePath pdf文件路径
@@ -265,7 +276,8 @@ public class FileHandlerService {
                 }
             }
         }
-      //  System.out.println(urlPrefix);
+        urlPrefix = urlPrefix.replaceFirst(baseUrl,"/");
+        urlPrefix= zhuanyii(urlPrefix);  //图片名称转义
         if (imageCount != null && imageCount > 0) {
             for (int i = 0; i < imageCount; i++) {
                 imageUrls.add(urlPrefix + "/" + i + imageFileSuffix);
@@ -284,6 +296,7 @@ public class FileHandlerService {
                 logger.error("创建转换文件【{}】目录失败，请检查目录权限！", folder);
             }
             String imageFilePath;
+
             for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
                 imageFilePath = folder + File.separator + pageIndex + imageFileSuffix;
                 BufferedImage image = pdfRenderer.renderImageWithDPI(pageIndex, pdfjpg, ImageType.RGB);

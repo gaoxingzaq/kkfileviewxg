@@ -59,6 +59,8 @@
             <label>文件下载地址：<input type="text" id="_url" style="min-width:50em"/></label>
             <form action="${baseUrl}onlinePreview" target="_blank" id="preview_by_url" style="display: inline-block">
                 <input type="hidden" name="url"/>
+				<label><input type="checkbox"  name="genxin" value="ok" />更新</label> 
+				<input type="text" id="watermarkTxt" name="watermarkTxt" placeholder="插入水印" style="width:80px;"> 
                 <input type="submit" value="预览">
             </form>
         </div>

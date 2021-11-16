@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,10 +93,11 @@ public class PdfFilePreviewImpl implements FilePreview {
                         fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
                     }
                 } else {
-
+                    pdfName= FileHandlerService.zhuanyii(pdfName);
                     if( pdffy.equalsIgnoreCase("false")){
 
                     }else {
+                        pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
                      pdfName =baseUrl+"download?urlPath="+pdfName;
                     }
 
@@ -104,12 +106,11 @@ public class PdfFilePreviewImpl implements FilePreview {
             } else {
 
                 if( pdffy.equalsIgnoreCase("false")){
-
+                    url= FileHandlerService.zhuanyii(url); //文件名转义
                 }else {
+                    url= FileHandlerService.zhuanyii(url); //文件名转义
                  url =baseUrl+"download?urlPath="+url;
-
                 }
-
                 model.addAttribute("pdfUrl",url);
             }
         }

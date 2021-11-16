@@ -119,6 +119,7 @@ public class WebUtils {
         } catch (UnsupportedEncodingException e) {
             return null;
         }
-        return url.substring(0, fileNameStartIndex) + encodedFileName.replace("+", "%20") + url.substring(fileNameEndIndex);
+        encodedFileName = encodedFileName.replace("\\+", "%20");
+        return url.substring(0, fileNameStartIndex) + encodedFileName + url.substring(fileNameEndIndex);
     }
 }

@@ -60,6 +60,8 @@
             <label>文件下载地址：<input type="text" id="_url" style="min-width:50em"/></label>
             <form action="${baseUrl}onlinePreview" target="_blank" id="preview_by_url" style="display: inline-block">
                 <input type="hidden" name="url"/>
+				<label><input type="checkbox"  name="genxin" value="ok" />更新</label> 
+				<input type="text" id="watermarkTxt" name="watermarkTxt" placeholder="插入水印" style="width:80px;"> 
                 <input type="submit" value="预览">
             </form>
         </div>
@@ -97,7 +99,55 @@
         </div>
         <div class="panel-body">
             <div>
+2021年11月16日，v4.1.2版本发布:<br>  
+1、修复文件特殊符号错误<br>  
+2021年11月15日，v4.1.1版本发布:<br>  
+1、对压缩包ZIP格式调整了下<br>     
+2、新增PDF分页功能 只是简单做了测试 如果有问题请大家群里留言  (PDF分页需要在配置文件里面调整 默认开启显示1-2) <br>    
+3、修复一处BUG 任意文件读取漏洞<br>     
+4、更新OFD到最新版本<br>    
 
+> 2021年11月05日，v4.0.9版本发布:<br>  
+1、更新了一些组件<br>   
+2、更新windows下OFFICE版本7.22<br>   
+3、修复文件流截取问题   文件流方式修改为&fullfilename=/test.txt   斜杠必须有   这块以后有时间重新写个方法吧<br>   
+4、修复了pdfbox 转图片出现图片元素丢失问题<br> 
+
+
+> 2021年11月03日，v4.0.8版本发布 :<br>  
+1、修复XML、markdown文件预览反义乱码问题<br>   
+2、更新PDF.js文件 版本为2.10.377  修复了签名丢失问题<br>   
+3、更新aspose-cad为21.8版本<br> 
+
+> 2021年10月29日，v4.0.7版本发布:<br>  
+
+1、修复openoffice 或lieboffice转换内核模式下PPT PPTX图片页码和水印问题<br>    
+2、修复PDF浏览模式有的发票不显示文字<br>     
+3、增加OFD模式打印功能<br>     
+4、增加转换内核POI  转换为HTML<br>     
+5、增加SVG、webp、docm、xlsm格式浏览<br>    
+6、增加实时更新功能 在开启缓存模式下 调用参数&gengxin=ok<br>      
+ (http://127.0.0.1/onlinePreview?url=地址&gengxin=ok) 地址支持BASE64或者 直接地址  需要在配置文件设置<br>     
+7、地址支持base64加密或者不加密模式 需要在配置文件里面设置<br>      
+8、对上传文件过滤特殊符号<br>     
+9、支持HTTPS 非法证书连接下载<br>     
+10、增加eml格式文件的支持<br>     
+11、修复OFD、SVG、跨域问题 <br>   
+12、修复OFFICE 图片预览参数&gengxin=ok  不更新图片问题<br>    
+13、新增VSD格式支持<br>    
+14、新增CAD、PDF更新缓存参数 调用参数&gengxin=ok<br>      
+15、CAD转换模式去掉转换成图片 直接是PDF模式  CAD修改了转换模板支持 多个图层<br>     
+16、更新CAD转换模块为21.4   CAD下PDF模式去掉JPG图片显示<br>    
+17、修复OFD、PDF、TIFF 文件流跨域问题<br>    
+17、更新xstream为1.4.18<br>      
+18、修复了跨域BUG<br>   
+19、修复了URL空格转码问题<br>   
+20、增加POI ppt转换图片清晰功能 在配置文件设置<br>   
+21、调整xls/xlsx生成样式<br>   
+22、增加PDF转换图片清晰度功能  在配置文件设置<br>   
+22、修复图片预览文件名被转码问题<br>    
+23、修复预览标题问题<br>     
+24、新增rtf格式支持<br>   
                 2021年7月6日，v4.0.0 版本 :<br>
                 1. 底层集成OpenOffice替换为LibreOffice，Office文件兼容性增强，预览效果提升<br>
                 2. 修复压缩文件目录穿越漏洞<br>

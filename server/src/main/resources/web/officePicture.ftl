@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>${file.name}图片预览</title>
+    <title>${file.name}图片预览222</title>
     <script src="js/lazyload.js"></script>
     <#include "*/commonHeader.ftl">
     <style>
@@ -31,8 +31,13 @@ img {
 <body>
 <div class="container">
     <#list imgurls as img>
+	<#if img?contains("http://") || img?contains("https://")>
+    <#assign finalUrl="${img}">
+<#else>
+    <#assign finalUrl="${baseUrl}${img}">
+</#if>
         <div class="img-area">
-            <img class="my-photo" alt="loading"  data-src="${img}" src="images/loading.gif">
+            <img class="my-photo" alt="loading"  data-src="${finalUrl}" src="images/loading.gif">
         </div>
     </#list>
 </div>

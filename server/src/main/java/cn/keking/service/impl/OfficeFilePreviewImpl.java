@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 
+import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -120,12 +122,14 @@ public class OfficeFilePreviewImpl implements FilePreview {
         }else {
 
           if(FileHandlerService.pdfpage(pdfName) <=1){  //判断PDF文件 当文件小于等于1就不进行分割
-
+              pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
           }else {
+              pdfName= FileHandlerService.zhuanyii(pdfName);  //文件名转义
               pdfName ="download?urlPath="+pdfName;   //分割PDF文件
           }
 
         }
+
         model.addAttribute("pdfUrl", pdfName);
         return isHtml ? EXEL_FILE_PREVIEW_PAGE : PDF_FILE_PREVIEW_PAGE;
     }
