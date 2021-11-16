@@ -6,7 +6,7 @@
 1. 支持 txt, xml(渲染), md(渲染), java, php, py, js, css 等所有纯文本
 1. 支持 zip, rar, jar, tar, gzip 等压缩包
 1. 支持 jpg, jpeg, png, gif, tif, tiff,webp 等图片预览（翻转，缩放，镜像）
-1. 支持 eml,ofd,svg
+1. 支持 eml,ofd,svg  引用来源于 https://gitee.com/Donal/ofd.js 
 1. 使用 spring-boot 开发，预览服务搭建部署非常简便
 1. rest 接口提供服务，跨语言、跨平台特性(java,php,python,go,php，....)都支持，应用接入简单方便
 1. 抽象预览服务接口，方便二次开发，非常方便添加其他类型文件预览支持
