@@ -84,7 +84,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
                 if (StringUtils.hasText(outFilePath)) {
                 officeToPdfService.openOfficeToPDF(filePath, outFilePath);
                     if(officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
-                        System.out.println(11);
+
                         FileHandlerService.deleteFile(filePath);
                     }
 
