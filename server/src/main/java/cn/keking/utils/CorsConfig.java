@@ -9,7 +9,6 @@ public class CorsConfig implements WebMvcConfigurer {
 
     /**
      * 页面跨域访问Controller过滤
-     *
      * @return
      */
     @Override

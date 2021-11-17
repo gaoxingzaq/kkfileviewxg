@@ -106,9 +106,9 @@ public class PdfFilePreviewImpl implements FilePreview {
             } else {
 
                 if( pdffy.equalsIgnoreCase("false")){
-                    url= FileHandlerService.zhuanyii(url); //文件名转义
+
                 }else {
-                    url= FileHandlerService.zhuanyii(url); //文件名转义
+                  //  url= FileHandlerService.zhuanyii(url); //文件名转义
                  url =baseUrl+"download?urlPath="+url;
                 }
                 model.addAttribute("pdfUrl",url);

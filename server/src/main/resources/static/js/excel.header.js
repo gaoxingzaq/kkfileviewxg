@@ -16,7 +16,8 @@ $(centerChildrenA).each(function (a, b) {
 });
 /**给所有的table添加class=table table-striped样式**/
 $("table").addClass("table table-striped");
-
+/** 修改样式
+$("table").attr('id','exadddmple');
 var table=document.getElementById("exadddmple");
 	var trs=table.getElementsByTagName("tr");
 	//alert(trs.length)
@@ -28,3 +29,5 @@ var table=document.getElementById("exadddmple");
 			trs[i].style.backgroundColor="#0f0";
 		}
 	}
+	
+	**/
