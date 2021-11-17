@@ -41,6 +41,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
     private int pptx;
     @Value("${pdffy:false}")
     private String pdffy;
+    @Value("${officedel:true}")
+    private String officedel;
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         // 预览Type，参数传了就取参数的，没传取系统默认
@@ -81,6 +83,11 @@ public class OfficeFilePreviewImpl implements FilePreview {
             if (officexh.equals("1")) {   //开源openoffice 或  LibreOffice转换
                 if (StringUtils.hasText(outFilePath)) {
                 officeToPdfService.openOfficeToPDF(filePath, outFilePath);
+                    if(officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                        System.out.println(11);
+                        FileHandlerService.deleteFile(filePath);
+                    }
+
                 if (isHtml) {
                     // 对转换后的文件进行操作(改变编码方式)
                   fileHandlerService.doActionConvertedFile(outFilePath);
@@ -102,6 +109,9 @@ public class OfficeFilePreviewImpl implements FilePreview {
                         }else {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他，尝试其他文件");
                         }
+                    }
+                    if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                        FileHandlerService.deleteFile(filePath);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

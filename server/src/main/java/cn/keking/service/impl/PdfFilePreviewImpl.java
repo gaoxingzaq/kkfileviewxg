@@ -100,7 +100,6 @@ public class PdfFilePreviewImpl implements FilePreview {
                         pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
                      pdfName =baseUrl+"download?urlPath="+pdfName;
                     }
-
                     model.addAttribute("pdfUrl", pdfName);
                 }
             } else {
@@ -108,7 +107,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                 if( pdffy.equalsIgnoreCase("false")){
 
                 }else {
-                  //  url= FileHandlerService.zhuanyii(url); //文件名转义
+
                  url =baseUrl+"download?urlPath="+url;
                 }
                 model.addAttribute("pdfUrl",url);

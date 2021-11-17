@@ -222,6 +222,26 @@ public class FileHandlerService {
         }
         return file;
     }
+    /**
+     *  用于删除OFFICE原文件
+     */
+    public static void deleteFile(String file) {
+        File filee = new File(file);
+        if (filee.exists()) {//判断文件是否存在
+            if (filee.isFile()) {//判断是否是文件
+                filee.delete();//删除文件
+            } else if (filee.isDirectory()) {//否则如果它是一个目录
+                File[] files = filee.listFiles();//声明目录下所有的文件 files[];
+                for (int i = 0; i < files.length; i++) {//遍历目录下所有的文件
+                    deleteFile(String.valueOf(files[i]));//把每个文件用这个方法进行迭代
+                }
+                filee.delete();//删除文件夹
+            }
+        }
+    }
+    /**
+     *  输出文件名转义
+     */
     public static String zhuanyii(String fuhao) {
         fuhao = fuhao.replace("%","%25");
         fuhao = fuhao.replace("+","%2B");

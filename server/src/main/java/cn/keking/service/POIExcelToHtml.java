@@ -1,5 +1,5 @@
 package cn.keking.service;
-import cn.keking.config.ConfigConstants;
+
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
@@ -8,7 +8,6 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +21,7 @@ import java.util.Map;
  * @author Administrator
  */
 public class POIExcelToHtml {
-    private static final String FILE_DIR = ConfigConstants.getFileDir();
+
     public static boolean excelToHtml(String filePath, String path, String seapdaWebUrl) throws Exception {
 
         StringBuilder sb =null;
@@ -322,11 +321,6 @@ public class POIExcelToHtml {
 
     /**
      * 处理表格样式
-     *
-     * @param wb
-     * @param sheet
-     * @param cell
-     * @param sb
      */
     private static void dealExcelStyle(Workbook wb, Sheet sheet, Cell cell, StringBuffer sb, String stringValue) {
         CellStyle cellStyle = cell.getCellStyle();

@@ -114,9 +114,9 @@ public class CompressFileReader {
             for (FileHeader header : headers) {
                 String fullName;
                 if (header.isUnicode()) {
-                    fullName = header.getFileNameW();
+                    fullName = header.getFileName();
                 } else {
-                    fullName = header.getFileNameString();
+                    fullName = header.getFileName();
                 }
                 // 展示名
                 String originName = getLastFileName(fullName, "\\");
@@ -213,10 +213,10 @@ public class CompressFileReader {
     private List<FileHeader> sortedHeaders(List<FileHeader> headers) {
         List<FileHeader> sortedHeaders = new ArrayList<>();
         Map<Integer, FileHeader> mapHeaders = new TreeMap<>();
-        headers.forEach(header -> mapHeaders.put(new Integer(0).equals(header.getFileNameW().length()) ? header.getFileNameString().length() : header.getFileNameW().length(), header));
+        headers.forEach(header -> mapHeaders.put(new Integer(0).equals(header.getFileName().length()) ? header.getFileName().length() : header.getFileName().length(), header));
         for (Map.Entry<Integer, FileHeader> entry : mapHeaders.entrySet()) {
             for (FileHeader header : headers) {
-                if (entry.getKey().equals(new Integer(0).equals(header.getFileNameW().length()) ? header.getFileNameString().length() : header.getFileNameW().length())) {
+                if (entry.getKey().equals(new Integer(0).equals(header.getFileName().length()) ? header.getFileName().length() : header.getFileName().length())) {
                     sortedHeaders.add(header);
                 }
             }
