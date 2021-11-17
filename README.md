@@ -19,7 +19,7 @@
 ### 在线体验
 > 请善待公共服务，会不定时停用
 
-地址：[https://file.keking.cn](https://file.keking.cn)
+高雄修改体验地址：[http://qt.cxcp.net](http://qt.cxcp.net)
 
 ### 项目文档（Project documentation）
 1. 详细wiki文档：https://gitee.com/kekingcn/file-online-preview/wikis/pages
