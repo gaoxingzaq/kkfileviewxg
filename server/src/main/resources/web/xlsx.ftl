@@ -7,6 +7,7 @@
         <link rel='stylesheet' href='xlsx/plugins/plugins.css' />
         <link rel='stylesheet' href='xlsx/css/luckysheet.css' />
         <link rel='stylesheet' href='xlsx/assets/iconfont/iconfont.css' />
+
         <script src="xlsx/plugins/js/plugin.js"></script>
         <script src="xlsx/luckysheet.umd.js"></script>
 		<script src="js/watermark.js" type="text/javascript"></script>
@@ -60,8 +61,10 @@
    <body>
         <div id="lucky-mask-demo" style="position: absolute;z-index: 1000000;left: 0px;top: 0px;bottom: 0px;right: 0px; background: rgba(255, 255, 255, 0.8); text-align: center;font-size: 40px;align-items:center;justify-content: center;display: none;">加载中</div>
         <p style="text-align:center;"> 
-   
-		<div id="luckysheet" style="margin:0px;padding:0px;position:absolute;width:100%;left: 0px;top: 5px;bottom: 0px;outline: none;"></div>
+		
+ <label><button onclick="tiaozhuan()">跳转HTML预览</button></label>
+ 
+		<div id="luckysheet" style="margin:0px;padding:0px;position:absolute;width:100%;left: 0px;top: 20px;bottom: 0px;outline: none;"></div>
       
     
 	  <script src="xlsx/luckyexcel.umd.js"></script>
@@ -117,7 +120,16 @@
                             });
             
                     }
+				
+function tiaozhuan(){
+					var test = window.location.href;
+					 test = test.replace(new RegExp("&officePreviewType=xlsx",("gm")),"");
 					
+  				    test = test+'&officePreviewType=html';
+			
+　　     window.location.href=test;
+　　}
+				
         </script>
     </body>
 </html>

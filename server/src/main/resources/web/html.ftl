@@ -13,6 +13,9 @@
     <#assign finalUrl="${baseUrl}${pdfUrl}">
 </#if>
 <body>
+<#if "${file.suffix?lower_case}" == "xlsx">
+ <label><button onclick="tiaozhuan()">跳转其他预览方式</button></label>
+ 	  </#if>
     <iframe src="${finalUrl}" width="100%" frameborder="0"></iframe>
 </body>
 <script type="text/javascript">
@@ -24,9 +27,17 @@
         var fm = document.getElementsByTagName("iframe")[0];
         fm.height = window.document.documentElement.clientHeight-10;
     }
+	function tiaozhuan(){
+					var test = window.location.href;
+					    test = test.replace(new RegExp("&officePreviewType=html",("gm")),"");
+  				    test = test+'&officePreviewType=xlsx';
+			
+　　     window.location.href=test;
+　　}
     /*初始化水印*/
     window.onload = function() {
       initWaterMark();
+	  
     }
 </script>
 </html>
