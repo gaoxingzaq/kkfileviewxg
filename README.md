@@ -111,7 +111,7 @@ pdf预览模式预览效果如下
 
 > 2021年11月17日，v4.1.4版本发布 ：  
 1、新增xlsx输出为JS解析 (配置文件启用)  解析方法luckysheet 地址为:https://gitee.com/mengshukeji/Luckysheet  
-2、lsx输出调用方法 &officePreviewType=xlsx (JS解析方法)  &officePreviewType=html (转换为HTML)  
+2、xlsx输出调用方法 &officePreviewType=xlsx (JS解析方法)  &officePreviewType=html (转换为HTML)  
 > 2021年11月17日，v4.1.3版本发布 ：    
 1、修复4.1.2版本的PDF跨域文件URL被转义错误  
 2、增加OFFICE源文件的删除功能 配置文件启用  
