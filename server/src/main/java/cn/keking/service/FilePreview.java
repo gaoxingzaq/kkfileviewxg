@@ -24,6 +24,7 @@ public interface FilePreview {
     String CODE_FILE_PREVIEW_PAGE = "code";
     String EXEL_FILE_PREVIEW_PAGE = "html";
     String XML_FILE_PREVIEW_PAGE = "xml";
+    String XLSX_FILE_PREVIEW_PAGE = "xlsx";
     String MARKDOWN_FILE_PREVIEW_PAGE = "markdown";
     String NOT_SUPPORTED_FILE_PAGE = "fileNotSupported";
 

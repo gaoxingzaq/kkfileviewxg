@@ -43,6 +43,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
     private String pdffy;
     @Value("${officedel:true}")
     private String officedel;
+    @Value("${xlsxzh:true}")
+    private String xlsxzh;
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         // 预览Type，参数传了就取参数的，没传取系统默认
@@ -73,6 +75,14 @@ public class OfficeFilePreviewImpl implements FilePreview {
             pdfgx= ConfigConstants.isCacheEnabled();
         }
      //  System.out.println(pdfgx);
+        if(xlsxzh.equalsIgnoreCase("true")){  //是否开启xlsx直接输出功能
+            boolean xlsx =  suffix.equalsIgnoreCase("xlsx");
+            if(xlsx){
+                model.addAttribute("pdfUrl", url);
+                return XLSX_FILE_PREVIEW_PAGE;
+            }
+        }
+
         if (!pdfgx || !fileHandlerService.listConvertedFiles().containsKey(pdfName)) {
             String filePath;
             ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, null);

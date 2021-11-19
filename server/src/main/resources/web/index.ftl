@@ -99,6 +99,8 @@
         </div>
         <div class="panel-body">
             <div>
+2021年11月17日，v4.1.4版本发布:<br>  
+1、调整xlsx输出为luckysheet   JS解析方法https://gitee.com/mengshukeji/Luckysheet<br>  
 2021年11月17日，v4.1.3版本发布:<br>  
 1、修复4.1.2版本的PDF跨域文件URL被转义错误<br>  
 2、增加OFFICE源文件的删除功能 配置文件启用<br>  
@@ -162,7 +164,7 @@
                 8. 优化启动Office进程改同步执行<br><br>
 
                 2021年6月17日，v3.6.0版本 ：<br>
-                ofd 类型文件支持版本，本次版本重要功能均由社区开发贡献，感谢 @gaoxingzaq、@zhangxiaoxiao9527 的代码贡献<br>
+                ofd 类型文件支持版本，本次版本重要功能均由社区开发贡献，感谢 @gaoxingzaq、@zhangxiaoxiao9527 的代码贡献   ofd 引用来源于 https://gitee.com/Donal/ofd.js <br>
                 1、新增 ofd 类型文件预览支持，ofd 是国产的类似 pdf 格式的文件<br>
                 2、新增了 ffmpeg 视频文件转码预览支持，打开转码功能后，理论上支持所有主流视频的预览，如 rm、rmvb、flv 等<br>
                 3、美化了 ppt、pptx 类型文件预览效果，比之前版本好看太多<br>

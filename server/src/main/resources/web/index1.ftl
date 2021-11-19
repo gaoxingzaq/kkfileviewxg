@@ -99,6 +99,8 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
+2021年11月17日，v4.1.4版本发布:<br>  
+1、调整xlsx输出为luckysheet<br>  
 2021年11月17日，v4.1.3版本发布:<br>  
 1、修复4.1.2版本的PDF跨域文件URL被转义错误<br>  
 2、增加OFFICE源文件的删除功能 配置文件启用<br>  
