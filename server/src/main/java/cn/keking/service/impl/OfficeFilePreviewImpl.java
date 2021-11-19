@@ -74,13 +74,28 @@ public class OfficeFilePreviewImpl implements FilePreview {
         }else {
             pdfgx= ConfigConstants.isCacheEnabled();
         }
-     //  System.out.println(pdfgx);
+
+
+
         if(xlsxzh.equalsIgnoreCase("true")){  //是否开启xlsx直接输出功能
-            boolean xlsx =  suffix.equalsIgnoreCase("xlsx");
-            if(xlsx){
-                model.addAttribute("pdfUrl", url);
-                return XLSX_FILE_PREVIEW_PAGE;
+
+            if(officePreviewType.equalsIgnoreCase("html")){
+
+            }else  if(officePreviewType.equalsIgnoreCase("xlsx")) {
+                boolean xlsx =  suffix.equalsIgnoreCase("xlsx");
+                if(xlsx){
+                    model.addAttribute("pdfUrl", url);
+                    return XLSX_FILE_PREVIEW_PAGE;
+                }
+            }else {
+                boolean xlsx =  suffix.equalsIgnoreCase("xlsx");
+                if(xlsx){
+                    model.addAttribute("pdfUrl", url);
+                    return XLSX_FILE_PREVIEW_PAGE;
+                }
             }
+
+
         }
 
         if (!pdfgx || !fileHandlerService.listConvertedFiles().containsKey(pdfName)) {

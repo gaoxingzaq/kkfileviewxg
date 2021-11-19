@@ -24,6 +24,6 @@ public class AppBanner implements Banner {
                 " => kkFileView  ::  (v4.1.4)             QQ2 :: 484680571\n" +
                 " => github      ::  https://github.com/kekingcn/kkFileView\n" +
                 " => gitee官方   ::  https://gitee.com/kekingcn/file-online-preview\n" +
-				" => gitee4.1.3   ::  https://gitee.com/gaoxingzaq/file-online-preview-master\n");
+				" => gitee4.1.4   ::  https://gitee.com/gaoxingzaq/file-online-preview-master\n");
     }
 }
