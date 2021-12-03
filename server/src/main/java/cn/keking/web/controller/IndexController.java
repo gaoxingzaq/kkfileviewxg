@@ -1,12 +1,9 @@
 package cn.keking.web.controller;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  *  页面跳转
@@ -29,11 +26,6 @@ public class IndexController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String root() {
-        if(base641.equalsIgnoreCase("true")){
             return "redirect:/index";
-        }else {
-            return "redirect:/index1";
-        }
-
     }
 }

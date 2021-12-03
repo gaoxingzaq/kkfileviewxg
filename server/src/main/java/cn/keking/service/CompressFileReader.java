@@ -13,6 +13,7 @@ import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -36,7 +37,8 @@ public class CompressFileReader {
     private final FileHandlerService fileHandlerService;
     private final String fileDir = ConfigConstants.getFileDir();
     private final ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
+    @Value("${officedel:true}")
+    private String officedel;
     public CompressFileReader(FileHandlerService fileHandlerService) {
         this.fileHandlerService = fileHandlerService;
     }
@@ -389,7 +391,9 @@ public class CompressFileReader {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            KkFileUtils.deleteFileByPath(filePath);
+            if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                KkFileUtils.deleteFileByPath(filePath);
+            }
         }
 
         private void extractZipFile(String childName, InputStream zipFile) {
@@ -446,7 +450,9 @@ public class CompressFileReader {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            KkFileUtils.deleteFileByPath(filePath);
+            if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                KkFileUtils.deleteFileByPath(filePath);
+            }
         }
     }
 
@@ -475,7 +481,9 @@ public class CompressFileReader {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            KkFileUtils.deleteFileByPath(filePath);
+            if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                KkFileUtils.deleteFileByPath(filePath);
+            }
         }
 
         private void extractRarFile(String childName, FileHeader header, Archive archive) {

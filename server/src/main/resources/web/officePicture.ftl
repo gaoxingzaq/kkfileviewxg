@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>${file.name}图片预览222</title>
+    <title>${file.name}图片预览</title>
     <script src="js/lazyload.js"></script>
     <#include "*/commonHeader.ftl">
     <style>

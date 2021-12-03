@@ -6,8 +6,10 @@ import cn.keking.model.ReturnResponse;
 import cn.keking.service.FilePreview;
 import cn.keking.utils.DownloadUtils;
 import cn.keking.service.FileHandlerService;
+import cn.keking.utils.KkFileUtils;
 import cn.keking.web.filter.BaseUrlFilter;
 import jodd.util.StringUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -32,7 +34,8 @@ public class CadFilePreviewImpl implements FilePreview {
         this.fileHandlerService = fileHandlerService;
         this.otherFilePreview = otherFilePreview;
     }
-
+    @Value("${officedel:true}")
+    private String officedel;
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         // 预览Type，参数传了就取参数的，没传取系统默认
@@ -59,6 +62,9 @@ public class CadFilePreviewImpl implements FilePreview {
             filePath = response.getContent();
             if (StringUtils.hasText(outFilePath)) {
                 boolean convertResult = fileHandlerService.cadToPdf(filePath, outFilePath);
+                if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                    KkFileUtils.deleteFileByPath(filePath);
+                }
                 if (!convertResult) {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, "cad文件转换异常，请联系管理员");
                 }

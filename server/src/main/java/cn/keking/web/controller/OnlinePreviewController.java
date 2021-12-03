@@ -61,8 +61,8 @@ public class OnlinePreviewController {
     @Value("${url.base64:true}")
     private String base641;
 
-    @Value("${pdfpage:0}")
-    private String pdfpage;
+    @Value("${pdfpagee:0}")
+    private String pdfpagee;
 
     @RequestMapping(value = "/onlinePreview")
     public String onlinePreview(String url, Model model, HttpServletRequest req) {
@@ -149,32 +149,46 @@ public class OnlinePreviewController {
     /**
      * PDF分片功能
      */
-
     @RequestMapping( value = "/download", method = RequestMethod.GET)
     public void pdf(HttpServletRequest request, HttpServletResponse response) throws IOException, DocumentException {
         //文件路径
         String query = request.getQueryString();
+             //  query = query.replaceFirst("%20", " ");
         String urlPath = query.replaceFirst("urlPath=","");
-     //   String page = urlPath .substring(urlPath .lastIndexOf("=")+1);
+        String page = null;
+        if(pdfpagee.equalsIgnoreCase("0")){
+            page = urlPath.substring(urlPath.lastIndexOf("=")+1);
+            urlPath = urlPath.substring(0,urlPath.lastIndexOf("?"));
+        }else {
+            urlPath = urlPath.substring(0,urlPath.lastIndexOf("?"));
+        }
+      if (page == null || "".equals(page) ||"pdf".equals(page) ||"NaN".equals(page) ){
+          page="1";
+      }
         logger.info("读取PDF分页文件url：{}", URLDecoder.decode(urlPath, "UTF-8"));
         String pdfname = urlPath.substring(urlPath.lastIndexOf("."));
         if(pdfname.equalsIgnoreCase(".pdf")){ //判断是否PDF文件
         // 读取pdf文档
         if(urlPath.toLowerCase().startsWith("file")){
-
         }else if(!urlPath.toLowerCase().startsWith("http")){
            urlPath ="file:///"+  FILE_DIR + urlPath;
        }
-     //   System.out.println(urlPath);
+     // System.out.println(urlPath);
         PdfReader reader = new PdfReader(urlPath); //这里获取不到数据
         //总页数
         int numberOfPages = reader.getNumberOfPages();
         // 截取开始页
-        int start = Integer.parseInt(pdfpage.substring(0, 1));
-        //截取pdf部分页，格式"2-5" 第2页到第5页 页码超出范围（10页，你选择"15-20"）只会读最后一页
-        // 参数为String型，可让前端传值，控制读取第几页
-        // reader.selectPages("2-5");
-        reader.selectPages(pdfpage);
+            //截取pdf部分页，格式"2-5" 第2页到第5页 页码超出范围（10页，你选择"15-20"）只会读最后一页
+            // 参数为String型，可让前端传值，控制读取第几页
+            // reader.selectPages("2-5");
+            int start;
+            if(pdfpagee.equalsIgnoreCase("0")){
+                start = Integer.parseInt(page.substring(0, 1));
+                reader.selectPages(page);
+            }else {
+                start = Integer.parseInt(pdfpagee.substring(0, 1));
+                reader.selectPages(pdfpagee);
+            }
         //源码没怎么看懂，但是需要内存中存放文件流，所以用了HttpServletResponse
         PdfStamper stamp = new PdfStamper(reader, response.getOutputStream());
         // 开始页 如果大于pdf总页数，不返回文件流，stamp.close()结果返回1
@@ -198,5 +212,4 @@ public class OnlinePreviewController {
         cacheService.addQueueTask(url);
         return "success";
     }
-
 }

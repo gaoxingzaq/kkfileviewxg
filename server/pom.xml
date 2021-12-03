@@ -197,6 +197,7 @@
     <version>3.0.3</version>
 </dependency>
 
+
 		 <!-- CAD转换 -->
          <dependency>
             <groupId>com.aspose</groupId>
@@ -206,7 +207,7 @@
             <systemPath>${basedir}/lib/aspose-cad-21.8.jar</systemPath>
         </dependency>
         <!-- 编码识别 -->
-        <dependency>
+           <dependency>
             <groupId>cpdetector</groupId>
             <artifactId>cpdetector</artifactId>
             <version>1.04</version>

@@ -26,7 +26,7 @@
         <div class="panel-heading">
             <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                    接入说明
+                    接入说明(需要引入BASE64)
                 </a>
             </h4>
         </div>
@@ -35,15 +35,24 @@
                 如果你的项目需要接入文件预览项目，达到对docx、excel、ppt、jpg等文件的预览效果，那么通过在你的项目中加入下面的代码就可以
                 成功实现：
                 <pre style="background-color: #2f332a;color: #cccccc">
+	 &lt;script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-base64@3.6.0/base64.min.js">&lt;/script> //以下都需要
                     var url = 'http://127.0.0.1:8080/file/test.txt'; //要预览文件的访问地址
-                    window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(base64Encode(url)));
+                    window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(Base64.encode(url)));
                 </pre>
             </div>
             <div>
                 新增多图片同时预览功能，接口如下：
                 <pre style="background-color: #2f332a;color: #cccccc">
                     var fileUrl =url1+"|"+"url2";//多文件使用“|”字符隔开
-                    window.open('http://127.0.0.1:8012/picturesPreview?urls='+encodeURIComponent(base64Encode(fileUrl)));
+                    window.open('http://127.0.0.1:8012/picturesPreview?urls='+encodeURIComponent(Base64.encode(fileUrl)));
+                </pre>
+            </div>
+			<div>
+                文件流方法，接口如下：
+                <pre style="background-color: #2f332a;color: #cccccc">
+                 var originUrl = 'http://127.0.0.1:8080/filedownload?fileId=1'; //要预览文件的访问地址
+                 var previewUrl = originUrl + '&fullfilename=/test.txt'   //这里必须加反斜杠
+                 window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(Base64.encode(previewUrl)));
                 </pre>
             </div>
         </div>
@@ -99,6 +108,15 @@
         </div>
         <div class="panel-body">
             <div>
+2021年12月日，v4.1.5版本发布:<br>  
+1、调整KK支持IE10以上版本<br>  
+2、修复POI模式文件流不回收问题<br> 
+3、调整转换模块友好错误提示<br>  
+4、增加源文件删除功能<br> 
+5、调整PDF缩放倍数,调整PDF默认手势功能<br> 
+6、进一步调整分页功能 还需要继续完善<br> 
+
+			
 2021年11月17日，v4.1.4版本发布:<br>  
 1、调整xlsx输出为luckysheet   JS解析方法https://gitee.com/mengshukeji/Luckysheet<br>  
 2、lsx输出调用方法 &officePreviewType=xlsx (JS解析方法)  &officePreviewType=html (转换为HTML)<br> 

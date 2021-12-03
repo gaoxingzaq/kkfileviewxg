@@ -14,7 +14,7 @@ import java.util.Map;
  * create : 2020-12-27 1:30 上午
  **/
 public class WebUtils {
-
+    private final static String ENCODE = "GBK";
     /**
      * 获取标准的URL
      * @param urlStr url
@@ -121,5 +121,18 @@ public class WebUtils {
         }
         encodedFileName = encodedFileName.replace("\\+", "%20");
         return url.substring(0, fileNameStartIndex) + encodedFileName + url.substring(fileNameEndIndex);
+    }
+
+    public static String getURLDecoderString(String str) {
+        String result = "";
+        if (null == str) {
+            return "";
+        }
+        try {
+            result = java.net.URLDecoder.decode(str, ENCODE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

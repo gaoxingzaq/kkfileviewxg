@@ -26,7 +26,19 @@ public class POIExcelToHtml {
 
         StringBuilder sb =null;
         InputStream inputStream = new FileInputStream(path);
-        Workbook wb = WorkbookFactory.create(inputStream);// 此WorkbookFactory在POI-3.10版本中使用需要添加dom4j
+        Workbook wb = null;
+        try {
+          wb = WorkbookFactory.create(inputStream);// 此WorkbookFactory在POI-3.10版本中使用需要添加dom4j
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         String head = htmlHead(wb, seapdaWebUrl);
         writeFile(head, filePath);  //写入头
         try {

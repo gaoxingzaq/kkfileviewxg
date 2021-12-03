@@ -24,12 +24,29 @@
 	</#if>
 </body>
 <script type="text/javascript">
-    var url = '${finalUrl}';
-    var baseUrl = '${baseUrl}'.endsWith('/') ? '${baseUrl}' : '${baseUrl}' + '/';
-    if (!url.startsWith(baseUrl)) {
-        url = baseUrl + 'getCorsFile?urlPath=' + encodeURIComponent(url);
+String.prototype.startsWithh = function(str) {
+    var reg = new RegExp("^" + str);
+    return reg.test(this);
+}
+String.prototype.endsWithh = function(str) {
+    var reg = new RegExp(str + "$");
+    return reg.test(this);
+}
+    var url = '${finalUrl}';   //获取地址
+    var baseUrl = '${baseUrl}'.endsWithh('/') ? '${baseUrl}' : '${baseUrl}' + '/';    //判断地址是否为本地地址   (这里去实现判断是否本地地址)
+    if (!url.startsWithh(baseUrl)) {  //不是本地地址转到跨域方法
+        url = baseUrl + 'getCorsFile?urlPath=' + encodeURIComponent(url);   //如果不适用KK本地上传  这里可以直接写死跨域方法
     }
-    document.getElementsByTagName('iframe')[0].src = "${baseUrl}pdfjs/web/viewer.html?file=" + encodeURIComponent(url) + "&disabledownload=${pdfDownloadDisable}";
+	
+		if (!!window.ActiveXObject || "ActiveXObject" in window)
+	
+{
+ document.getElementsByTagName('iframe')[0].src = "${baseUrl}IEpdfjs/web/viewer.html?file=" + encodeURIComponent(url) + "&disabledownload=${pdfDownloadDisable}";
+}else{
+ document.getElementsByTagName('iframe')[0].src = "${baseUrl}pdfjs/web/viewer.html?file=" + encodeURIComponent(url) + "&disabledownload=${pdfDownloadDisable}";
+
+}
+   
     document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight - 10;
     /**
      * 页面变化调整高度
@@ -50,8 +67,10 @@
     }
 
     /*初始化水印*/
-    window.onload = function () {
-        initWaterMark();
-    }
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 </html>

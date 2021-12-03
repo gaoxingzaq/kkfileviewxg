@@ -11,6 +11,8 @@ import org.apache.poi.hwpf.converter.WordToHtmlConverter;
 import org.apache.poi.hwpf.converter.WordToHtmlUtils;
 import org.apache.poi.hwpf.usermodel.Picture;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,19 +43,26 @@ import java.util.Base64;
  */
 public class POIWordToHtml {
     private static final String ENCODING = "GB2312";// UTF-8
-
-
-
     public static boolean wordToHtml(String sourcePath, String picturesPath, String imagessslj, String targetPath)  {
         String htmlData = "预览失败";
         String ext = FileUtils.GetFileExt(sourcePath);
         File picturesDir = new File(picturesPath);
-        if (!picturesDir.isDirectory()) {
-            picturesDir.mkdirs();
-        }
         try {
+            InputStream inputStream = new FileInputStream(sourcePath);
             if ("docx".equalsIgnoreCase(ext)) {
-                XWPFDocument docxDocument = new XWPFDocument(OPCPackage.open(sourcePath));
+                XWPFDocument docxDocument;
+                try {
+                    docxDocument = new XWPFDocument(inputStream);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                } finally {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 XHTMLOptions options = XHTMLOptions.create();
                 options.setIgnoreStylesIfUnused(false);
                 options.setExtractor(new FileImageExtractor(picturesDir));
@@ -63,14 +72,33 @@ public class POIWordToHtml {
                 htmlData = htmlStream.toString();
                 docxDocument.close();
                 htmlStream.close();
+                if (!picturesDir.isDirectory()) {
+                    picturesDir.mkdirs();
+                }
                 FileUtils.writeFile(htmlData, targetPath);
                 return true;
             } else  {
-                HWPFDocument wordDocument = new HWPFDocument(new FileInputStream(sourcePath));
+                HWPFDocument wordDocument;
+
+                try {
+                    wordDocument = new HWPFDocument(inputStream);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                } finally {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 WordToHtmlConverter wordToHtmlConverter = new WordToHtmlConverter(
                 DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
                 wordToHtmlConverter.setPicturesManager((content1, pictureType, suggestedName, widthInches, heightInches) -> {
-
+                    if (!picturesDir.isDirectory()) {
+                        picturesDir.mkdirs();
+                    }
                     File file = new File(picturesPath + "/" + suggestedName);
                     FileOutputStream fos;
                     try {

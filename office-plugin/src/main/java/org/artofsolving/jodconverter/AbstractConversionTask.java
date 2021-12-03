@@ -50,9 +50,13 @@ public abstract class AbstractConversionTask implements OfficeTask {
     public void execute(OfficeContext context) throws OfficeException {
         XComponent document = null;
         try {
-            document = loadDocument(context, inputFile);
-            modifyDocument(document);
-            storeDocument(document, outputFile);
+            document = loadDocument(context, this.inputFile);
+            if (document != null) {
+                modifyDocument(document);
+                storeDocument(document, this.outputFile);
+            } else {
+                return;
+            }
         } catch (OfficeException officeException) {
             throw officeException;
         } catch (Exception exception) {
@@ -72,25 +76,29 @@ public abstract class AbstractConversionTask implements OfficeTask {
             }
         }
     }
-
     private XComponent loadDocument(OfficeContext context, File inputFile) throws OfficeException {
         if (!inputFile.exists()) {
-            throw new OfficeException("input document not found");
+            throw new OfficeException("找不到输入文档");
         }
         XComponentLoader loader = cast(XComponentLoader.class, context.getService(SERVICE_DESKTOP));
         Map<String,?> loadProperties = getLoadProperties(inputFile);
         XComponent document = null;
         try {
             document = loader.loadComponentFromURL(toUrl(inputFile), "_blank", 0, toUnoProperties(loadProperties));
+        //    System.out.print(document);
         } catch (IllegalArgumentException illegalArgumentException) {
-            throw new OfficeException("could not load document: " + inputFile.getName(), illegalArgumentException);
+            System.out.print("转换失败: "  + inputFile.getName() + illegalArgumentException);
+          //  throw new OfficeException("could not load document: " + inputFile.getName(), illegalArgumentException);
         } catch (ErrorCodeIOException errorCodeIOException) {
-            throw new OfficeException("could not load document: "  + inputFile.getName() + "; errorCode: " + errorCodeIOException.ErrCode, errorCodeIOException);
+            System.out.print("转换失败: "  + inputFile.getName() + "; errorCode: " + errorCodeIOException.ErrCode + errorCodeIOException);
+         //   throw new OfficeException("could not load document: "  + inputFile.getName() + "; errorCode: " + errorCodeIOException.ErrCode, errorCodeIOException);
         } catch (IOException ioException) {
-            throw new OfficeException("could not load document: "  + inputFile.getName(), ioException);
+            System.out.print("转换失败: "  + inputFile.getName() + ioException);
+          //  throw new OfficeException("could not load document: "  + inputFile.getName(), ioException);
         }
         if (document == null) {
-            throw new OfficeException("could not load document: "  + inputFile.getName());
+            System.out.print("转换失败: "  + inputFile.getName());
+           // throw new OfficeException("could not load document: "  + inputFile.getName());
         }
         return document;
     }
@@ -100,7 +108,7 @@ public abstract class AbstractConversionTask implements OfficeTask {
      * saved in the new format.
      * <p>
      * Does nothing by default.
-     * 
+     *
      * @param document
      * @throws OfficeException
      */

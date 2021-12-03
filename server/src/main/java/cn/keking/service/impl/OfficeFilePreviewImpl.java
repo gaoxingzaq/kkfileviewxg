@@ -5,6 +5,7 @@ import cn.keking.model.FileAttribute;
 import cn.keking.model.ReturnResponse;
 import cn.keking.service.*;
 import cn.keking.utils.DownloadUtils;
+import cn.keking.utils.KkFileUtils;
 import cn.keking.web.filter.BaseUrlFilter;
 import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 
-import java.net.URLEncoder;
-import java.util.Collections;
+import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -45,6 +46,10 @@ public class OfficeFilePreviewImpl implements FilePreview {
     private String officedel;
     @Value("${xlsxzh:true}")
     private String xlsxzh;
+    @Value("${pdfsize:10}")
+    private int pdfsize;
+    @Value("${pdfpagee:0}")
+    private String pdfpagee;
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         // 预览Type，参数传了就取参数的，没传取系统默认
@@ -103,15 +108,13 @@ public class OfficeFilePreviewImpl implements FilePreview {
             filePath = response.getContent();
             if (officexh.equals("1")) {   //开源openoffice 或  LibreOffice转换
                 if (StringUtils.hasText(outFilePath)) {
-                officeToPdfService.openOfficeToPDF(filePath, outFilePath);
+                    officeToPdfService.openOfficeToPDF(filePath, outFilePath);
                     if(officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
-
-                        FileHandlerService.deleteFile(filePath);
+                        KkFileUtils.deleteFileByPath(filePath);
                     }
-
                 if (isHtml) {
                     // 对转换后的文件进行操作(改变编码方式)
-                  fileHandlerService.doActionConvertedFile(outFilePath);
+                fileHandlerService.doActionConvertedFile(outFilePath);
                 } } }else { //POI转换
                 try {
                     if(doc){
@@ -132,18 +135,22 @@ public class OfficeFilePreviewImpl implements FilePreview {
                         }
                     }
                     if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
-                        FileHandlerService.deleteFile(filePath);
+                        KkFileUtils.deleteFileByPath(filePath);
+                      //  FileHandlerService.deleteFile(filePath);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+            File filef = new File(FILE_DIR + pdfName);
+            if(!filef.exists() || filef.length() == 0) {
+                return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他，尝试其他文件");
             }
             if (ConfigConstants.isCacheEnabled()) {
                 // 加入缓存
                 fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
             }
         }
-
         if (!isHtml && baseUrl != null && (OFFICE_PREVIEW_TYPE_IMAGE.equals(officePreviewType) || OFFICE_PREVIEW_TYPE_ALL_IMAGES.equals(officePreviewType))) {
             return getPreviewType(model, fileAttribute, officePreviewType, baseUrl, pdfName, outFilePath, fileHandlerService, OFFICE_PREVIEW_TYPE_IMAGE, otherFilePreview);
         }
@@ -155,14 +162,21 @@ public class OfficeFilePreviewImpl implements FilePreview {
           if(FileHandlerService.pdfpage(pdfName) <=1){  //判断PDF文件 当文件小于等于1就不进行分割
               pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
           }else {
+              double pdfdx = FileHandlerService.getDirSize(new File(FILE_DIR + pdfName)); //判断PDF文件大小 大于设定值就分页
+              BigDecimal data1 = new BigDecimal(pdfdx);
               pdfName= FileHandlerService.zhuanyii(pdfName);  //文件名转义
-              pdfName ="download?urlPath="+pdfName;   //分割PDF文件
+              String pdfNamee= pdfName;  //文件名转义
+              if (data1.compareTo(data1) < pdfsize) {
+                  pdfName ="download?urlPath="+pdfName+"&"+FileHandlerService.pdfpage(pdfNamee);   //分割PDF文件
+                  model.addAttribute("pdfUrl", pdfName);
+                  return  FYPDF_FILE_PREVIEW_PAGE;
+              }else {
+                  pdfName ="download?urlPath="+pdfName+"?page="+pdfpagee;   //分割PDF文件
+              }
           }
-
         }
-
         model.addAttribute("pdfUrl", pdfName);
-        return isHtml ? EXEL_FILE_PREVIEW_PAGE : PDF_FILE_PREVIEW_PAGE;
+       return isHtml ? EXEL_FILE_PREVIEW_PAGE : PDF_FILE_PREVIEW_PAGE;
     }
 
     static String getPreviewType(Model model, FileAttribute fileAttribute, String officePreviewType, String baseUrl, String pdfName, String outFilePath, FileHandlerService fileHandlerService, String officePreviewTypeImage, OtherFilePreviewImpl otherFilePreview) {

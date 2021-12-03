@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Collections;
@@ -39,6 +40,15 @@ public class PdfFilePreviewImpl implements FilePreview {
     }
     @Value("${pdffy:false}")
     private String pdffy;
+    @Value("${pdfpagee:0}")
+    private String pdfpagee;
+    public static boolean kuayu(String host, String wjl) {  //查询域名是否相同
+        if (wjl.contains(host)) {
+            return true;
+        }else {
+            return false;
+        }
+    }
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         String gengxin=fileAttribute.getgengxin();
@@ -48,9 +58,7 @@ public class PdfFilePreviewImpl implements FilePreview {
         String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "pdf";
         String outFilePath = FILE_DIR + pdfName;
         if (OfficeFilePreviewImpl.OFFICE_PREVIEW_TYPE_IMAGE.equals(officePreviewType) || OfficeFilePreviewImpl.OFFICE_PREVIEW_TYPE_ALL_IMAGES.equals(officePreviewType)) {
-
             //当文件不存在时，就去下载
-
             boolean pdfgx ;
             if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
                 pdfgx= false;
@@ -98,17 +106,26 @@ public class PdfFilePreviewImpl implements FilePreview {
 
                     }else {
                         pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
-                     pdfName =baseUrl+"download?urlPath="+pdfName;
+                     pdfName =baseUrl+"download?urlPath="+pdfName+"?page="+pdfpagee;
                     }
                     model.addAttribute("pdfUrl", pdfName);
                 }
             } else {
-
                 if( pdffy.equalsIgnoreCase("false")){
-
                 }else {
-
-                 url =baseUrl+"download?urlPath="+url;
+                    java.net.URL urls = null;
+                    try {
+                        urls = new java.net.URL(url);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                    String host = urls.getHost()+ ":" + urls.getDefaultPort();// 获取http信息
+                    boolean bendi = kuayu(host, baseUrl); //判断是否是本地URL 是本地的启用分页功能 不是就直接在跨域输出
+                //   System.out.println(host);
+                    if(!bendi){
+                    }else {
+                        url =baseUrl+"download?urlPath="+url+"?page="+pdfpagee;
+                    }
                 }
                 model.addAttribute("pdfUrl",url);
             }

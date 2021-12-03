@@ -272,6 +272,22 @@ See https://github.com/adobe-type-tools/cmap-resources
                     <option title="" value="2" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 200 }'>200%</option>
                     <option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 300 }'>300%</option>
                     <option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 400 }'>400%</option>
+					<option title="" value="5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 500 }'>500%</option>
+					<option title="" value="6" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 600 }'>600%</option>
+					<option title="" value="7" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 700 }'>700%</option>
+					<option title="" value="8" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 800 }'>800%</option>
+					<option title="" value="9" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 900 }'>900%</option>
+					<option title="" value="10" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 1000 }'>1000%</option>
+					<option title="" value="11" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 1500 }'>1500%</option>
+					<option title="" value="12" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 2000 }'>2000%</option>
+					<option title="" value="13" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 2500 }'>2500%</option>
+					<option title="" value="14" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 3000 }'>3000%</option>
+					<option title="" value="15" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 3500 }'>3500%</option>
+					<option title="" value="16" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 4000 }'>4000%</option>
+					<option title="" value="17" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 4500 }'>4500%</option>
+					<option title="" value="18" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 5000 }'>5000%</option>
+					<option title="" value="19" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 5500 }'>5500%</option>
+					<option title="" value="20" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 6000 }'>6000%</option>
                   </select>
                 </span>
               </div>
@@ -394,5 +410,56 @@ See https://github.com/adobe-type-tools/cmap-resources
 
     </div> <!-- outerContainer -->
     <div id="printContainer"></div>
+	<!-- Goes into viewer.html just before ending </body> -->
+<script>
+    let pinchZoomEnabled = false;
+    function enablePinchZoom(pdfViewer) {
+        let startX = 0, startY = 0;
+        let initialPinchDistance = 0;        
+        let pinchScale = 1;    
+        const viewer = document.getElementById("viewer");
+        const container = document.getElementById("viewerContainer");
+        const reset = () => { startX = startY = initialPinchDistance = 0; pinchScale = 1; };
+        // Prevent native iOS page zoom
+        //document.addEventListener("touchmove", (e) => { if (e.scale !== 1) { e.preventDefault(); } }, { passive: false });
+        document.addEventListener("touchstart", (e) => {
+            if (e.touches.length > 1) {
+                startX = (e.touches[0].pageX + e.touches[1].pageX) / 2;
+                startY = (e.touches[0].pageY + e.touches[1].pageY) / 2;
+                initialPinchDistance = Math.hypot((e.touches[1].pageX - e.touches[0].pageX), (e.touches[1].pageY - e.touches[0].pageY));
+            } else {
+                initialPinchDistance = 0;
+            }
+        });
+        document.addEventListener("touchmove", (e) => {
+            if (initialPinchDistance <= 0 || e.touches.length < 2) { return; }
+            if (e.scale !== 1) { e.preventDefault(); }
+            const pinchDistance = Math.hypot((e.touches[1].pageX - e.touches[0].pageX), (e.touches[1].pageY - e.touches[0].pageY));
+            const originX = startX + container.scrollLeft;
+            const originY = startY + container.scrollTop;
+            pinchScale = pinchDistance / initialPinchDistance;
+            viewer.style.transform = `scale(${pinchScale})`;
+            viewer.style.transformOrigin = `${originX}px ${originY}px`;
+        }, { passive: false });
+        document.addEventListener("touchend", (e) => {
+            if (initialPinchDistance <= 0) { return; }
+            viewer.style.transform = `none`;
+            viewer.style.transformOrigin = `unset`;
+            PDFViewerApplication.pdfViewer.currentScale *= pinchScale;
+            const rect = container.getBoundingClientRect();
+            const dx = startX - rect.left;
+            const dy = startY - rect.top;
+            container.scrollLeft += dx * (pinchScale - 1);
+            container.scrollTop += dy * (pinchScale - 1);
+            reset();
+        });
+    }
+    document.addEventListener('webviewerloaded', () => {
+        if (!pinchZoomEnabled) {
+            pinchZoomEnabled = true;
+            enablePinchZoom();
+        }
+    });
+</script>
   </body>
 </html>

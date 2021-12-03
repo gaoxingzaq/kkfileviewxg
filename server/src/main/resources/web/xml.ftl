@@ -39,7 +39,7 @@
      */
     window.onload = function () {
         $("#xml_btn").hide()
-        initWaterMark();
+   
         loadXmlData()
     }
 
@@ -83,6 +83,12 @@
             $("#xml").html(window.textPreData);
         });
     });
+	   /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 </body>
 

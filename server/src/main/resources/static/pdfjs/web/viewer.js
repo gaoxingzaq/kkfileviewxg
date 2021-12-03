@@ -18033,7 +18033,7 @@ var BasePreferences = /*#__PURE__*/function () {
 
     Object.defineProperty(this, "defaults", {
       value: Object.freeze({
-        "cursorToolOnLoad": 0,
+        "cursorToolOnLoad": 1,
         "defaultZoomValue": "",
         "disablePageLabels": false,
         "enablePermissions": false,

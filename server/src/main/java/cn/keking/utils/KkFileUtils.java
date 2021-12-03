@@ -65,20 +65,10 @@ public class KkFileUtils {
      * @return 编码格式
      */
     public static String getFileEncode(String filePath) {
-        return getFileEncode(new File(filePath));
-    }
-
-    /**
-     * 检测文件编码格式
-     *
-     * @param file 检测的文件
-     * @return 编码格式
-     */
-    public static String getFileEncode(File file) {
         CharsetPrinter cp = new CharsetPrinter();
         try {
-            String encoding = cp.guessEncoding(file);
-            LOGGER.info("检测到文件【{}】编码: {}", file.getAbsolutePath(), encoding);
+            String encoding = cp.guessEncoding(new File (filePath));
+            LOGGER.info("检测到文件【{}】编码: {}", filePath, encoding);
             return encoding;
         } catch (IOException e) {
             LOGGER.warn("文件编码获取失败，采用默认的编码格式：UTF-8", e);
@@ -105,7 +95,7 @@ public class KkFileUtils {
     public static void deleteFileByPath(String filePath) {
         File file = new File(filePath);
         if (file.exists() && !file.delete()) {
-            LOGGER.warn("压缩包源文件删除失败:{}！", filePath);
+            LOGGER.warn("源文件删除失败:{}！", filePath);
         }
     }
 

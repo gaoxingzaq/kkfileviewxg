@@ -161,9 +161,9 @@ public class FileHandlerService {
     /**
      * 获取PDF 页数
      *
-     * @return
      */
     public static int pdfpage(String pdfName) {
+        pdfName = pdfName.replace("%20", " ");
         File file = new File(FILE_DIR+pdfName);
         PdfReader pdfReader = null;
         try {
@@ -222,21 +222,27 @@ public class FileHandlerService {
         }
         return file;
     }
+
     /**
-     *  用于删除OFFICE原文件
+     *  判断文件大小
      */
-    public static void deleteFile(String file) {
-        File filee = new File(file);
-        if (filee.exists()) {//判断文件是否存在
-            if (filee.isFile()) {//判断是否是文件
-                filee.delete();//删除文件
-            } else if (filee.isDirectory()) {//否则如果它是一个目录
-                File[] files = filee.listFiles();//声明目录下所有的文件 files[];
-                for (int i = 0; i < files.length; i++) {//遍历目录下所有的文件
-                    deleteFile(String.valueOf(files[i]));//把每个文件用这个方法进行迭代
-                }
-                filee.delete();//删除文件夹
+    public static double getDirSize(File file) {
+        //判断文件是否存在
+        if (file.exists()) {
+            //如果是目录则递归计算其内容的总大小
+            if (file.isDirectory()) {
+                File[] children = file.listFiles();
+                double size = 0;
+                for (File f : children)
+                    size += getDirSize(f);
+                return size;
+            } else {//如果是文件则直接返回其大小,以“兆”为单位
+                double size = (double) file.length() / 1024 / 1024;
+                return size;
             }
+        } else {
+            System.out.println("文件或者文件夹不存在，请检查路径是否正确！");
+            return 0.0;
         }
     }
     /**
@@ -264,6 +270,8 @@ public class FileHandlerService {
     private int pdfjpg;
     @Value("${pdffy:false}")
     private String pdffy;
+    @Value("${pdfpagee:0}")
+    private String pdfpagee;
     public List<String> pdf2jpg(String pdfFilePath, String pdfName, String baseUrl, FileAttribute fileAttribute) {
         String gengxin=fileAttribute.getgengxin();
         List<String> imageUrls = new ArrayList<>();
@@ -273,17 +281,18 @@ public class FileHandlerService {
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) {  //去缓存更新
             imageCount = Integer.valueOf("0");
         }else {
-            if(pdffy.equalsIgnoreCase("false")){    //是否开启分片功能
+            if(pdffy.equalsIgnoreCase("false") ||pdfpagee.equalsIgnoreCase("0") ){    //是否开启分片功能
                 imageCount = this.getConvertedPdfImage(pdfFilePath);
             }else {
                 imageCount = this.getConvertedPdfImage(FILE_DIR+"ls"+pdfName);
             }
         }
+       // System.out.println(pdfFilePath);
         String urlPrefix;
         if(pdffy.equalsIgnoreCase("false")){    //是否开启分片功能
             urlPrefix = baseUrl + pdfFolder;   //不改变路径
         }else {
-            if(pdfpage(pdfName)<=1){
+            if(pdfpagee.equalsIgnoreCase("0") || pdfpage(pdfName)<=1){
                 urlPrefix = baseUrl + pdfFolder;   //不改变路径
             }else {
                 if (imageCount != null && imageCount > 0) {
@@ -291,12 +300,12 @@ public class FileHandlerService {
                     pdfFilePath = FILE_DIR+"ls"+pdfName;
                 }else {
                     urlPrefix = baseUrl +"ls"+ pdfFolder;  //改变路径 添加LS路径
-                    pdfFilePath =baseUrl +"download?urlPath="+"file:///" + pdfFilePath;    //链接到PDF分割功能
+                    pdfFilePath =baseUrl +"download?urlPath="+"file:///" + pdfFilePath+"?";    //链接到PDF分割功能
                     pdfFilePath = String.valueOf(getNetUrlHttp(pdfFilePath,pdfName));
                 }
             }
         }
-        urlPrefix = urlPrefix.replaceFirst(baseUrl,"/");
+        urlPrefix = urlPrefix.replaceFirst(baseUrl,"");
         urlPrefix= zhuanyii(urlPrefix);  //图片名称转义
         if (imageCount != null && imageCount > 0) {
             for (int i = 0; i < imageCount; i++) {

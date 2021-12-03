@@ -1,4 +1,13 @@
 #!/bin/bash
+#
+#############################
+# First_Author:  凯京科技
+# Second_Author:  sanxi
+# Version: 1.1
+# Date:    2021/09/17
+# Description:  v1.1：修改进程启动机制为pid形式。
+#############################
+#
 DIR_HOME=("/opt/openoffice.org3" "/opt/libreoffice" "/opt/libreoffice5.0" "/opt/libreoffice5.2" "/opt/libreoffice6.0" "/opt/libreoffice6.1" "/opt/libreoffice6.2" "/opt/libreoffice6.3" "/opt/libreoffice6.4" "/opt/libreoffice7.0" "/opt/libreoffice7.1" "/opt/libreoffice7.2" "/opt/openoffice4" "/usr/lib/openoffice" "/usr/lib/libreoffice" "/usr/lib64/libreoffice")
 FLAG=
 OFFICE_HOME=
@@ -45,6 +54,7 @@ else
   echo "Please execute ./showlog.sh to check log for more information"
   echo "You can get help in our official homesite: https://kkFileView.keking.cn"
   echo "If this project is helpful to you, please star it on https://gitee.com/kekingcn/file-online-preview/stargazers"
+  echo "Kaohsiung Revised Edition, please star it on https://gitee.com/gaoxingzaq/file-online-preview-master"
   PROCESS=$(ps -ef | grep kkFileView | awk 'NR==1{print $2}')
   # 启动成功后将进程号写入pid文件
   echo "$PROCESS" > "$PID_FILE"
