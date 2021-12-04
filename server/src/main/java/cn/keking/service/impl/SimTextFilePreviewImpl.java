@@ -44,7 +44,7 @@ public class SimTextFilePreviewImpl implements FilePreview {
         return TXT_FILE_PREVIEW_PAGE;
     }
 
-    private String textData(String baseUrll) throws IOException {
+    static String textData(String baseUrll) throws IOException {
         File file = new File(baseUrll);
         if(!file.exists() || file.length() == 0) {
             String line="";

@@ -115,19 +115,20 @@ public abstract class AbstractConversionTask implements OfficeTask {
     protected void modifyDocument(XComponent document) throws OfficeException {
     	// noop
     }
-
     private void storeDocument(XComponent document, File outputFile) throws OfficeException {
         Map<String,?> storeProperties = getStoreProperties(outputFile, document);
         if (storeProperties == null) {
-            throw new OfficeException("unsupported conversion");
+            System.out.print("不支持的转换" );
+            //throw new OfficeException("不支持的转换");
         }
         try {
             cast(XStorable.class, document).storeToURL(toUrl(outputFile), toUnoProperties(storeProperties));
         } catch (ErrorCodeIOException errorCodeIOException) {
-            throw new OfficeException("could not store document: " + outputFile.getName() + "; errorCode: " + errorCodeIOException.ErrCode, errorCodeIOException);
+            System.out.print("无法存储文档: " + outputFile.getName() + "; errorCode: " + errorCodeIOException.ErrCode +errorCodeIOException);
+           // throw new OfficeException("could not store document: " + outputFile.getName() + "; errorCode: " + errorCodeIOException.ErrCode, errorCodeIOException);
         } catch (IOException ioException) {
-            throw new OfficeException("could not store document: " + outputFile.getName(), ioException);
+            System.out.print("无法存储文档" + outputFile.getName()+ ioException );
+           // throw new OfficeException("could not store document: " + outputFile.getName(), ioException);
         }
     }
-
 }

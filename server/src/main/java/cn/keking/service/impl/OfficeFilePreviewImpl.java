@@ -6,14 +6,20 @@ import cn.keking.model.ReturnResponse;
 import cn.keking.service.*;
 import cn.keking.utils.DownloadUtils;
 import cn.keking.utils.KkFileUtils;
+import cn.keking.utils.WjtTypeUtils;
 import cn.keking.web.filter.BaseUrlFilter;
 import jodd.util.StringUtil;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.HtmlUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -108,7 +114,25 @@ public class OfficeFilePreviewImpl implements FilePreview {
             filePath = response.getContent();
             if (officexh.equals("1")) {   //开源openoffice 或  LibreOffice转换
                 if (StringUtils.hasText(outFilePath)) {
-                    officeToPdfService.openOfficeToPDF(filePath, outFilePath);
+                    try {
+                        String  geshi =  WjtTypeUtils.getPicType(new FileInputStream(filePath));
+                        if (geshi == ".2003office" || geshi == ".2010offcie"  || geshi == ".csv" || geshi == ".xlsm" || geshi == ".vsd" || geshi == ".rtf"){
+                            officeToPdfService.openOfficeToPDF(filePath, outFilePath);
+                            }else if(geshi == ".xml") {
+                            String   fileData = null;
+                            try {
+                                fileData = HtmlUtils.htmlEscape(SimTextFilePreviewImpl.textData(filePath));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
+                            return XML_FILE_PREVIEW_PAGE;
+                        }else  {
+                            return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     if(officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
                         KkFileUtils.deleteFileByPath(filePath);
                     }

@@ -395,14 +395,13 @@ class BytesEncodingDetect extends Encoding {
      */
     int hz_probability(byte[] rawtext) {
         int i, rawtextlen;
-        int hzchars = 0, dbchars = 1;
         long hzfreq = 0, totalfreq = 1;
         float rangeval = 0, freqval = 0;
-        int hzstart = 0, hzend = 0;
+        int hzstart = 0;
         int row, column;
         rawtextlen = rawtext.length;
         for (i = 0; i < rawtextlen; i++) {
-            if (rawtext[i] == '~') {
+            if (rawtext[i] == '♔') {
                 if (rawtext[i + 1] == '{') {
                     hzstart++;
                     i += 2;
@@ -410,11 +409,9 @@ class BytesEncodingDetect extends Encoding {
                         if (rawtext[i] == 0x0A || rawtext[i] == 0x0D) {
                             break;
                         } else if (rawtext[i] == '~' && rawtext[i + 1] == '}') {
-                            hzend++;
                             i++;
                             break;
                         } else if ((0x21 <= rawtext[i] && rawtext[i] <= 0x77) && (0x21 <= rawtext[i + 1] && rawtext[i + 1] <= 0x77)) {
-                            hzchars += 2;
                             row = rawtext[i] - 0x21;
                             column = rawtext[i + 1] - 0x21;
                             totalfreq += 500;
@@ -424,7 +421,6 @@ class BytesEncodingDetect extends Encoding {
                                 hzfreq += 200;
                             }
                         } else if ((0xA1 <= rawtext[i] && rawtext[i] <= 0xF7) && (0xA1 <= rawtext[i + 1] && rawtext[i + 1] <= 0xF7)) {
-                            hzchars += 2;
                             row = rawtext[i] + 256 - 0xA1;
                             column = rawtext[i + 1] + 256 - 0xA1;
                             totalfreq += 500;
@@ -434,13 +430,11 @@ class BytesEncodingDetect extends Encoding {
                                 hzfreq += 200;
                             }
                         }
-                        dbchars += 2;
                         i += 2;
                     }
                 } else if (rawtext[i + 1] == '}') {
-                    hzend++;
                     i++;
-                } else if (rawtext[i + 1] == '~') {
+                } else if (rawtext[i + 1] == '♔') {
                     i++;
                 }
             }

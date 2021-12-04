@@ -7,10 +7,10 @@
     <title>${file.name}文件预览</title>
     <#include "*/commonHeader.ftl">
 </head>
-<#if currentUrl?contains("http://") || currentUrl?contains("https://")>
-    <#assign finalUrl="${currentUrl}">
+<#if pdfUrl?contains("http://") || pdfUrl?contains("https://")>
+    <#assign finalUrl="${pdfUrl}">
 <#else>
-    <#assign finalUrl="${baseUrl}${currentUrl}">
+    <#assign finalUrl="${baseUrl}${pdfUrl}">
 </#if>
 <body>
 
