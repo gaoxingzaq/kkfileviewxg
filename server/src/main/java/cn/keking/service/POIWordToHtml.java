@@ -2,20 +2,12 @@ package cn.keking.service;
 
 import fr.opensagres.poi.xwpf.converter.core.BasicURIResolver;
 import fr.opensagres.poi.xwpf.converter.core.FileImageExtractor;
-import fr.opensagres.poi.xwpf.converter.xhtml.Base64EmbedImgManager;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLConverter;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLOptions;
 import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.HWPFDocumentCore;
 import org.apache.poi.hwpf.converter.WordToHtmlConverter;
-import org.apache.poi.hwpf.converter.WordToHtmlUtils;
-import org.apache.poi.hwpf.usermodel.Picture;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -24,8 +16,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 /**
  * POIExcelToHtml 文件转换：
@@ -47,6 +37,7 @@ public class POIWordToHtml {
         String htmlData = "预览失败";
         String ext = FileUtils.GetFileExt(sourcePath);
         File picturesDir = new File(picturesPath);
+
         try {
             InputStream inputStream = new FileInputStream(sourcePath);
             if ("docx".equalsIgnoreCase(ext)) {
@@ -63,6 +54,9 @@ public class POIWordToHtml {
                         e.printStackTrace();
                     }
                 }
+                if (!picturesDir.isDirectory()) {
+                    picturesDir.mkdirs();
+                }
                 XHTMLOptions options = XHTMLOptions.create();
                 options.setIgnoreStylesIfUnused(false);
                 options.setExtractor(new FileImageExtractor(picturesDir));
@@ -72,14 +66,10 @@ public class POIWordToHtml {
                 htmlData = htmlStream.toString();
                 docxDocument.close();
                 htmlStream.close();
-                if (!picturesDir.isDirectory()) {
-                    picturesDir.mkdirs();
-                }
                 FileUtils.writeFile(htmlData, targetPath);
                 return true;
             } else  {
                 HWPFDocument wordDocument;
-
                 try {
                     wordDocument = new HWPFDocument(inputStream);
                 } catch (Exception e) {
@@ -92,13 +82,12 @@ public class POIWordToHtml {
                         e.printStackTrace();
                     }
                 }
-
+                if (!picturesDir.isDirectory()) {
+                    picturesDir.mkdirs();
+                }
                 WordToHtmlConverter wordToHtmlConverter = new WordToHtmlConverter(
                 DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
                 wordToHtmlConverter.setPicturesManager((content1, pictureType, suggestedName, widthInches, heightInches) -> {
-                    if (!picturesDir.isDirectory()) {
-                        picturesDir.mkdirs();
-                    }
                     File file = new File(picturesPath + "/" + suggestedName);
                     FileOutputStream fos;
                     try {
