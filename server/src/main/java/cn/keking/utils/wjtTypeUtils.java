@@ -107,8 +107,7 @@ public class WjtTypeUtils {
         return null;
     }
 
-
-    public static String getPicType1(InputStream fis) {
+    public static String pdftype(InputStream fis) {
         //读取文件的前几个字节来判断图片格式
         byte[] b = new byte[4];
         try {

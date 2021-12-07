@@ -298,7 +298,7 @@ public class FileHandlerService {
         String  geshi = null;
         try {
             if (ff ==1){  //OFD PDF 查询方法
-                geshi = WjtTypeUtils.getPicType1(new FileInputStream(outFilePath));
+                geshi = WjtTypeUtils.pdftype(new FileInputStream(outFilePath));
             }else {
                 geshi = WjtTypeUtils.getPicType(new FileInputStream(outFilePath));
             }
