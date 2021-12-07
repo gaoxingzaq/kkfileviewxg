@@ -197,6 +197,19 @@
     <version>3.0.3</version>
 </dependency>
 
+<!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-jpeg -->
+<dependency>
+    <groupId>com.twelvemonkeys.imageio</groupId>
+    <artifactId>imageio-jpeg</artifactId>
+    <version>3.7.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-tiff -->
+<dependency>
+    <groupId>com.twelvemonkeys.imageio</groupId>
+    <artifactId>imageio-tiff</artifactId>
+    <version>3.7.0</version>
+</dependency>
+
 
 		 <!-- CAD转换 -->
          <dependency>
