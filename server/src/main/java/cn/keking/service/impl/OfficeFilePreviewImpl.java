@@ -6,7 +6,6 @@ import cn.keking.model.ReturnResponse;
 import cn.keking.service.*;
 import cn.keking.utils.DownloadUtils;
 import cn.keking.utils.KkFileUtils;
-import cn.keking.utils.WjtTypeUtils;
 import cn.keking.web.filter.BaseUrlFilter;
 import jodd.util.StringUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -17,8 +16,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -65,6 +62,13 @@ public class OfficeFilePreviewImpl implements FilePreview {
         String suffix = fileAttribute.getSuffix();
         String fileName = fileAttribute.getName();
         String imagesss = FILE_DIR + fileName;
+        if(officePreviewType.equalsIgnoreCase("poi")){  //判断需要用什么转换器
+            officexh= String.valueOf(2);
+        }else if (officePreviewType.equalsIgnoreCase("office")){
+            officexh= String.valueOf(1);
+        }else {
+            officexh=String.valueOf(1);
+        }
         boolean isHtml;
         boolean doc = suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("dot") || suffix.equalsIgnoreCase("docm") || suffix.equalsIgnoreCase("vsd") ;
         boolean xls = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm")  ;
@@ -72,9 +76,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
         if (officexh.equals("1")) {
              isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm") || suffix.equalsIgnoreCase("csv") ;
         }else {
-             isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm") || suffix.equalsIgnoreCase("csv") || suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx") || suffix.equalsIgnoreCase("dot") || suffix.equalsIgnoreCase("dotx") || suffix.equalsIgnoreCase("dotm")  || suffix.equalsIgnoreCase("vsd")  || suffix.equalsIgnoreCase("rtf")  ;
+             isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx")  || suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx");
         }
-
         String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + (isHtml ? "html" : "pdf");
         String ptxName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "file";
         String outFilePath = FILE_DIR + pdfName;
@@ -112,34 +115,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
             }
             filePath = response.getContent();
-            if (officexh.equals("1")) {   //开源openoffice 或  LibreOffice转换
-                if (StringUtils.hasText(outFilePath)) {
-                    try {
-                        String  geshi =  WjtTypeUtils.getPicType(new FileInputStream(filePath));
-                        if (geshi == ".2003office" || geshi == ".2010offcie"  || geshi == ".csv" || geshi == ".xlsm" || geshi == ".vsd" || geshi == ".rtf"){
-                            officeToPdfService.openOfficeToPDF(filePath, outFilePath);
-                            }else if(geshi == ".xml") {
-                            String   fileData = null;
-                            try {
-                                fileData = HtmlUtils.htmlEscape(SimTextFilePreviewImpl.textData(filePath));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
-                            return XML_FILE_PREVIEW_PAGE;
-                        }else  {
-                            return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
-                        }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    if(officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
-                        KkFileUtils.deleteFileByPath(filePath);
-                    }
-                if (isHtml) {
-                    // 对转换后的文件进行操作(改变编码方式)
-                fileHandlerService.doActionConvertedFile(outFilePath);
-                } } }else { //POI转换
+         if (officexh.equals("2")) { //POI转换
+                KkFileUtils.deleteFileByPath(outFilePath);
                 try {
                     if(doc){
                         if(POIWordToHtml.wordToHtml(filePath, imagesss, fileName, outFilePath)){
@@ -158,16 +135,51 @@ public class OfficeFilePreviewImpl implements FilePreview {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他，尝试其他文件");
                         }
                     }
-                    if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
-                        KkFileUtils.deleteFileByPath(filePath);
-                      //  FileHandlerService.deleteFile(filePath);
-                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }else {   //开源openoffice 或  LibreOffice转换
+             if (StringUtils.hasText(outFilePath)) {
+                 String geshi =FileHandlerService.geshi(filePath,0);// 获取文件头信息
+                     if (geshi.equals(".2003office") || geshi.equals(".2010offcie")  || geshi.equals(".QT") || geshi.equals(".rtf") ){  //判断是什么格式的文件
+                         KkFileUtils.deleteFileByPath(outFilePath);
+                         officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //如果存在以上格式就进行转换
+                     }else if(geshi.equals(".xml")) {  //如果是XML格式的WORD就用下面方法
+                         String fileData = null;
+                         try {
+                             fileData = HtmlUtils.htmlEscape(SimTextFilePreviewImpl.textData(filePath));
+                         } catch (IOException e) {
+                             e.printStackTrace();
+                         }
+                         model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
+                         return XML_FILE_PREVIEW_PAGE;
+                     }else if(suffix.equalsIgnoreCase("csv")) {  //如果是XML格式的WORD就用下面方法
+                         String fileData = null;
+                         try {
+                             fileData = HtmlUtils.htmlEscape(SimTextFilePreviewImpl.textData(filePath));
+                         } catch (IOException e) {
+                             e.printStackTrace();
+                         }
+                         model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
+                         return TXT_FILE_PREVIEW_PAGE;
+                     }else {
+                         if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                             KkFileUtils.deleteFileByPath(filePath);
+                         }
+                         return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
+                     }
+
+                 if (isHtml) {
+                     // 对转换后的文件进行操作(改变编码方式)
+                     fileHandlerService.doActionConvertedFile(outFilePath);
+                 }
+             } }
+            if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                KkFileUtils.deleteFileByPath(filePath);
             }
-            File filef = new File(FILE_DIR + pdfName);
-            if(!filef.exists() || filef.length() == 0) {
+            File file = new File(FILE_DIR + pdfName);   //判断文件是否存在
+            if(!file.exists() || file.length() == 0) {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他，尝试其他文件");
             }
             if (ConfigConstants.isCacheEnabled()) {
@@ -183,15 +195,14 @@ public class OfficeFilePreviewImpl implements FilePreview {
 
         }else {
 
-          if(FileHandlerService.pdfpage(pdfName) <=1){  //判断PDF文件 当文件小于等于1就不进行分割
+          if(FileHandlerService.pdfpage(pdfName) <=1){  //判断PDF文件页码 当小于等于1就不进行分割
               pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
           }else {
               double pdfdx = FileHandlerService.getDirSize(new File(FILE_DIR + pdfName)); //判断PDF文件大小 大于设定值就分页
-              BigDecimal data1 = new BigDecimal(pdfdx);
+              BigDecimal data = new BigDecimal(pdfdx);  //判断文件大小
               pdfName= FileHandlerService.zhuanyii(pdfName);  //文件名转义
-              String pdfNamee= pdfName;  //文件名转义
-              if (data1.compareTo(data1) < pdfsize) {
-                  pdfName ="download?urlPath="+pdfName+"&"+FileHandlerService.pdfpage(pdfNamee);   //分割PDF文件
+              if (data.compareTo(data) < pdfsize) {
+                  pdfName ="download?urlPath="+pdfName+"&"+FileHandlerService.pdfpage(pdfName);   //分割PDF文件
                   model.addAttribute("pdfUrl", pdfName);
                   return  FYPDF_FILE_PREVIEW_PAGE;
               }else {

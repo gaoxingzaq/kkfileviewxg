@@ -153,7 +153,6 @@ public class OnlinePreviewController {
     public void pdf(HttpServletRequest request, HttpServletResponse response) throws IOException, DocumentException {
         //文件路径
         String query = request.getQueryString();
-             //  query = query.replaceFirst("%20", " ");
         String urlPath = query.replaceFirst("urlPath=","");
         String page = null;
         if(pdfpagee.equalsIgnoreCase("0")){
@@ -170,11 +169,12 @@ public class OnlinePreviewController {
         if(pdfname.equalsIgnoreCase(".pdf")){ //判断是否PDF文件
         // 读取pdf文档
         if(urlPath.toLowerCase().startsWith("file")){
+            logger.info("文件地址异常", urlPath);
         }else if(!urlPath.toLowerCase().startsWith("http")){
            urlPath ="file:///"+  FILE_DIR + urlPath;
        }
      // System.out.println(urlPath);
-        PdfReader reader = new PdfReader(urlPath); //这里获取不到数据
+        PdfReader reader = new PdfReader(urlPath);
         //总页数
         int numberOfPages = reader.getNumberOfPages();
         // 截取开始页

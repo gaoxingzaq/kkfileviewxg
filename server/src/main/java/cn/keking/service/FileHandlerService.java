@@ -6,6 +6,7 @@ import cn.keking.model.FileType;
 import cn.keking.service.cache.CacheService;
 import cn.keking.utils.KkFileUtils;
 import cn.keking.utils.WebUtils;
+import cn.keking.utils.WjtTypeUtils;
 import com.aspose.cad.CodePages;
 import com.aspose.cad.Color;
 import com.aspose.cad.LoadOptions;
@@ -26,6 +27,8 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -259,6 +262,51 @@ public class FileHandlerService {
         return fuhao;
     }
 
+
+    /**
+     *  查询是否本地URL
+     */
+    public static boolean kuayu(String host, String wjl) {  //查询域名是否相同
+        if (wjl.contains(host)) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+    /**
+     *  获取URL地址
+     */
+    public static String hqurl(String url) {
+        java.net.URL urls = null;
+        try {
+            urls = new java.net.URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        int port = urls.getPort();
+        if (port < 0) {
+            // 获取对应协议的默认端口号
+            port = urls.getDefaultPort();
+        }
+        String host = urls.getHost()+ ":" + port;// 获取http信息
+        return host;
+    }
+    /**
+     *  获取文件头
+     */
+    public static String geshi(String outFilePath,int ff) {
+        String  geshi = null;
+        try {
+            if (ff ==1){  //OFD PDF 查询方法
+                geshi = WjtTypeUtils.getPicType1(new FileInputStream(outFilePath));
+            }else {
+                geshi = WjtTypeUtils.getPicType(new FileInputStream(outFilePath));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return geshi;
+    }
     /**
      *  pdf文件转换成jpg图片集
      * pdfFilePath pdf文件路径
