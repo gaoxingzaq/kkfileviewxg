@@ -27,6 +27,7 @@ public class WjtTypeUtils {
   //  public static final String TYPE_7Z = ".7z";
     public static final String TYPE_2003office = ".2003office";
     public static final String TYPE_2010offcie= ".2010offcie";
+    public static final String TYPE_xmln = ".xmln";
  //   public static final String TYPE_DOC = ".doc";
   //  public static final String TYPE_XLS = ".xls";
    // public static final String TYPE_DOCX = ".docx";
@@ -81,6 +82,8 @@ public class WjtTypeUtils {
                 return TYPE_XML;
             }else if(type.contains("25504446")){
                 return TYPE_PDF;
+            }else if(type.contains("3C68746D")){
+                return TYPE_xmln;
             }else if(type.contains("D0CF11E0")){
                 return TYPE_2003office;
             }else if(type.contains("504B0304")){

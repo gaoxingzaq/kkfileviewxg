@@ -143,7 +143,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
             }else {   //开源openoffice 或  LibreOffice转换
              if (StringUtils.hasText(outFilePath)) {
                  String geshi =FileHandlerService.geshi(filePath,0);// 获取文件头信息
-                     if (geshi.equals(".2003office") || geshi.equals(".2010offcie")  || geshi.equals(".QT") || geshi.equals(".rtf") ){  //判断是什么格式的文件
+                     if (geshi.equals(".2003office") || geshi.equals(".2010offcie")  || geshi.equals(".QT") || geshi.equals(".rtf") || geshi.equals(".xmln") ){  //判断是什么格式的文件
                          KkFileUtils.deleteFileByPath(outFilePath);
                          officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //如果存在以上格式就进行转换
                      }else if(geshi.equals(".xml")) {  //如果是XML格式的WORD就用下面方法

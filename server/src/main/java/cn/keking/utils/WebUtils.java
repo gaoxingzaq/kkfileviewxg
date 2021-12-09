@@ -113,13 +113,8 @@ public class WebUtils {
         String noQueryUrl = url;
         int fileNameStartIndex = noQueryUrl.lastIndexOf('/') + 1;
         int fileNameEndIndex = noQueryUrl.lastIndexOf('.');
-        String encodedFileName;
-        try {
-            encodedFileName = URLEncoder.encode(noQueryUrl.substring(fileNameStartIndex, fileNameEndIndex), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
-        encodedFileName = encodedFileName.replace("\\+", "%20");
+        String  encodedFileName = noQueryUrl.substring(fileNameStartIndex, fileNameEndIndex);
+      //  System.out.println(encodedFileName);
         return url.substring(0, fileNameStartIndex) + encodedFileName + url.substring(fileNameEndIndex);
     }
 
