@@ -3,11 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <artifactId>filepreview</artifactId>
         <groupId>cn.keking</groupId>
-        <version>4.1.8</version>
+        <artifactId>filepreview</artifactId>
+        <version>${kk.file.view.version}</version>
     </parent>
 
     <artifactId>office-plugin</artifactId>
