@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class pdfyashuo {
+public class Pdfyashuo {
 
     /**
      * 图像的乘法因子

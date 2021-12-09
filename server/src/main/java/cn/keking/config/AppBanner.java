@@ -21,9 +21,9 @@ public class AppBanner implements Banner {
                 " |_|\\_\\ |_|\\_\\ |_|      |_| |_|  \\___|     \\/     |_|  \\___|   \\_/\\_/  \n" +
                 "                                                                     \n" +
                 " => Spring Boot ::  (v2.4.2)             QQ3 :: 433403637\n" +
-                " => kkFileView  ::  (v4.1.7)             QQ2 :: 484680571\n" +
+                " => kkFileView  ::  (v4.1.8)             QQ2 :: 484680571\n" +
                 " => github      ::  https://github.com/kekingcn/kkFileView\n" +
                 " => gitee官方   ::  https://gitee.com/kekingcn/file-online-preview\n" +
-				" => gitee4.1.7  ::  https://gitee.com/gaoxingzaq/file-online-preview-master\n");
+				" => gitee4.1.8  ::  https://gitee.com/gaoxingzaq/file-online-preview-master\n");
     }
 }

@@ -205,7 +205,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
               if (data.compareTo(data) < pdfsize) {
 
               //    try {   //PDF压缩
-              //      new pdfyashuo().manipulatePdf(FILE_DIR + "综合宣传册.pdf",
+              //      new Pdfyashuo().manipulatePdf(FILE_DIR + "综合宣传册.pdf",
                      //       FILE_DIR +"ls22"+ "业绩册.pdf");
              //    } catch (IOException e) {
                //      e.printStackTrace();

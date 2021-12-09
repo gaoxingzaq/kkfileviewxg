@@ -248,6 +248,8 @@ public class FileHandlerService {
             return 0.0;
         }
     }
+
+
     /**
      *  输出文件名转义
      */
@@ -368,12 +370,12 @@ public class FileHandlerService {
             PDFRenderer pdfRenderer = new PDFRenderer(doc);
             int index = pdfFilePath.lastIndexOf(".");
             String folder = pdfFilePath.substring(0, index);
+                   folder = folder.replaceFirst("demo/","");
             File path = new File(folder);
             if (!path.exists() && !path.mkdirs()) {
                 logger.error("创建转换文件【{}】目录失败，请检查目录权限！", folder);
             }
             String imageFilePath;
-
             for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
                 imageFilePath = folder + File.separator + pageIndex + imageFileSuffix;
                 BufferedImage image = pdfRenderer.renderImageWithDPI(pageIndex, pdfjpg, ImageType.RGB);
