@@ -3,6 +3,7 @@ package cn.keking.utils;
 import cn.keking.config.ConfigConstants;
 import cn.keking.model.FileAttribute;
 import cn.keking.model.ReturnResponse;
+import cn.keking.service.FileHandlerService;
 import io.mola.galimatias.GalimatiasParseException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -38,6 +39,11 @@ public class DownloadUtils {
             e.printStackTrace();
         }
         String urlStr = fileAttribute.getUrl().replace("+", "%20");
+        boolean wjl = FileHandlerService.kuayu("&fullfilename=", urlStr);
+        if(wjl){
+            urlStr =  urlStr.substring(0,urlStr.lastIndexOf("&"));
+        }
+      //  System.out.println(urlStr);
         ReturnResponse<String> response = new ReturnResponse<>(0, "下载成功!!!", "");
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {

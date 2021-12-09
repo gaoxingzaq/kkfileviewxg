@@ -107,7 +107,7 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
-2021年12月7日，v4.1.8版本发布:<br>  
+2021年12月9日，v4.1.8版本发布:<br>  
 1、修复压缩包 解压后PDF 图片问题<br>  
 2、调整PDF 压缩包解压模式下载覆盖问题<br> 
 3、集成了PDF压缩 功能在OfficeFilePreviewImpl 类里面 没启用 等待继续完善 <br> 
