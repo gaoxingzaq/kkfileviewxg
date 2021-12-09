@@ -7,6 +7,7 @@ import cn.keking.service.*;
 import cn.keking.utils.DownloadUtils;
 import cn.keking.utils.KkFileUtils;
 import cn.keking.web.filter.BaseUrlFilter;
+import com.itextpdf.text.DocumentException;
 import jodd.util.StringUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -107,7 +108,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
             }
 
         }
-       // System.out.print(11);
+
         if (!pdfgx || !fileHandlerService.listConvertedFiles().containsKey(pdfName)) {
             String filePath;
             ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, null);
@@ -202,6 +203,17 @@ public class OfficeFilePreviewImpl implements FilePreview {
               BigDecimal data = new BigDecimal(pdfdx);  //判断文件大小
               pdfName= FileHandlerService.zhuanyii(pdfName);  //文件名转义
               if (data.compareTo(data) < pdfsize) {
+
+              //    try {   //PDF压缩
+              //      new Pdfyashuo().manipulatePdf(FILE_DIR + "综合宣传册.pdf",
+                     //       FILE_DIR +"ls22"+ "业绩册.pdf");
+             //    } catch (IOException e) {
+               //      e.printStackTrace();
+             //    } catch (DocumentException e) {
+               //      e.printStackTrace();
+              //    }
+
+
                   pdfName ="download?urlPath="+pdfName+"&"+FileHandlerService.pdfpage(pdfName);   //分割PDF文件
                   model.addAttribute("pdfUrl", pdfName);
                   return  FYPDF_FILE_PREVIEW_PAGE;

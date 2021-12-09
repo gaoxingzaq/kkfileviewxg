@@ -34,8 +34,8 @@ public class WjtTypeUtils {
   //  public static final String TYPE_WPS = ".wps";
  //   public static final String TYPE_DOCM = ".docm";
     public static final String TYPE_CSV = ".csv";
-    public static final String XLSM = ".xlsm";
-    public static final String TYPE_VSD = ".vsd";
+    public static final String TYPE_QT = ".QT";
+ //   public static final String TYPE_VSD = ".vsd";
     public static final String RTF = ".rtf";
 
     public static String bytesToHexString(byte[] src){
@@ -63,15 +63,15 @@ public class WjtTypeUtils {
           //  System.out.print(type);
             if (type.contains("FFD8FF")) {
                 return TYPE_JPG;
-            } else if (type.contains("89504E47")) {
+            }else if(type.contains("89504E47")) {
                 return TYPE_PNG;
-            } else if (type.contains("47494638")) {
+            }else if(type.contains("47494638")) {
                 return TYPE_GIF;
-            } else if (type.contains("424D3600")) {
+            }else if(type.contains("424D3600")) {
                 return TYPE_BMP;
             }else if(type.contains("52494646")){
                 return TYPE_WEBP;
-            }else if(type.contains("49492A00")){
+            } else if(type.contains("49492A00")){
                 return TYPE_TIF;
             }else if(type.contains("4D4D002A")){
                 return TYPE_TIFF;
@@ -79,26 +79,44 @@ public class WjtTypeUtils {
                 return TYPE_CAD;
             }else if(type.contains("3C3F786D")){
                 return TYPE_XML;
-            }else if(type.contains("255044462D")){
+            }else if(type.contains("25504446")){
                 return TYPE_PDF;
-            }else if(type.contains("504B03042D")){
-                return TYPE_OFD;
-            }else if(type.contains("526172211A")){
-                return TYPE_RAR;
-            }else if(type.contains("504B030400")){
-                return TYPE_JAR;
-            }else if(type.contains("D0CF11E0A1")){
+            }else if(type.contains("D0CF11E0")){
                 return TYPE_2003office;
-            }else if(type.contains("504B03040A")){
+            }else if(type.contains("504B0304")){
                 return TYPE_2010offcie;
-            }else if(type.contains("D0F2BAC52C")){
+            }else if(type.contains("D0F2BAC5")){
                 return TYPE_CSV;
-            }else if(type.contains("504B030414")){
-                return XLSM;
-            }else if(type.contains("504B030414")){
-                return TYPE_VSD;
-            }else if(type.contains("7B5C727466")){
+            }else if(type.contains("7B5C7274")){
                 return RTF;
+            } else{
+                return "未知文件";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            if(fis != null){
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return null;
+    }
+
+    public static String pdftype(InputStream fis) {
+        //读取文件的前几个字节来判断图片格式
+        byte[] b = new byte[4];
+        try {
+            fis.read(b, 0, b.length);
+            String type = Objects.requireNonNull(bytesToHexString(b)).toUpperCase();
+          if(type.contains("25504446")){
+                return TYPE_PDF;
+            }else if(type.contains("504B0304")){
+                return TYPE_OFD;
             } else{
                 return "未知文件";
             }

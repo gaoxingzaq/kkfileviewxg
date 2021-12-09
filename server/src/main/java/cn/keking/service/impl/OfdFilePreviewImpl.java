@@ -8,6 +8,8 @@ import cn.keking.web.filter.BaseUrlFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.io.File;
+
 /**
  * Content :处理OFD文件
  */
@@ -25,13 +27,22 @@ public class OfdFilePreviewImpl implements FilePreview {
         String fileName = fileAttribute.getName();
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "ofd";
+        String outFilePath = FILE_DIR + pdfName;
         String  host = FileHandlerService.hqurl(url);
         boolean bendi = FileHandlerService.kuayu(host, baseUrl); //判断是否是本地URL 是本地的启用分页功能 不是就直接在跨域输出
                     if(!bendi){
                         model.addAttribute("pdfUrl",url);
                         return OFD_FILE_PREVIEW_PAGE;
                     }else {
-                        String geshi =FileHandlerService.geshi(FILE_DIR + "demo/"+ pdfName,1);// 获取文件头信息
+                        File file = new File(outFilePath);   //判断文件是否存在
+                        if(!file.exists() || file.length() == 0) {
+                            outFilePath = FILE_DIR +"demo/" + pdfName;
+                        }
+                        File filee = new File(outFilePath);   //判断文件是否存在
+                        if(!filee.exists() || filee.length() == 0) {
+                            return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
+                        }
+                        String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
                         if (geshi.equals(".ofd")){
                             model.addAttribute("pdfUrl",url);
                             return OFD_FILE_PREVIEW_PAGE;

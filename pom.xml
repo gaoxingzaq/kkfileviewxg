@@ -6,7 +6,7 @@
 
     <groupId>cn.keking</groupId>
     <artifactId>filepreview</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.8</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -23,7 +23,7 @@
         <module>server</module>
     </modules>
 
-    <name>file-online-preview</name>
+    <name>kkFileView-parent</name>
     <description>专注文件在线预览服务</description>
     <url>https://github.com/kekingcn/kkFileView</url>
 

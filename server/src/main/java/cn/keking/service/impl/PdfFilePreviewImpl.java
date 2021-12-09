@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -42,20 +43,31 @@ public class PdfFilePreviewImpl implements FilePreview {
         String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "pdf";
         String outFilePath = FILE_DIR + pdfName;
         String  host = FileHandlerService.hqurl(url);
+        boolean bendi = FileHandlerService.kuayu(host, baseUrl); //判断是否是本地URL 是本地的启用分页功能 不是就直接在跨域输出
         if (OfficeFilePreviewImpl.OFFICE_PREVIEW_TYPE_IMAGE.equals(officePreviewType) || OfficeFilePreviewImpl.OFFICE_PREVIEW_TYPE_ALL_IMAGES.equals(officePreviewType)) {
-            //当文件不存在时，就去下载
             boolean pdfgx ;
             if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
                 pdfgx= false;
             }else {
                 pdfgx= ConfigConstants.isCacheEnabled();
             }
+            //当文件不存在时，就去下载
             if (!pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
-                ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
+                if(!bendi){
+                    ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
                 if (response.isFailure()) {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
                 }
-                outFilePath = response.getContent();
+                    outFilePath = response.getContent();
+                }
+                File file = new File(outFilePath);   //判断文件是否存在
+                if(!file.exists() || file.length() == 0) {
+                    outFilePath = FILE_DIR +"demo/" + pdfName;
+                }
+                File filee = new File(outFilePath);   //判断文件是否存在
+                if(!filee.exists() || filee.length() == 0) {
+                    return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
+                }
                 String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
                 if (geshi.equals(".pdf")){
 
@@ -70,6 +82,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                     fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
                 }
             }
+          //  System.out.println(outFilePath);
             List<String> imageUrls = fileHandlerService.pdf2jpg(outFilePath, pdfName, baseUrl,fileAttribute);
             if (imageUrls == null || imageUrls.size() < 1) {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, "pdf转图片异常，请联系管理员");
@@ -109,37 +122,26 @@ public class PdfFilePreviewImpl implements FilePreview {
                     if( pdffy.equalsIgnoreCase("false")){
 
                     }else {
-                     pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
-                     pdfName =baseUrl+"download?urlPath="+pdfName+"?page="+pdfpagee;
+                        pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
+                        pdfName =baseUrl+"download?urlPath="+pdfName+"?page="+pdfpagee;
                     }
                     model.addAttribute("pdfUrl", pdfName);
                 }
             } else {
                 if( pdffy.equalsIgnoreCase("false")){  //查询是否开启分页模式
-                    boolean bendi = FileHandlerService.kuayu(host, baseUrl); //判断是否是本地URL 是本地的启用分页功能 不是就直接在跨域输出
                     if(!bendi){  //不是本地直接输出
                         model.addAttribute("pdfUrl",url);
                         return PDF_FILE_PREVIEW_PAGE;
                     }else { //是本地文件
-                        String geshi =FileHandlerService.geshi(FILE_DIR + "demo/"+ pdfName,1);// 获取文件头信息
-                        if (geshi.equals(".pdf")){
-                            model.addAttribute("pdfUrl",url);
-                            return PDF_FILE_PREVIEW_PAGE;
-                    }else if (geshi.equals(".ofd")){
-                            model.addAttribute("pdfUrl",url);
-                            return OFD_FILE_PREVIEW_PAGE;
-                        }else {
-                            return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
+                        File file = new File(outFilePath);   //判断文件是否存在
+                        if(!file.exists() || file.length() == 0) {
+                            outFilePath = FILE_DIR +"demo/" + pdfName;
                         }
-                    }
-
-                }else {  //开启分页模式
-                    boolean bendi = FileHandlerService.kuayu(host, baseUrl); //判断是否是本地URL 是本地的启用分页功能 不是就直接在跨域输出
-                    if(!bendi){
-                        model.addAttribute("pdfUrl",url);
-                        return PDF_FILE_PREVIEW_PAGE;
-                    }else {
-                        String geshi =FileHandlerService.geshi(FILE_DIR + "demo/"+ pdfName,1);// 获取文件头信息
+                        File filee = new File(outFilePath);   //判断文件是否存在
+                        if(!filee.exists() || filee.length() == 0) {
+                            return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
+                        }
+                        String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
                         if (geshi.equals(".pdf")){
                             model.addAttribute("pdfUrl",url);
                             return PDF_FILE_PREVIEW_PAGE;
@@ -150,10 +152,35 @@ public class PdfFilePreviewImpl implements FilePreview {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
                         }
                     }
-            }
-        }
 
-        return PDF_FILE_PREVIEW_PAGE;
+                }else {  //开启分页模式
+                    if(!bendi){
+                        model.addAttribute("pdfUrl",url);
+                        return PDF_FILE_PREVIEW_PAGE;
+                    }else {
+                        File file = new File(outFilePath);   //判断文件是否存在
+                        if(!file.exists() || file.length() == 0) {
+                            outFilePath = FILE_DIR +"demo/" + pdfName;
+                        }
+                        File filee = new File(outFilePath);   //判断文件是否存在
+                        if(!filee.exists() || filee.length() == 0) {
+                            return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
+                        }
+                        String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
+                        if (geshi.equals(".pdf")){
+                            model.addAttribute("pdfUrl",url);
+                            return PDF_FILE_PREVIEW_PAGE;
+                        }else if (geshi.equals(".ofd")){
+                            model.addAttribute("pdfUrl",url);
+                            return OFD_FILE_PREVIEW_PAGE;
+                        }else {
+                            return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
+                        }
+                    }
+                }
+            }
+
+            return PDF_FILE_PREVIEW_PAGE;
+        }
     }
-}
 }
