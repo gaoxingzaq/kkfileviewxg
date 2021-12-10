@@ -41,14 +41,13 @@
             <artifactId>sevenzipjbinding</artifactId>
             <version>16.02-2.01</version>
         </dependency>
-
        <!-- https://mvnrepository.com/artifact/net.sf.sevenzipjbinding/sevenzipjbinding-all-platforms -->
-<dependency>
+     <dependency>
     <groupId>net.sf.sevenzipjbinding</groupId>
     <artifactId>sevenzipjbinding-all-platforms</artifactId>
     <version>16.02-2.01</version>
-</dependency>
-
+       </dependency>
+	   
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
