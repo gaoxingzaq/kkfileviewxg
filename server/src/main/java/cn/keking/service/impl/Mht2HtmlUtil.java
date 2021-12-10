@@ -21,9 +21,9 @@ public class Mht2HtmlUtil {
      */
     private static final String FILE_DIR = ConfigConstants.getFileDir();
     public static boolean mht2html(String srcMht, String destHtml, String serverPath) {
-
+        InputStream fis = null;
         try {
-            InputStream fis = new FileInputStream(srcMht);
+            fis = new FileInputStream(srcMht);
             Session mailSession = Session.getDefaultInstance(System.getProperties(), null);
             MimeMessage msg = new MimeMessage(mailSession, fis);
             Object content = msg.getContent();
@@ -79,7 +79,16 @@ public class Mht2HtmlUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
         return false;
     }
     /**
