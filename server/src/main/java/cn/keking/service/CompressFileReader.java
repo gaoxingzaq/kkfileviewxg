@@ -168,7 +168,7 @@ public class CompressFileReader {
         if (fullName.contains(seperator)) {
             newName = fullName.substring(fullName.lastIndexOf(seperator) + 1);
         }
-     //   System.out.println(newName);
+       // System.out.println(newName);
         return newName;
     }
 

@@ -235,6 +235,13 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/cpdetector-1.04.jar</systemPath>
         </dependency>
+		
+		 <!-- 邮件转换 -->
+		<dependency>
+     <groupId>javax.mail</groupId>
+     <artifactId>mail</artifactId>
+     <version>1.4.7</version>
+    </dependency>
         <!-- url 规范化 -->
         <dependency>
             <groupId>io.mola.galimatias</groupId>

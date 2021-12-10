@@ -29,6 +29,7 @@ public interface FilePreview {
     String MARKDOWN_FILE_PREVIEW_PAGE = "markdown";
     String NOT_SUPPORTED_FILE_PAGE = "fileNotSupported";
     String Online3D_FILE_PAGE = "online3D";
+    String Mht_FILE_PAGE = "mht";
 
     String filePreviewHandle(String url, Model model, FileAttribute fileAttribute);
 }
