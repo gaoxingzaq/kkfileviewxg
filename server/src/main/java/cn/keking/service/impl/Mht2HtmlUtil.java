@@ -29,17 +29,14 @@ public class Mht2HtmlUtil {
             Object content = msg.getContent();
             if (content instanceof Multipart) {
                 MimeMultipart mp = (MimeMultipart) content;
-
                 // 第一部分是text/html（可能有例外）
                 MimeBodyPart mbp = (MimeBodyPart) mp.getBodyPart(0);
                 // 获取mht文件内容代码的编码
                 String strEncodng = getEncoding(mbp);
-
                 // 获取mht文件的内容
                 String strText = getHtmlText(mbp, strEncodng);
                 if (strText == null)
                     return false;
-
                 // 创建以mht文件名称的文件夹，主要用来保存资源文件。  这里不需要所以注释掉了
                 File parent = null;
                 if (mp.getCount() > 1) {
@@ -50,7 +47,6 @@ public class Mht2HtmlUtil {
                         return false;
                     }
                 }
-
                 //FOR中代码 主要是保存资源文件及替换路径   第二部分开始为资源文件
                 for (int i = 1; i < mp.getCount(); ++i) {
                     MimeBodyPart bp = (MimeBodyPart) mp.getBodyPart(i);
@@ -59,7 +55,6 @@ public class Mht2HtmlUtil {
                     String strUrl = getResourcesUrl(bp);
                     if (strUrl == null || strUrl.length() == 0)
                         continue;
-
                     // 获取资源文件的绝对路径
                     String FilePath = parent.getAbsolutePath() + File.separator + getName(strUrl, i);
                     File resources = new File(FilePath);
@@ -72,7 +67,7 @@ public class Mht2HtmlUtil {
                             replacePath = getRelativePath(strUrl);
                         }
                         String relativePath = getRelativePath(FilePath);
-                        strText = strText.replace(replacePath, serverPath + relativePath);
+                        strText = strText.replace(replacePath, relativePath);
                     }
                 }
 

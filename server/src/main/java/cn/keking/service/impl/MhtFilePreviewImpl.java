@@ -73,7 +73,7 @@ public class MhtFilePreviewImpl implements FilePreview {
         }
 
         model.addAttribute("pdfUrl", pdfName);
-        return Mht_FILE_PAGE;
+        return EXEL_FILE_PREVIEW_PAGE;
     }
 
 
