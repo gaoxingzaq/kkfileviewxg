@@ -26,12 +26,14 @@ public enum FileType {
     TIFF("tiffFilePreviewImpl"),
     OFD("ofdFilePreviewImpl"),
 	EML("emlFilePreviewImpl"),
+    Online3D("online3DFilePreviewImpl"),
 	SVG("svgFilePreviewImpl");
 
 
     private static final String[] OFFICE_TYPES = {"docx", "wps", "doc", "docm", "xls", "xlsx", "csv" ,"xlsm", "ppt", "pptx", "vsd", "rtf"};
     private static final String[] PICTURE_TYPES = {"jpg", "jpeg", "png", "gif", "bmp", "ico", "raw", "jfif","webp"};
     private static final String[] ARCHIVE_TYPES = {"rar", "zip", "jar", "7-zip", "tar", "gzip", "7z"};
+    private static final String[] Online3D_TYPES = {"obj", "3ds", "stl", "ply", "off", "3dm", "fbx", "dae", "wrl", "3mf", "ifc","glb","o3dv"};
     private static final String[] TIFF_TYPES = {"tif", "tiff"};
     private static final String[] OFD_TYPES = {"ofd"};
 	private static final String[] SVG_TYPES = {"svg"};
@@ -52,6 +54,9 @@ public enum FileType {
         }
         for (String archive : ARCHIVE_TYPES) {
             FILE_TYPE_MAPPER.put(archive, FileType.COMPRESS);
+        }
+        for (String online3D : Online3D_TYPES) {
+            FILE_TYPE_MAPPER.put(online3D, FileType.Online3D);
         }
         for (String text : SSIM_TEXT_TYPES) {
             FILE_TYPE_MAPPER.put(text, FileType.SIMTEXT);

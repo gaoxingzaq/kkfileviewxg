@@ -3,11 +3,10 @@ package cn.keking.service.impl;
 import cn.keking.config.ConfigConstants;
 import cn.keking.model.FileAttribute;
 import cn.keking.model.ReturnResponse;
+import cn.keking.service.CompressFileReader;
+import cn.keking.service.FileHandlerService;
 import cn.keking.service.FilePreview;
 import cn.keking.utils.DownloadUtils;
-import cn.keking.service.FileHandlerService;
-import cn.keking.service.CompressFileReader;
-import jodd.util.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -31,37 +30,21 @@ public class CompressFilePreviewImpl implements FilePreview {
 
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
-        String gengxin=fileAttribute.getgengxin();
         String fileName=fileAttribute.getName();
-        String suffix=fileAttribute.getSuffix();
-        String fileTree = null;
+        String fileTree;
         // 判断文件名是否存在(redis缓存读取)
-        boolean pdfgx ;
-        if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
-            pdfgx= false;
-        }else {
-            pdfgx= ConfigConstants.isCacheEnabled();
-        }
-        if (!pdfgx || !StringUtils.hasText(fileHandlerService.getConvertedFile(fileName))  || !ConfigConstants.isCacheEnabled()) {
+        if (!StringUtils.hasText(fileHandlerService.getConvertedFile(fileName))  || !ConfigConstants.isCacheEnabled()) {
             ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
             if (response.isFailure()) {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
             }
             String filePath = response.getContent();
-            if ("zip".equalsIgnoreCase(suffix) || "jar".equalsIgnoreCase(suffix) || "gzip".equalsIgnoreCase(suffix)) {
-                fileTree = compressFileReader.readZipFile(filePath, fileName);
-            } else if ("rar".equalsIgnoreCase(suffix)) {
-                fileTree = compressFileReader.unRar(filePath, fileName);
-            } else if ("7z".equalsIgnoreCase(suffix)) {
-                fileTree = compressFileReader.read7zFile(filePath, fileName);
-            }
-            if (fileTree != null && !"null".equals(fileTree) && ConfigConstants.isCacheEnabled()) {
-                fileHandlerService.addConvertedFile(fileName, fileTree);
-            }
+            fileTree = compressFileReader.unRar(filePath, fileName);
         } else {
             fileTree = fileHandlerService.getConvertedFile(fileName);
         }
         if (fileTree != null && !"null".equals(fileTree)) {
+
             model.addAttribute("fileTree", fileTree);
             return COMPRESS_FILE_PREVIEW_PAGE;
         } else {

@@ -28,6 +28,7 @@ public interface FilePreview {
 	String FYPDF_FILE_PREVIEW_PAGE = "fypdf";
     String MARKDOWN_FILE_PREVIEW_PAGE = "markdown";
     String NOT_SUPPORTED_FILE_PAGE = "fileNotSupported";
+    String Online3D_FILE_PAGE = "online3D";
 
     String filePreviewHandle(String url, Model model, FileAttribute fileAttribute);
 }

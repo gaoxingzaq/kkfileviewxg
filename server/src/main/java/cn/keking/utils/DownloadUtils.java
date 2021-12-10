@@ -38,10 +38,10 @@ public class DownloadUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String urlStr = fileAttribute.getUrl().replace("+", "%20");
-        boolean wjl = FileHandlerService.kuayu("&fullfilename=", urlStr);
+        String urlStr = fileAttribute.getUrl().replace("+", "%20");  //URL 转义
+        boolean wjl = FileHandlerService.kuayu("&fullfilename=", urlStr);  //判断是否启用文件流
         if(wjl){
-            urlStr =  urlStr.substring(0,urlStr.lastIndexOf("&"));
+            urlStr =  urlStr.substring(0,urlStr.lastIndexOf("&"));  //删除添加的文件流内容
         }
       //  System.out.println(urlStr);
         ReturnResponse<String> response = new ReturnResponse<>(0, "下载成功!!!", "");

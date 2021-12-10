@@ -107,17 +107,26 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
+2021年12月10日，v4.1.9.1版本发布:<br>  
+1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv<br> 
+2、修改压缩包解压方法<br> 
+3、新增POI和开源OFFICE切换模式&officePreviewType=poi  &officePreviewType=office
+4、如果没有发现问题下个版本就是高雄4.2版本了 属于正式版本了<br> 
+
+
+2021年12月9日，v4.1.9版本发布:<br>  
+1、修复了特殊文件流不能转换的问题<br>  
+2、文件头识别新增了一种格式<br> 
+
 2021年12月9日，v4.1.8版本发布:<br>  
 1、修复压缩包 解压后PDF 图片问题<br>  
 2、调整PDF 压缩包解压模式下载覆盖问题<br> 
 3、集成了PDF压缩 功能在OfficeFilePreviewImpl 类里面 没启用 等待继续完善 <br> 
-4、如果没有发现问题下个版本就是高雄4.2版本了 属于正式版本了<br> 
 
 2021年12月7日，v4.1.7版本发布:<br>  
 1、修复了些BUG <br>  
 2、去掉一些重复代码<br> 
-
-			
+		
 2021年12月4日，v4.1.6版本发布:<br>  
 1、继续修复调整转换模块友好错误提示 <br>  
 2、增加文件头判断 目前只是对 OFFICE,PDF,OFD做了,以后在对图片压缩文件来识别<br> 

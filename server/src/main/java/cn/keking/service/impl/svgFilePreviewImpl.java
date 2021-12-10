@@ -11,11 +11,11 @@ import org.springframework.ui.Model;
  * @since 2021/2/8
  */
 @Service
-public class svgFilePreviewImpl implements FilePreview {
+public class SvgFilePreviewImpl implements FilePreview {
 
     private final PictureFilePreviewImpl pictureFilePreview;
 
-    public svgFilePreviewImpl(PictureFilePreviewImpl pictureFilePreview) {
+    public SvgFilePreviewImpl(PictureFilePreviewImpl pictureFilePreview) {
         this.pictureFilePreview = pictureFilePreview;
     }
 

@@ -108,6 +108,12 @@ pdf预览模式预览效果如下
 ![输入图片说明](https://gitee.com/uploads/images/2017/1213/100221_ea15202e_492218.png "屏幕截图.png")
 
 ### 历史更新记录 
+2021年12月10日，v4.1.9.1版本发布:  
+1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv  
+2、修改压缩包解压方法  
+3、新增POI和开源OFFICE切换模式&officePreviewType=poi  &officePreviewType=office  
+4、如果没有发现问题下个版本就是高雄4.2版本了 属于正式版本了  
+
 2021年12月9日，v4.1.9版本发布:  
 1、修复了特殊文件流不能转换的问题  
 2、文件头识别新增了一种格式  

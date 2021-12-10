@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title>Online 3D Viewer333</title>
+    <script type="text/javascript" src="three.min.js"></script>
+    <script type="text/javascript" src="o3dv.min.js"></script>
+    <script type='text/javascript'>
+        OV.Init3DViewerElements ();
+    </script>
+</head>
+<body>
+    <div id="bigDiv" style="height:600px;" class="online_3d_viewer"
+        model="cube_four_instances.3ds"
+        camera="3,1,2,0,0,0,0,0,1"
+        defaultcolor="200,0,0"
+        backgroundcolor="200,200,200"
+        edgesettings="on,0,0,0,1">
+    </div>
+	
+<script type="text/javascript"> 
+var a=document.getElementById("bigDiv").style.height=window.innerHeight
+</script>
+</body>
+
+</html>
