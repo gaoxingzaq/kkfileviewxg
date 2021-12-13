@@ -27,7 +27,10 @@ public class Mht2HtmlUtil {
             Session mailSession = Session.getDefaultInstance(System.getProperties(), null);
             MimeMessage msg = new MimeMessage(mailSession, fis);
             Object content = msg.getContent();
+           // System.out.println(content);
+         //   System.out.println(666);
             if (content instanceof Multipart) {
+
                 MimeMultipart mp = (MimeMultipart) content;
                 // 第一部分是text/html（可能有例外）
                 MimeBodyPart mbp = (MimeBodyPart) mp.getBodyPart(0);
@@ -47,6 +50,7 @@ public class Mht2HtmlUtil {
                         return false;
                     }
                 }
+
                 //FOR中代码 主要是保存资源文件及替换路径   第二部分开始为资源文件
                 for (int i = 1; i < mp.getCount(); ++i) {
                     MimeBodyPart bp = (MimeBodyPart) mp.getBodyPart(i);
@@ -73,7 +77,6 @@ public class Mht2HtmlUtil {
 
                 // 最后保存HTML文件
                strText = strText.replace(FILE_DIR,"");
-
                 saveHtml(strText, destHtml, strEncodng);
                 return true;
             }
@@ -88,7 +91,6 @@ public class Mht2HtmlUtil {
                 }
             }
         }
-
         return false;
     }
     /**

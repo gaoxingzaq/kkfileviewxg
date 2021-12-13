@@ -107,6 +107,15 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
+2021年12月10日，v4.2版本发布:<br>  
+1、修复tif格式文件支持多图浏览<br> 
+2、增加odt格式文档	<br> 
+3、新增全局file协议输出控制 为了安全默认为关闭 如果是局域网可以开启<br> 
+4、更新log4j为2.15.0版本<br> 
+5、修复文件流问题<br> 
+6、新增mht格式文件支持<br> 			
+			
+			
 2021年12月10日，v4.1.9.1版本发布:<br>  
 1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv 基于开源@https://github.com/kovacsv/Online3DViewer<br> 
 2、修改压缩包解压方法  感谢 @BoneBee<br> 
