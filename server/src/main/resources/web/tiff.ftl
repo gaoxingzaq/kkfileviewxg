@@ -7,19 +7,18 @@
     <script src="js/tiff.min.js"></script>
     <#include "*/commonHeader.ftl">
     <style>
-        body {
-            background-color: #404040;
-        }
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
 
-        #tiff {
-            position: fixed;
-            top:50%;
-            left:50%;
-            transform: translate(-50%,-50%);
-        }
+    html, body {
+        height: 100%;
+        width: 100%;
+    }
 
-        /*#dowebok li img { width: 200%;}*/
-    </style>
+</style>
 </head>
 <body>
 <input hidden id="currentUrl" value="${currentUrl}"/>
@@ -27,18 +26,24 @@
 </div>
 
 <script>
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'arraybuffer';
-    xhr.open('GET', $("#currentUrl").val());
-    var config = {};
-    config.TOTAL_MEMORY = ${initializeMemorySize};
-    Tiff.initialize(config)
-    xhr.onload = function (e) {
-        var tiff = new Tiff({buffer: xhr.response});
-        var canvas = tiff.toCanvas();
-        $("#tiff").append(canvas)
-    };
-    xhr.send();
+
+	
+	$(function () {
+  Tiff.initialize({TOTAL_MEMORY: 16777216 * 10});
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', $("#currentUrl").val());
+  xhr.responseType = 'arraybuffer';
+  xhr.onload = function (e) {
+    var buffer = xhr.response;
+    var tiff = new Tiff({buffer: buffer});
+    for (var i = 0, len = tiff.countDirectory(); i < len; ++i) {
+      tiff.setDirectory(i);
+      var canvas = tiff.toCanvas();
+      $('body').append(canvas);
+    }
+  };
+  xhr.send();
+});
 
     /*初始化水印*/
     window.onload = function () {
