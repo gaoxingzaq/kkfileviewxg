@@ -39,11 +39,18 @@ public class DownloadUtils {
             e.printStackTrace();
         }
         String urlStr = fileAttribute.getUrl().replace("+", "%20");  //URL 转义
-        boolean wjl = FileHandlerService.kuayu("&fullfilename=", urlStr);  //判断是否启用文件流
+        try {
+            urlStr = URLDecoder.decode(urlStr, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String  urlStrr = urlStr.toLowerCase();
+        boolean wjl = FileHandlerService.kuayu("&fullfilename=", urlStrr);  //判断是否启用文件流
+       // System.out.println(urlStr);
         if(wjl){
             urlStr =  urlStr.substring(0,urlStr.lastIndexOf("&"));  //删除添加的文件流内容
         }
-      //  System.out.println(urlStr);
+
         ReturnResponse<String> response = new ReturnResponse<>(0, "下载成功!!!", "");
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {

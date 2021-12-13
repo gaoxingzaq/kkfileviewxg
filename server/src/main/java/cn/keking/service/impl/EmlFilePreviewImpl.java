@@ -9,11 +9,11 @@ import org.springframework.ui.Model;
  * EML 文件处理
  */
 @Service
-public class emlFilePreviewImpl implements FilePreview {
+public class EmlFilePreviewImpl implements FilePreview {
 
     private final PictureFilePreviewImpl pictureFilePreview;
 
-    public emlFilePreviewImpl(PictureFilePreviewImpl pictureFilePreview) {
+    public EmlFilePreviewImpl(PictureFilePreviewImpl pictureFilePreview) {
         this.pictureFilePreview = pictureFilePreview;
     }
 
