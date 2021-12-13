@@ -61,6 +61,9 @@ public class OnlinePreviewController {
     @Value("${url.base64:true}")
     private String base641;
 
+    @Value("${local.preview.dir:true}")
+    private String preview;
+
     @Value("${pdfpagee:0}")
     private String pdfpagee;
 
@@ -82,6 +85,12 @@ public class OnlinePreviewController {
         FileAttribute fileAttribute = fileHandlerService.getFileAttribute(fileUrl, req);
         model.addAttribute("file", fileAttribute);
         FilePreview filePreview = previewFactory.get(fileAttribute);
+        if(preview.equalsIgnoreCase("true")) {
+            if (fileUrl == null || fileUrl.toLowerCase().startsWith("file")) {
+                logger.info("URL异常", fileUrl);
+                return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
+            }
+        }
         logger.info("预览文件url：{}，previewType：{}", fileUrl, fileAttribute.getType());
         return filePreview.filePreviewHandle(fileUrl, model, fileAttribute);
     }
