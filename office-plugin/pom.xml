@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.keking</groupId>
         <artifactId>filepreview</artifactId>
-        <version>4.2.0</version>
+        <version>${kk.file.view.version}</version>
     </parent>
 
     <artifactId>office-plugin</artifactId>
