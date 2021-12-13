@@ -35,6 +35,8 @@ public class ConfigConstants {
     private static String fileDir = ConfigUtils.getHomePath() + File.separator + "file" + File.separator;
     private static CopyOnWriteArraySet<String> trustHostSet;
     private static String pdfDownloadDisable;
+    private static String pdfXianzhi;
+    private static String pdfyeman;
     private static Boolean fileUploadDisable;
 
     public static final String DEFAULT_CACHE_ENABLED = "true";
@@ -241,6 +243,17 @@ public class ConfigConstants {
         ConfigConstants.pdfDownloadDisable = pdfDownloadDisable;
     }
 
+    public static String getpdfXianzhi() {
+        return pdfXianzhi;
+    }
+    @Value("${pdf.xianzhi:true}")
+    public void setpdfXianzhi(String pdfXianzhi) {
+        setpdfXianzhiValue(pdfXianzhi);
+    }
+    public static void setpdfXianzhiValue(String pdfXianzhi) {
+        ConfigConstants.pdfXianzhi = pdfXianzhi;
+    }
+
     public static String getOfficePreviewSwitchDisabled() {
         return officePreviewSwitchDisabled;
     }
@@ -251,7 +264,7 @@ public class ConfigConstants {
     public static void setOfficePreviewSwitchDisabledValue(String officePreviewSwitchDisabled) {
         ConfigConstants.officePreviewSwitchDisabled = officePreviewSwitchDisabled;
     }
-
+    
     public static Boolean getFileUploadDisable() {
         return fileUploadDisable;
     }
