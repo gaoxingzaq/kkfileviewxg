@@ -1,11 +1,9 @@
 package cn.keking.utils;
 
-import cpdetector.CharsetPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
@@ -58,23 +56,7 @@ public class KkFileUtils {
         }
     }
 
-    /**
-     * 检测文件编码格式
-     *
-     * @param filePath 绝对路径
-     * @return 编码格式
-     */
-    public static String getFileEncode(String filePath) {
-        CharsetPrinter cp = new CharsetPrinter();
-        try {
-            String encoding = cp.guessEncoding(new File (filePath));
-            LOGGER.info("检测到文件【{}】编码: {}", filePath, encoding);
-            return encoding;
-        } catch (IOException e) {
-            LOGGER.warn("文件编码获取失败，采用默认的编码格式：UTF-8", e);
-            return DEFAULT_FILE_ENCODING;
-        }
-    }
+
 
     /**
      * 通过文件名获取文件后缀
