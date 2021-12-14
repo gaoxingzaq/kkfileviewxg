@@ -52,15 +52,18 @@ public class CompressFileReader {
             List<Map<String, FileHeaderRar>> headersToBeExtract = new ArrayList<>();
             for (FileHeaderRar header : items) {
                 String fullName = header.getFileNameW();
-                String originName = getLastFileName(fullName, "\\");
+                fullName = fullName.replace("\\", "/");
+                System.out.println(fullName);
+                String originName = getLastFileName(fullName, "/");
+               // System.out.println(originName);
                 String childName = originName;
                 boolean directory = header.getDirectory();
                 if (!directory) {
                     childName = archiveFileName + "_" + originName;
                     headersToBeExtract.add(Collections.singletonMap(childName, header));
                 }
-                String parentName = getLast2FileName(fullName, "\\", archiveFileName);
-
+                String parentName = getLast2FileName(fullName, "/", archiveFileName);
+                System.out.println(parentName);
                 FileType type = FileType.typeFromUrl(childName);
                 if (type.equals(FileType.PICTURE)) {
                     imgUrls.add(baseUrl + childName);
