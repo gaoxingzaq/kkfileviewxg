@@ -462,6 +462,10 @@ public class FileHandlerService {
             if (StringUtils.hasText(gengxin)) {
                 attribute.setgengxin(gengxin);
             }
+            String tifPreviewType = req.getParameter("tifPreviewType");
+            if (StringUtils.hasText(tifPreviewType)) {
+                attribute.setTifPreviewType(tifPreviewType);
+            }
         }
         return attribute;
     }

@@ -15,6 +15,7 @@ public class FileAttribute {
     private String fileKey;
     private String officePreviewType = ConfigConstants.getOfficePreviewType();
     private String gengxin;
+    private String tifPreviewType;
 
     public FileAttribute() {
     }
@@ -32,6 +33,15 @@ public class FileAttribute {
         this.name = name;
         this.url = url;
         this.officePreviewType = officePreviewType;
+    }
+
+    public FileAttribute(FileType type, String suffix, String name, String url, String officePreviewType, String tifPreviewType) {
+        this.type = type;
+        this.suffix = suffix;
+        this.name = name;
+        this.url = url;
+        this.officePreviewType = officePreviewType;
+        this.tifPreviewType = tifPreviewType;
     }
 
     public String getFileKey() {
@@ -86,5 +96,12 @@ public class FileAttribute {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+    public String getTifPreviewType() {
+        return tifPreviewType;
+    }
+
+    public void setTifPreviewType(String previewType) {
+        this.tifPreviewType = previewType;
     }
 }

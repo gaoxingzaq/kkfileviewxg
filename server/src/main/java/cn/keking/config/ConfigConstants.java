@@ -38,6 +38,7 @@ public class ConfigConstants {
     private static String pdfXianzhi;
     private static String pdfyeman;
     private static Boolean fileUploadDisable;
+    private static String tifPreviewType;
 
     public static final String DEFAULT_CACHE_ENABLED = "true";
     public static final String DEFAULT_TXT_TYPE = "txt,html,htm,asp,jsp,xml,json,properties,md,gitignore,log,java,py,c,cpp,sql,sh,bat,m,bas,prg,cmd";
@@ -52,6 +53,7 @@ public class ConfigConstants {
     public static final String DEFAULT_TRUST_HOST = "default";
     public static final String DEFAULT_PDF_DOWNLOAD_DISABLE = "true";
     public static final String DEFAULT_FILE_UPLOAD_DISABLE = "false";
+    public static final String DEFAULT_TIF_PREVIEW_TYPE = "tif";
 
 
     public static Boolean isCacheEnabled() {
@@ -276,5 +278,21 @@ public class ConfigConstants {
 
     public static void setFileUploadDisableValue(Boolean fileUploadDisable) {
         ConfigConstants.fileUploadDisable = fileUploadDisable;
+    }
+
+
+
+
+    public static String getTifPreviewType() {
+        return tifPreviewType;
+    }
+
+    @Value("${tif.preview.type:tif}")
+    public void setTifPreviewType(String tifPreviewType) {
+        setTifPreviewTypeValue(tifPreviewType);
+    }
+
+    public static void setTifPreviewTypeValue(String tifPreviewType) {
+        ConfigConstants.tifPreviewType = tifPreviewType;
     }
 }
