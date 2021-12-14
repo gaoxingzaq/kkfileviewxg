@@ -107,39 +107,39 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
-2021年12月10日，v4.2版本发布:<br>  
+2021年12月13日，v4.2版本发布:<br>  
 1、修复tif格式文件支持多图浏览<br> 
 2、增加odt格式文档	<br> 
 3、新增全局file协议输出控制 为了安全默认为关闭 如果是局域网可以开启<br> 
 4、更新log4j为2.15.0版本<br> 
 5、修复文件流问题<br> 
 6、新增mht格式文件支持<br> 			
-			
+7、新增右键F12等限制<br><br>		
 			
 2021年12月10日，v4.1.9.1版本发布:<br>  
 1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv 基于开源@https://github.com/kovacsv/Online3DViewer<br> 
 2、修改压缩包解压方法  感谢 @BoneBee<br> 
 3、新增POI和开源OFFICE切换模式&officePreviewType=poi  &officePreviewType=office<br> 
-4、如果没有发现问题下个版本就是高雄4.2版本了 属于正式版本了<br> 
+4、如果没有发现问题下个版本就是高雄4.2版本了 属于正式版本了<br><br> 
 
 
 2021年12月9日，v4.1.9版本发布:<br>  
 1、修复了特殊文件流不能转换的问题<br>  
-2、文件头识别新增了一种格式<br> 
+2、文件头识别新增了一种格式<br><br> 
 
 2021年12月9日，v4.1.8版本发布:<br>  
 1、修复压缩包 解压后PDF 图片问题<br>  
 2、调整PDF 压缩包解压模式下载覆盖问题<br> 
-3、集成了PDF压缩 功能在OfficeFilePreviewImpl 类里面 没启用 等待继续完善 <br> 
+3、集成了PDF压缩 功能在OfficeFilePreviewImpl 类里面 没启用 等待继续完善 <br><br> 
 
 2021年12月7日，v4.1.7版本发布:<br>  
 1、修复了些BUG <br>  
-2、去掉一些重复代码<br> 
+2、去掉一些重复代码<br><br> 
 		
 2021年12月4日，v4.1.6版本发布:<br>  
 1、继续修复调整转换模块友好错误提示 <br>  
 2、增加文件头判断 目前只是对 OFFICE,PDF,OFD做了,以后在对图片压缩文件来识别<br> 
-3、修复了一处查看编码BUG 当出现~会出现BUG<br> 
+3、修复了一处查看编码BUG 当出现~会出现BUG<br><br> 
 
 2021年12月3日，v4.1.5版本发布:<br>  
 1、调整KK支持IE10以上版本<br>  
@@ -147,36 +147,37 @@
 3、调整转换模块友好错误提示<br>  
 4、增加源文件删除功能<br> 
 5、调整PDF缩放倍数,调整PDF默认手势功能<br> 	
-6、进一步调整分页功能 还需要继续完善<br> 		
+6、进一步调整分页功能 还需要继续完善<br><br> 		
 			
 2021年11月17日，v4.1.4版本发布:<br>  
 1、调整xlsx输出为luckysheet   JS解析方法https://gitee.com/mengshukeji/Luckysheet<br>  
-2、lsx输出调用方法 &officePreviewType=xlsx (JS解析方法)  &officePreviewType=html (转换为HTML)<br>  
+2、lsx输出调用方法 &officePreviewType=xlsx (JS解析方法)  &officePreviewType=html (转换为HTML)<br><br>  
+
 2021年11月17日，v4.1.3版本发布:<br>  
 1、修复4.1.2版本的PDF跨域文件URL被转义错误<br>  
 2、增加OFFICE源文件的删除功能 配置文件启用<br>  
 2021年11月16日，v4.1.2版本发布:<br>  
-1、修复文件特殊符号错误<br>  
+1、修复文件特殊符号错误<br><br>
+  
 2021年11月15日，v4.1.1版本发布:<br>  
 1、对压缩包ZIP格式调整了下<br>     
 2、新增PDF分页功能 只是简单做了测试 如果有问题请大家群里留言  (PDF分页需要在配置文件里面调整 默认开启显示1-2) <br>    
 3、修复一处BUG 任意文件读取漏洞<br>     
-4、更新OFD到最新版本<br>    
+4、更新OFD到最新版本<br><br>    
 
 > 2021年11月05日，v4.0.9版本发布:<br>  
 1、更新了一些组件<br>   
 2、更新windows下OFFICE版本7.22<br>   
 3、修复文件流截取问题   文件流方式修改为&fullfilename=/test.txt   斜杠必须有   这块以后有时间重新写个方法吧<br>   
-4、修复了pdfbox 转图片出现图片元素丢失问题<br> 
+4、修复了pdfbox 转图片出现图片元素丢失问题<br><br> 
 
 
 > 2021年11月03日，v4.0.8版本发布 :<br>  
 1、修复XML、markdown文件预览反义乱码问题<br>   
 2、更新PDF.js文件 版本为2.10.377  修复了签名丢失问题<br>   
-3、更新aspose-cad为21.8版本<br> 
+3、更新aspose-cad为21.8版本<br> <br>
 
 > 2021年10月29日，v4.0.7版本发布:<br>  
-
 1、修复openoffice 或lieboffice转换内核模式下PPT PPTX图片页码和水印问题<br>    
 2、修复PDF浏览模式有的发票不显示文字<br>     
 3、增加OFD模式打印功能<br>     
@@ -203,7 +204,8 @@
 22、增加PDF转换图片清晰度功能  在配置文件设置<br>   
 22、修复图片预览文件名被转码问题<br>    
 23、修复预览标题问题<br>     
-24、新增rtf格式支持<br>   
+24、新增rtf格式支持<br><br>
+
                 2021年7月6日，v4.0.0 版本 :<br>
                 1. 底层集成OpenOffice替换为LibreOffice，Office文件兼容性增强，预览效果提升<br>
                 2. 修复压缩文件目录穿越漏洞<br>
