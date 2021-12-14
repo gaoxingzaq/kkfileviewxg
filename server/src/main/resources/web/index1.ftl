@@ -14,7 +14,7 @@
     <script type="text/javascript" src="js/jquery.form.min.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="bootstrap-table/bootstrap-table.min.js"></script>
-    <script type="text/javascript" src="gitalk/gitalk.min.js"></script>
+ 
 </head>
 
 <body>
@@ -314,9 +314,7 @@
             </div>
         </div>
 
-        <div class="panel-body">
-            <div id="comments"></div>
-        </div>
+       
 
     </div>
 </div>

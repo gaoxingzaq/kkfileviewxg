@@ -52,21 +52,24 @@ public class CompressFileReader {
             List<Map<String, FileHeaderRar>> headersToBeExtract = new ArrayList<>();
             for (FileHeaderRar header : items) {
                 String fullName = header.getFileNameW();
-                String originName = getLastFileName(fullName, "\\");
+                fullName = fullName.replace("\\", "/");
+                System.out.println(fullName);
+                String originName = getLastFileName(fullName, "/");
+                // System.out.println(originName);
                 String childName = originName;
                 boolean directory = header.getDirectory();
                 if (!directory) {
                     childName = archiveFileName + "_" + originName;
                     headersToBeExtract.add(Collections.singletonMap(childName, header));
                 }
-                String parentName = getLast2FileName(fullName, "\\", archiveFileName);
-
+                String parentName = getLast2FileName(fullName, "/", archiveFileName);
+                System.out.println(parentName);
                 FileType type = FileType.typeFromUrl(childName);
                 if (type.equals(FileType.PICTURE)) {
                     imgUrls.add(baseUrl + childName);
                 }
                 FileNode node = new FileNode(originName, childName, parentName, new ArrayList<>(), directory, fileKey);
-              //  System.out.println(666);
+                //  System.out.println(666);
                 addNodes(appender, parentName, node);
                 appender.put(childName, node);
             }
@@ -168,7 +171,7 @@ public class CompressFileReader {
         if (fullName.contains(seperator)) {
             newName = fullName.substring(fullName.lastIndexOf(seperator) + 1);
         }
-       // System.out.println(newName);
+        // System.out.println(newName);
         return newName;
     }
 
