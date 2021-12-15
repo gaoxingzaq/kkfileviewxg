@@ -53,7 +53,7 @@ public class CompressFileReader {
             for (FileHeaderRar header : items) {
                 String fullName = header.getFileNameW();
                 fullName = fullName.replace("\\", "/");
-                System.out.println(fullName);
+              //  System.out.println(fullName);
                 String originName = getLastFileName(fullName, "/");
                 // System.out.println(originName);
                 String childName = originName;
@@ -63,7 +63,7 @@ public class CompressFileReader {
                     headersToBeExtract.add(Collections.singletonMap(childName, header));
                 }
                 String parentName = getLast2FileName(fullName, "/", archiveFileName);
-                System.out.println(parentName);
+              //  System.out.println(parentName);
                 FileType type = FileType.typeFromUrl(childName);
                 if (type.equals(FileType.PICTURE)) {
                     imgUrls.add(baseUrl + childName);

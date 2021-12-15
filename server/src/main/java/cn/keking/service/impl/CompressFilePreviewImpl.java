@@ -40,15 +40,17 @@ public class CompressFilePreviewImpl implements FilePreview {
             }
             String filePath = response.getContent();
             fileTree = compressFileReader.unRar(filePath, fileName);
+            if (fileTree != null && !"null".equals(fileTree) && ConfigConstants.isCacheEnabled()) {
+                fileHandlerService.addConvertedFile(fileName, fileTree);  //加入缓存
+            }
         } else {
             fileTree = fileHandlerService.getConvertedFile(fileName);
         }
         if (fileTree != null && !"null".equals(fileTree)) {
-
             model.addAttribute("fileTree", fileTree);
             return COMPRESS_FILE_PREVIEW_PAGE;
         } else {
-            return otherFilePreview.notSupportedFile(model, fileAttribute, "压缩文件类型不受支持，尝试在压缩的时候选择RAR4格式");
+            return otherFilePreview.notSupportedFile(model, fileAttribute, "压缩文件类型不受支持,或者没加入KK识别");
         }
     }
 }

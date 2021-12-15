@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * tiff 图片文件处理
