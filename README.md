@@ -111,6 +111,7 @@ pdf预览模式预览效果如下
 2021年12月15日，v4.2.1版本发布:  
 1、新增TIF图片转换PDF模式  
 2、修复压缩包在LINUX下问题  
+3、正式版发布   
 
 2021年12月13日，v4.2版本发布:  
 1、修复tif格式文件支持多图浏览  
@@ -125,12 +126,12 @@ pdf预览模式预览效果如下
 1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv  基于开源@https://github.com/kovacsv/Online3DViewer  
 2、修改压缩包解压方法  感谢 @BoneBee  
 3、新增POI和开源OFFICE切换模式&officePreviewType=poi  &officePreviewType=office  
-4、如果没有发现问题下个版本就是高雄4.2版本了 属于正式版本了  
+ 
 
 2021年12月9日，v4.1.9版本发布:  
 1、修复了特殊文件流不能转换的问题  
 2、文件头识别新增了一种格式  
-3、如果没有发现问题下个版本就是高雄4.2版本了 属于正式版本了  
+
  
 2021年12月9日，v4.1.8版本发布:  
 1、修复压缩包 解压后PDF 图片问题  

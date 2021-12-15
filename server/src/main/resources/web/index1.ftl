@@ -108,8 +108,9 @@
            <div class="panel-body">
             <div>
 2021年12月15日，v4.2.1版本发布:<br>  
-1、新增TIF图片转换PDF模式<br> 
-2、修复压缩包在LINUX下问题<br> <br> 			
+1、新增TIF图片转换PDF模式<br>
+2、正式版发布<br> 
+3、修复压缩包在LINUX下问题<br><br> 		
 			
 2021年12月13日，v4.2版本发布:<br>  
 1、修复tif格式文件支持多图浏览<br> 
