@@ -69,7 +69,18 @@ public class TiffFilePreviewImpl implements FilePreview {
                         return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
                     }
                     tifoutFilePath = response.getContent();
-                    ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath);
+                    String geshi =FileHandlerService.geshi(tifoutFilePath,0);// 获取文件头信息
+                    if (geshi.equals(".tif") || geshi.equals(".tiff") ){
+                        if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
+
+                        }else {
+                            model.addAttribute("currentUrl", url);
+                            return TIFF_FILE_PREVIEW_PAGE;
+                        }
+                    }else {
+                        return otherFilePreview.notSupportedFile(model, fileAttribute, "文件类型不正确");
+                    }
+
                 }else {
                     File file = new File(tifoutFilePath);   //判断文件是否存在
                     if(!file.exists() || file.length() == 0) {
@@ -79,7 +90,17 @@ public class TiffFilePreviewImpl implements FilePreview {
                     if(!filee.exists() || filee.length() == 0) {
                         return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
                     }
-                    ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath);
+                    String geshi =FileHandlerService.geshi(tifoutFilePath,0);// 获取文件头信息
+                    if (geshi.equals(".tif") || geshi.equals(".tiff") ){
+                        if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
+
+                        }else {
+                           model.addAttribute("currentUrl", url);
+                            return TIFF_FILE_PREVIEW_PAGE;
+                        }
+                    }else {
+                        return otherFilePreview.notSupportedFile(model, fileAttribute, "文件类型不正确");
+                    }
                 }
               //  System.out.println(tifoutFilePath);
             if (ConfigConstants.isCacheEnabled()) {

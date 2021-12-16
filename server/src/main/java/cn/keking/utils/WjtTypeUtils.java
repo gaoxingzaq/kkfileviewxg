@@ -13,7 +13,7 @@ public class WjtTypeUtils {
     public static final String TYPE_BMP = ".bmp";
     public static final String TYPE_WEBP = ".webp";
     public static final String TYPE_TIF = ".tif";
-    public static final String TYPE_TIFF = ".tif";
+    public static final String TYPE_TIFF = ".tiff";
     public static final String TYPE_CAD = ".dwg";
     public static final String TYPE_XML= ".xml";
     public static final String TYPE_PDF = ".pdf";

@@ -1,21 +1,19 @@
 package cn.keking.service;
 
-import cn.keking.config.ConfigConstants;
 import cn.keking.model.FileType;
 import cn.keking.utils.FileHeaderRar;
-import cn.keking.utils.KkFileUtils;
 import cn.keking.web.filter.BaseUrlFilter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.junrar.Archive;
-import com.github.junrar.exception.RarException;
-import com.github.junrar.rarfile.FileHeader;
 import net.sf.sevenzipjbinding.*;
 import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
 import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.math.BigDecimal;
 import java.text.CollationKey;
 import java.text.Collator;
@@ -34,7 +32,6 @@ public class CompressFileReader {
 
     private static final Pattern pattern = Pattern.compile("^\\d+");
     private final FileHandlerService fileHandlerService;
-    private final String fileDir = ConfigConstants.getFileDir();
     private final ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public CompressFileReader(FileHandlerService fileHandlerService) {
@@ -52,9 +49,8 @@ public class CompressFileReader {
             List<Map<String, FileHeaderRar>> headersToBeExtract = new ArrayList<>();
             for (FileHeaderRar header : items) {
                 String fullName = header.getFileNameW();
-                fullName = fullName.replace("\\", "/");
-              //  System.out.println(fullName);
-                String originName = getLastFileName(fullName, "/");
+               // fullName = fullName.replace("\\", "/");
+                String originName = getLastFileName(fullName, File.separator);
                 // System.out.println(originName);
                 String childName = originName;
                 boolean directory = header.getDirectory();
@@ -62,20 +58,16 @@ public class CompressFileReader {
                     childName = archiveFileName + "_" + originName;
                     headersToBeExtract.add(Collections.singletonMap(childName, header));
                 }
-                String parentName = getLast2FileName(fullName, "/", archiveFileName);
-              //  System.out.println(parentName);
+                String parentName = getLast2FileName(fullName, File.separator, archiveFileName);
                 FileType type = FileType.typeFromUrl(childName);
                 if (type.equals(FileType.PICTURE)) {
                     imgUrls.add(baseUrl + childName);
                 }
                 FileNode node = new FileNode(originName, childName, parentName, new ArrayList<>(), directory, fileKey);
-                //  System.out.println(666);
                 addNodes(appender, parentName, node);
                 appender.put(childName, node);
             }
-
             fileHandlerService.putImgCache(fileKey, imgUrls);
-            executors.submit(new RarExtractorWorker(headersToBeExtract, filePath));
             return new ObjectMapper().writeValueAsString(appender.get(""));
         } catch (IOException e) {
             e.printStackTrace();
@@ -171,12 +163,11 @@ public class CompressFileReader {
         if (fullName.contains(seperator)) {
             newName = fullName.substring(fullName.lastIndexOf(seperator) + 1);
         }
-        // System.out.println(newName);
+
         return newName;
     }
 
-    public static Comparator<FileNode> sortComparator =
-            new Comparator<FileNode>() {
+    public static Comparator<FileNode> sortComparator =  new Comparator<FileNode>() {
                 final Collator cmp = Collator.getInstance(Locale.US);
 
                 @Override
@@ -188,6 +179,7 @@ public class CompressFileReader {
                     }
                     CollationKey c1 = cmp.getCollationKey(o1.getOriginName());
                     CollationKey c2 = cmp.getCollationKey(o2.getOriginName());
+
                     return cmp.compare(c1.getSourceString(), c2.getSourceString());
                 }
             };
@@ -296,49 +288,7 @@ public class CompressFileReader {
             this.directory = directory;
         }
     }
-    class RarExtractorWorker implements Runnable {
-        private final List<Map<String, FileHeader>> headersToBeExtracted;
 
-        private final List<Map<String, FileHeaderRar>> headersToBeExtract;
-
-        private final Archive archive;
-        /**
-         * 用以删除源文件
-         */
-        private final String filePath;
-
-
-        public RarExtractorWorker(
-                List<Map<String, FileHeaderRar>> headersToBeExtract, String filePath) {
-            this.headersToBeExtract = headersToBeExtract;
-            this.filePath = filePath;
-            archive = null;
-            headersToBeExtracted = null;
-        }
-
-        @Override
-        public void run() {
-            for (Map<String, FileHeader> entryMap : headersToBeExtracted) {
-                String childName = entryMap.keySet().iterator().next();
-                extractRarFile(childName, entryMap.values().iterator().next(), archive);
-            }
-            try {
-                archive.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            KkFileUtils.deleteFileByPath(filePath);
-        }
-
-        private void extractRarFile(String childName, FileHeader header, Archive archive) {
-            String outPath = fileDir + childName;
-            try (OutputStream ot = new FileOutputStream(outPath)) {
-                archive.extractFile(header, ot);
-            } catch (IOException | RarException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private static class ExtractCallback implements IArchiveExtractCallback {
         private final IInArchive inArchive;
@@ -348,7 +298,9 @@ public class CompressFileReader {
 
         public ExtractCallback(IInArchive inArchive, String extractPath, String folderName) {
             this.inArchive = inArchive;
+
             if (!extractPath.endsWith("/") && !extractPath.endsWith("\\")) {
+
                 extractPath += File.separator;
             }
             this.extractPath = extractPath;
@@ -401,7 +353,6 @@ public class CompressFileReader {
         public void prepareOperation(ExtractAskMode extractAskMode) {
 
         }
-
         @Override
         public void setOperationResult(ExtractOperationResult extractOperationResult) {
         }
