@@ -59,13 +59,12 @@ public class PdfFilePreviewImpl implements FilePreview {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
                 }
                     outFilePath = response.getContent();
+                }else {
+                    outFilePath = FILE_DIR +url.replace(baseUrl, "");  //本地URL 不下载去掉ULR 组合成本地路径
+
                 }
                 File file = new File(outFilePath);   //判断文件是否存在
                 if(!file.exists() || file.length() == 0) {
-                    outFilePath = FILE_DIR +"demo/" + pdfName;
-                }
-                File filee = new File(outFilePath);   //判断文件是否存在
-                if(!filee.exists() || filee.length() == 0) {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
                 }
                 String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
@@ -158,10 +157,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                         model.addAttribute("pdfUrl",url);
                         return PDF_FILE_PREVIEW_PAGE;
                     }else {
-                        File file = new File(outFilePath);   //判断文件是否存在
-                        if(!file.exists() || file.length() == 0) {
-                            outFilePath = FILE_DIR +"demo/" + pdfName;
-                        }
+                        outFilePath = FILE_DIR +url.replace(baseUrl, "");
                         File filee = new File(outFilePath);   //判断文件是否存在
                         if(!filee.exists() || filee.length() == 0) {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");

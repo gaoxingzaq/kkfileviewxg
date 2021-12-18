@@ -82,10 +82,7 @@ public class TiffFilePreviewImpl implements FilePreview {
                     }
 
                 }else {
-                    File file = new File(tifoutFilePath);   //判断文件是否存在
-                    if(!file.exists() || file.length() == 0) {
-                        tifoutFilePath = FILE_DIR +"demo/" + fileName;
-                    }
+                    tifoutFilePath = FILE_DIR +url.replace(baseUrl, "");  //本地URL 不下载去掉ULR 组合成本地路径
                     File filee = new File(tifoutFilePath);   //判断文件是否存在
                     if(!filee.exists() || filee.length() == 0) {
                         return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
