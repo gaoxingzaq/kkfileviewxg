@@ -47,8 +47,7 @@ public class SimTextFilePreviewImpl implements FilePreview {
     static String textData(String baseUrll) throws IOException {
         File file = new File(baseUrll);
         if(!file.exists() || file.length() == 0) {
-            String line="";
-            return line;
+            return "";
         }else {
             String charset = EncodingDetects.getJavaEncode(baseUrll);
             System.out.println(charset);
@@ -58,6 +57,7 @@ public class SimTextFilePreviewImpl implements FilePreview {
             while ((line = br.readLine()) != null) {
                 result.append(line).append("\r\n");
             }
+            br.close();
             return result.toString();
         }
     }

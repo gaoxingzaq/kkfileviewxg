@@ -363,9 +363,10 @@ public class FileHandlerService {
             }
             return imageUrls;
         }
+        File pdfFile = new File(pdfFilePath);
+        PDDocument doc = null;
         try {
-            File pdfFile = new File(pdfFilePath);
-            PDDocument doc = PDDocument.load(pdfFile);
+            doc = PDDocument.load(pdfFile);
             int pageCount = doc.getNumberOfPages();
             PDFRenderer pdfRenderer = new PDFRenderer(doc);
             int index = pdfFilePath.lastIndexOf(".");
@@ -386,6 +387,14 @@ public class FileHandlerService {
             this.addConvertedPdfImage(pdfFilePath, pageCount);
         } catch (IOException e) {
             logger.error("Convert pdf to jpg exception, pdfFilePath：{}", pdfFilePath, e);
+        }finally{
+            if(doc != null){   //关闭
+                try {
+                    doc.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return imageUrls;
     }
@@ -419,8 +428,12 @@ public class FileHandlerService {
             return true;
         } catch (IOException e) {
             logger.error("PDFFileNotFoundException，inputFilePath：{}", inputFilePath, e);
-            return false;
+        }finally{
+            if(cadImage != null){   //关闭
+                cadImage.close();
+            }
         }
+        return false;
     }
 
     /**

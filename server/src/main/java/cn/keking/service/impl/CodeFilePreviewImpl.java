@@ -21,6 +21,11 @@ public class CodeFilePreviewImpl implements FilePreview {
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
          filePreviewHandle.filePreviewHandle(url, model, fileAttribute);
+        String suffix = fileAttribute.getSuffix();
+        if(suffix.equalsIgnoreCase("htm") || suffix.equalsIgnoreCase("html") ||suffix.equalsIgnoreCase("shtml") ){
+            model.addAttribute("pdfUrl", url);
+            return  EXEL_FILE_PREVIEW_PAGE;   //直接输出html
+        }
         return CODE_FILE_PREVIEW_PAGE;
     }
 }
