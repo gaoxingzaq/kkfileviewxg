@@ -2847,12 +2847,14 @@ function webViewerInitialized() {
   var appConfig = PDFViewerApplication.appConfig;
   var file;
   var disableDownload;
-  var pdfXianzhi;
+  var pdfXianzhid;
   var queryString = document.location.search.substring(1);
   var params = (0, _ui_utils.parseQueryString)(queryString);
+  var  indexxx = queryString .lastIndexOf( "&" ); 
+   var strr  = queryString .substring(indexxx + 1, queryString .length);
   file = "file" in params ? params.file : _app_options.AppOptions.get("defaultUrl");
-   disableDownload = 'disabledownload' in params ? params.disabledownload : 'false';
-   pdfXianzhi = 'pdfXianzhi' in params ? params.pdfXianzhi : 'true';
+   disableDownload = 'disabledownload' in params ? params.disabledownload : 'true';
+      pdfXianzhid = strr.replace("pdfXianzhi=","");;
   validateFileURL(file);
   var fileInput = document.createElement("input");
   fileInput.id = appConfig.openFileInputName;
@@ -2947,7 +2949,8 @@ function webViewerInitialized() {
     if ('true' === disableDownload) {
     document.getElementById("viewBookmark").style.display='none';
   }
-   if ('true' === pdfXianzhi) {
+   if ('false' != pdfXianzhid) {
+	  
   //屏蔽右键菜单
 document.oncontextmenu = function (event) {
   if (window.event) {
