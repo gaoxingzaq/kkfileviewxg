@@ -107,6 +107,11 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
+2021年12月20日，v4.2.2版本发布:<br>  
+1、修复pdf文件本地路径判断错误<br>
+2、修复某些文件不关闭流<br> 
+3、更新log4j为2.17<br><br> 	
+
 2021年12月15日，v4.2.1版本发布:<br>  
 1、新增TIF图片转换PDF模式<br>
 2、正式版发布<br> 
