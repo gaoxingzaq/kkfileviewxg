@@ -190,6 +190,8 @@
   
     var authMap = '{}';
 
+    var baseUrl = '${baseUrl}';
+
 </script>
 <!-- 客户自定义JS -->
     <script src="pptx/jquery.mobile-events.min.js"></script>
