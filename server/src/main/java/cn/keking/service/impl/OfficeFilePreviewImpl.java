@@ -71,7 +71,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
             officexh=String.valueOf(1);
         }
         boolean isHtml;
-        boolean doc = suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("dot") || suffix.equalsIgnoreCase("docm") || suffix.equalsIgnoreCase("vsd") ;
+        boolean doc = suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("dot") || suffix.equalsIgnoreCase("docm") || suffix.equalsIgnoreCase("vsd")  || suffix.equalsIgnoreCase("wmf") || suffix.equalsIgnoreCase("emf");
         boolean xls = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm")  ;
         boolean ppt = suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx");
         if (officexh.equals("1")) {
@@ -143,7 +143,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
             }else {   //开源openoffice 或  LibreOffice转换
              if (StringUtils.hasText(outFilePath)) {
                  String geshi =FileHandlerService.geshi(filePath,0);// 获取文件头信息
-                     if (geshi.equals(".2003office") || geshi.equals(".2010offcie")  || geshi.equals(".QT") || geshi.equals(".rtf") || geshi.equals(".xmln") ){  //判断是什么格式的文件
+                     if (geshi.equals(".2003office") || geshi.equals(".2010offcie")  || geshi.equals(".QT") || geshi.equals(".rtf") || geshi.equals(".xmln") || suffix.equalsIgnoreCase("wmf") || suffix.equalsIgnoreCase("emf") ){  //判断是什么格式的文件
                          KkFileUtils.deleteFileByPath(outFilePath);
                          officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //如果存在以上格式就进行转换
                      }else if(geshi.equals(".xml")) {  //如果是XML格式的WORD就用下面方法
