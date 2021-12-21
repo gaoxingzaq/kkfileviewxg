@@ -39,7 +39,7 @@ public enum FileType {
     private static final String[] OFD_TYPES = {"ofd"};
 	private static final String[] SVG_TYPES = {"svg"};
 	private static final String[] EML_TYPES = {"eml"};
-    private static final String[] CAD_TYPES = {"dwg"};
+    private static final String[] CAD_TYPES = {"dwg","dxf","dwf"};
     private static final String[] MHT_TYPES = {"mht"};
     private static final String[] SSIM_TEXT_TYPES = ConfigConstants.getSimText();
     private static final String[] CODES = {"java", "c", "php", "go", "python", "py", "js", "html", "ftl", "css", "lua", "sh", "rb", "yaml", "yml", "json", "h", "cpp", "cs", "aspx", "jsp"};

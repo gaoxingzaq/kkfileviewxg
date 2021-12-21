@@ -5,10 +5,12 @@ import cn.keking.model.FileAttribute;
 import cn.keking.model.FileType;
 import cn.keking.service.cache.CacheService;
 import cn.keking.utils.KkFileUtils;
+import cn.keking.utils.UrlEncoderUtilss;
 import cn.keking.utils.WebUtils;
 import cn.keking.utils.WjtTypeUtils;
 import com.aspose.cad.CodePages;
 import com.aspose.cad.Color;
+import com.aspose.cad.Image;
 import com.aspose.cad.LoadOptions;
 import com.aspose.cad.imageoptions.CadRasterizationOptions;
 import com.aspose.cad.imageoptions.PdfOptions;
@@ -28,8 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -408,7 +410,7 @@ public class FileHandlerService {
     public boolean cadToPdf(String inputFilePath, String outputFilePath)  {
         LoadOptions opts = new LoadOptions();
         opts.setSpecifiedEncoding(CodePages.SimpChinese);
-        com.aspose.cad.Image cadImage = com.aspose.cad.Image.load(inputFilePath, opts);
+        com.aspose.cad.Image cadImage = Image.load(inputFilePath, opts);
         CadRasterizationOptions cadRasterizationOptions = new CadRasterizationOptions();
         cadRasterizationOptions.setBackgroundColor(Color.getWhite());
         cadRasterizationOptions.setPageWidth(1400);
@@ -457,6 +459,13 @@ public class FileHandlerService {
             type = FileType.typeFromUrl(url);
             suffix = WebUtils.suffixFromUrl(url);
         }
+		 if(UrlEncoderUtilss.hasUrlEncoded(fileName)){  //判断文件名是否转义
+        try {
+            fileName = URLDecoder.decode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+      }
         attribute.setType(type);
         attribute.setName(fileName);
         attribute.setSuffix(suffix);
