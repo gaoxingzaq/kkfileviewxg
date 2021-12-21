@@ -50,7 +50,8 @@ public class DownloadUtils {
         if(wjl){
             urlStr =  urlStr.substring(0,urlStr.lastIndexOf("&"));  //删除添加的文件流内容
         }
-
+        urlStr = urlStr.replace("%", "%25"); //针对特殊符号转义
+        urlStr = urlStr.replace("#", "%23"); //针对特殊符号转义
         ReturnResponse<String> response = new ReturnResponse<>(0, "下载成功!!!", "");
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {

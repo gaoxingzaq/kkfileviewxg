@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * tiff 图片文件处理
@@ -40,10 +41,12 @@ public class TiffFilePreviewImpl implements FilePreview {
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String gengxin=fileAttribute.getgengxin();
         String fileName = fileAttribute.getName();
+        String regEx = "[`#%:;\"\\\\]";
+        String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String officePreviewType = fileAttribute.getOfficePreviewType();
-        String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "pdf";
+        String pdfName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + "pdf";
         String outFilePath = FILE_DIR + pdfName;
-        String tifoutFilePath = FILE_DIR + fileName;
+        String tifoutFilePath;
         String  host = FileHandlerService.hqurl(url);
         boolean bendi = FileHandlerService.kuayu(host, baseUrl); //判断是否是本地URL 是本地的启用分页功能 不是就直接在跨域输出
         boolean pdfgx ;

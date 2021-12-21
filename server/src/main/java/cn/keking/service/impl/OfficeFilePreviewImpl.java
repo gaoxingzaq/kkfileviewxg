@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by kl on 2018/1/17.
@@ -62,6 +63,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String suffix = fileAttribute.getSuffix();
         String fileName = fileAttribute.getName();
+        String regEx = "[`#%:;\"\\\\]";  //针对特殊符号
+        String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String imagesss = FILE_DIR + fileName;
         if(officePreviewType.equalsIgnoreCase("poi")){  //判断需要用什么转换器
             officexh= String.valueOf(2);
@@ -79,8 +82,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
         }else {
              isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx")  || suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx");
         }
-        String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + (isHtml ? "html" : "pdf");
-        String ptxName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "file";
+        String pdfName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + (isHtml ? "html" : "pdf");
+        String ptxName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + "file";
         String outFilePath = FILE_DIR + pdfName;
         // 判断之前是否已转换过，如果转换过，直接返回，否则执行转换
         boolean pdfgx ;

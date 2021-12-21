@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 
+import java.util.regex.Pattern;
+
 import static cn.keking.service.impl.OfficeFilePreviewImpl.getPreviewType;
 
 /**
@@ -43,8 +45,10 @@ public class CadFilePreviewImpl implements FilePreview {
         String officePreviewType;
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String fileName = fileAttribute.getName();
+        String regEx = "[`#%:;\"\\\\]";
+        String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String cadpdf = fileName.substring(fileName.lastIndexOf("."));
-        String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "pdf";
+        String pdfName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + "pdf";
         String outFilePath = FILE_DIR + pdfName;
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新

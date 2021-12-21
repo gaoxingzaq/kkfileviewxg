@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 
+import java.util.regex.Pattern;
+
 import static cn.keking.service.impl.OfficeFilePreviewImpl.getPreviewType;
 
 /**
@@ -40,8 +42,10 @@ public class MhtFilePreviewImpl implements FilePreview {
         // 预览Type，参数传了就取参数的，没传取系统默认
         String gengxin=fileAttribute.getgengxin();
         String fileName = fileAttribute.getName();
+        String regEx = "[`#%:;\"\\\\]";
+        String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String imagesss = FILE_DIR + fileName;
-        String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "html";
+        String pdfName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + "html";
         String outFilePath = FILE_DIR + pdfName;
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新

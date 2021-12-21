@@ -27,8 +27,6 @@ public class Mht2HtmlUtil {
             Session mailSession = Session.getDefaultInstance(System.getProperties(), null);
             MimeMessage msg = new MimeMessage(mailSession, fis);
             Object content = msg.getContent();
-           // System.out.println(content);
-         //   System.out.println(666);
             if (content instanceof Multipart) {
 
                 MimeMultipart mp = (MimeMultipart) content;
