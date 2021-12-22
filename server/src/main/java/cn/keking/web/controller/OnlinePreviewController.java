@@ -91,6 +91,10 @@ public class OnlinePreviewController {
                 return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
             }
         }
+        boolean wjl = FileHandlerService.kuayu("&fullfilename=", fileUrl);  //判断是否启用文件流
+        if(wjl){
+            fileUrl =  fileUrl.substring(0,fileUrl.lastIndexOf("&"));  //删除添加的文件流内容
+        }
         logger.info("预览文件url：{}，previewType：{}", fileUrl, fileAttribute.getType());
         return filePreview.filePreviewHandle(fileUrl, model, fileAttribute);
     }
