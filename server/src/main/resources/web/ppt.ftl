@@ -15,12 +15,12 @@
 		"title": null,
 		"content": null,
 		"text": null,
-		"url": "${img}",
+		"url": "${baseUrl}${img}",
 		"destFile": null,
 		"viewCount": 0,
 		"downloadCount": 0,
 		"ctime": null,
-		"thumbUrl": "${img}",
+		"thumbUrl": "${baseUrl}${img}",
 		"largeUrl": null,
 		"ratio": 0.5625,
 		"note": null
@@ -189,6 +189,8 @@
     }
   
     var authMap = '{}';
+
+    var baseUrl = '${baseUrl}';
 
 </script>
 <!-- 客户自定义JS -->

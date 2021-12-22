@@ -113,9 +113,9 @@ function resetContent() {
 	// pages
 	for (i = 0; i < totalSize; i++) {
 		var page = pages[i];
-		slideUrls[i] = page.url;
-		slideThumbUrls[i] = page.thumbUrl;
-		$('.row-fluid .span2').append('<div class="thumbnail" page="' + (i + 1) + '"><img src="' + page.thumbUrl + '"></div><div class="thumb-page-number-container">' + (i + 1) + '/' + slideCount + '</div>');
+		slideUrls[i] = baseUrl + page.url;
+		slideThumbUrls[i] = baseUrl + page.thumbUrl;
+		$('.row-fluid .span2').append('<div class="thumbnail" page="' + (i + 1) + '"><img src="' + baseUrl + page.thumbUrl + '"></div><div class="thumb-page-number-container">' + (i + 1) + '/' + slideCount + '</div>');
 		$('.select-page-selector').append('<option>' + (i + 1) + '</option>');
 		$('.select-page-selector-sync').append('<option>' + (i + 1) + '</option>');
 	}
