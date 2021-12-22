@@ -23,12 +23,9 @@
 
 ### 项目文档（Project documentation）
 1. 详细wiki文档：https://gitee.com/kekingcn/file-online-preview/wikis/pages
-1. 中文文档：https://gitee.com/kekingcn/file-online-preview/blob/master/README.md
-1. English document：https://gitee.com/kekingcn/file-online-preview/blob/master/README.en.md
 
 ### 联系我们，加入组织
 > 我们会用心回答解决大家在项目使用中的问题，也请大家在提问前至少 Google 或 baidu 过，珍爱生命远离无效的交流沟通
-
 QQ群号：~~484680571(已满)~~  3群433403637
 
 ### 文档预览效果
