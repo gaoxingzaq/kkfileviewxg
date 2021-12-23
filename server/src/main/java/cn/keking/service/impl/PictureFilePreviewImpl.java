@@ -51,7 +51,7 @@ public class PictureFilePreviewImpl implements FilePreview {
                 model.addAttribute("currentUrl", file);
             }
         } else {
-            System.out.println(officePreviewType);
+           
             if (officePreviewType.equalsIgnoreCase("imagexz")){
                 model.addAttribute("imgUrls", imgUrls);
                 model.addAttribute("currentUrl", url);
