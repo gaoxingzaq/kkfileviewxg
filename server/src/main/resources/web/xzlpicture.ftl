@@ -24,7 +24,7 @@
         <#else>
             <#assign img="${baseUrl}${img}">
         </#if>
-        <li><img id="${baseUrl}/getCorsFile?urlPath=${img}"  url="${baseUrl}/getCorsFile?urlPath=${img}" src="${baseUrl}/getCorsFile?urlPath=${img}" width="1px" height="1px"></li>
+        <li><img id="${baseUrl}getCorsFile?urlPath=${img}"  url="${baseUrl}getCorsFile?urlPath=${img}" src="${baseUrl}getCorsFile?urlPath=${img}" width="1px" height="1px"></li>
     </#list>
 </ul>
 
@@ -36,7 +36,7 @@
         backdrop: false,
         loop : true
     });
-    document.getElementById("${baseUrl}/getCorsFile?urlPath=${currentUrl}").click();
+    document.getElementById("${baseUrl}getCorsFile?urlPath=${currentUrl}").click();
 
     /*初始化水印*/
     window.onload = function() {

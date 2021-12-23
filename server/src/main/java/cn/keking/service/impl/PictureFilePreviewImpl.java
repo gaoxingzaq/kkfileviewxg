@@ -5,6 +5,7 @@ import cn.keking.model.ReturnResponse;
 import cn.keking.service.FilePreview;
 import cn.keking.utils.DownloadUtils;
 import cn.keking.service.FileHandlerService;
+import cn.keking.web.filter.BaseUrlFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +29,8 @@ public class PictureFilePreviewImpl implements FilePreview {
 
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
+        String baseUrl = BaseUrlFilter.getBaseUrl();
+        String officePreviewType = fileAttribute.getOfficePreviewType();
         List<String> imgUrls = new ArrayList<>();
         imgUrls.add(url);
         String fileKey = fileAttribute.getFileKey();
@@ -48,8 +51,15 @@ public class PictureFilePreviewImpl implements FilePreview {
                 model.addAttribute("currentUrl", file);
             }
         } else {
-            model.addAttribute("imgUrls", imgUrls);
-            model.addAttribute("currentUrl", url);
+            System.out.println(officePreviewType);
+            if (officePreviewType.equalsIgnoreCase("imagexz")){
+                model.addAttribute("imgUrls", imgUrls);
+                model.addAttribute("currentUrl", url);
+                return XZLPICTURE_FILE_PREVIEW_PAGE;
+            }else {
+                model.addAttribute("imgUrls", imgUrls);
+                model.addAttribute("currentUrl", url);
+            }
         }
         return PICTURE_FILE_PREVIEW_PAGE;
     }

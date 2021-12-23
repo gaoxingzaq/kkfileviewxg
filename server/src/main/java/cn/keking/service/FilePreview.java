@@ -15,6 +15,7 @@ public interface FilePreview {
     String COMPRESS_FILE_PREVIEW_PAGE = "compress";
     String MEDIA_FILE_PREVIEW_PAGE = "media";
     String PICTURE_FILE_PREVIEW_PAGE = "picture";
+    String XZLPICTURE_FILE_PREVIEW_PAGE = "xzlpicture";
     String TIFF_FILE_PREVIEW_PAGE = "tiff";
     String OFD_FILE_PREVIEW_PAGE = "ofd";
 	String SVG_FILE_PREVIEW_PAGE = "svg";
