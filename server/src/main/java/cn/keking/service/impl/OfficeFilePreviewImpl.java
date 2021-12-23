@@ -82,8 +82,9 @@ public class OfficeFilePreviewImpl implements FilePreview {
         }else {
              isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx")  || suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx");
         }
-        String pdfName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + (isHtml ? "html" : "pdf");
-        String ptxName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + "file";
+        String pdfName = fileNamee + "." + (isHtml ? "html" : "pdf");
+        String ptxName = fileNamee + "." + "file";
+        System.out.println(pdfName);
         String outFilePath = FILE_DIR + pdfName;
         // 判断之前是否已转换过，如果转换过，直接返回，否则执行转换
         boolean pdfgx ;

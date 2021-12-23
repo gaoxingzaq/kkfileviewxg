@@ -27,7 +27,7 @@ public class OfdFilePreviewImpl implements FilePreview {
         String fileName = fileAttribute.getName();
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "ofd";
-        String outFilePath = FILE_DIR + pdfName;
+        String outFilePath;
         String  host = FileHandlerService.hqurl(url);
         boolean bendi = FileHandlerService.kuayu(host, baseUrl); //判断是否是本地URL 是本地的启用分页功能 不是就直接在跨域输出
                     if(!bendi){

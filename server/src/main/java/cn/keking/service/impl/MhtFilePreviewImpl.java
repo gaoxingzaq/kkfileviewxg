@@ -45,7 +45,7 @@ public class MhtFilePreviewImpl implements FilePreview {
         String regEx = "[`#%:;\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String imagesss = FILE_DIR + fileName;
-        String pdfName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + "html";
+        String pdfName =  fileNamee + "." + "html";
         String outFilePath = FILE_DIR + pdfName;
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新

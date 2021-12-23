@@ -44,7 +44,7 @@ public class TiffFilePreviewImpl implements FilePreview {
         String regEx = "[`#%:;\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String officePreviewType = fileAttribute.getOfficePreviewType();
-        String pdfName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + "pdf";
+        String pdfName =  fileNamee + "." +  "pdf";
         String outFilePath = FILE_DIR + pdfName;
         String tifoutFilePath;
         String  host = FileHandlerService.hqurl(url);

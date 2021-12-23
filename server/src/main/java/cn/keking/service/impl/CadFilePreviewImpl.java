@@ -48,7 +48,7 @@ public class CadFilePreviewImpl implements FilePreview {
         String regEx = "[`#%:;\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String cadpdf = fileName.substring(fileName.lastIndexOf("."));
-        String pdfName = fileNamee.substring(0, fileNamee.lastIndexOf(".") + 1) + "pdf";
+        String pdfName =  fileNamee + "." +  "pdf";
         String outFilePath = FILE_DIR + pdfName;
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新

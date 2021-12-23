@@ -187,17 +187,13 @@
     if (!!name) {
         params.name = name;
     }
-  
     var authMap = '{}';
-
     var baseUrl = '${baseUrl}';
-
 </script>
 <!-- 客户自定义JS -->
-    <script src="pptx/jquery.mobile-events.min.js"></script>
-    <script src="pptx/ppt.js"></script>
+<script src="pptx/jquery.mobile-events.min.js"></script>
+<script src="pptx/ppt.js"></script>
 <script type="text/javascript">
-
     /*初始化水印*/
     window.onload = function () {
         initWaterMark();
