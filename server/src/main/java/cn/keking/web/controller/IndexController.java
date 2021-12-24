@@ -14,14 +14,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class IndexController {
     @Value("${url.base64:true}")
     private String base641;
+    @Value("${local.preview.index:true}")
+    private String index;
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String go2Index(){
-        if(base641.equalsIgnoreCase("true")){
-            return "index";
+        if(index.equalsIgnoreCase("true")){
+            if(base641.equalsIgnoreCase("true")){
+                return "index";
+            }else {
+                return "index1";
+            }
         }else {
-            return "index1";
+            return "null";
         }
-
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
