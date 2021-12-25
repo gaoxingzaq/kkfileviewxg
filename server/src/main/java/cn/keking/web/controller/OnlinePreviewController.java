@@ -57,19 +57,14 @@ public class OnlinePreviewController {
         this.cacheService = cacheService;
         this.otherFilePreview = otherFilePreview;
     }
-
     @Value("${url.base64:true}")
     private String base641;
-
     @Value("${local.preview.dir:true}")
     private String preview;
-
     @Value("${pdfpagee:0}")
     private String pdfpagee;
-
     @RequestMapping(value = "/onlinePreview")
     public String onlinePreview(String url, Model model, HttpServletRequest req) {
-
         String fileUrl;
         try {
             if(base641.equalsIgnoreCase("true")){
@@ -77,7 +72,6 @@ public class OnlinePreviewController {
             }else {
                 fileUrl = url;
             }
-
         } catch (Exception ex) {
             String errorMsg = String.format(BASE64_DECODE_ERROR_MSG, "url");
             return otherFilePreview.notSupportedFile(model, errorMsg);
@@ -86,7 +80,7 @@ public class OnlinePreviewController {
         model.addAttribute("file", fileAttribute);
         FilePreview filePreview = previewFactory.get(fileAttribute);
         if(preview.equalsIgnoreCase("true")) {
-            if (fileUrl == null || fileUrl.toLowerCase().startsWith("file")) {
+            if (fileUrl == null || fileUrl.toLowerCase().startsWith("file:") || fileUrl.toLowerCase().startsWith("file%3")) {
                 logger.info("URL异常", fileUrl);
                 return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
             }
@@ -113,6 +107,16 @@ public class OnlinePreviewController {
             String errorMsg = String.format(BASE64_DECODE_ERROR_MSG, "urls");
             return otherFilePreview.notSupportedFile(model, errorMsg);
         }
+        if(preview.equalsIgnoreCase("true")) {
+            if (fileUrls == null || fileUrls.toLowerCase().startsWith("file:") || fileUrls.toLowerCase().startsWith("file%3")) {
+                logger.info("URL异常", fileUrls);
+                return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrls);
+            }
+        }
+        boolean wjl = FileHandlerService.kuayu("&fullfilename=", fileUrls.toLowerCase());  // 转换成小写 判断是否启用文件流
+        if(wjl){
+            fileUrls =  fileUrls.substring(0,fileUrls.lastIndexOf("&"));  //删除添加的文件流内容
+        }
         logger.info("预览文件url：{}，urls：{}", fileUrls, urls);
         // 抽取文件并返回文件列表
         String[] images = fileUrls.split("\\|");
@@ -136,7 +140,7 @@ public class OnlinePreviewController {
      * @param response response
      */
     @RequestMapping(value = "/getCorsFile", method = RequestMethod.GET)
-    public void getCorsFile( HttpServletRequest request, HttpServletResponse response) {
+    public void getCorsFile( HttpServletRequest request, Model model, HttpServletResponse response) {
         String query = request.getQueryString();
                query = query.replace("%20", " ");
         try {
@@ -146,7 +150,7 @@ public class OnlinePreviewController {
         }
         String urlPath = query.replaceFirst("urlPath=","");
                urlPath = urlPath.replaceFirst("&disabledownload=true","");
-        if (urlPath == null || urlPath.toLowerCase().startsWith("file") || !urlPath.toLowerCase().startsWith("http")) {
+        if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || !urlPath.toLowerCase().startsWith("http")) {
             logger.info("读取跨域文件异常", urlPath);
         }else {
             logger.info("读取跨域文件url：{}", urlPath);
@@ -181,7 +185,7 @@ public class OnlinePreviewController {
         String pdfname = urlPath.substring(urlPath.lastIndexOf("."));
         if(pdfname.equalsIgnoreCase(".pdf")){ //判断是否PDF文件
         // 读取pdf文档
-        if(urlPath.toLowerCase().startsWith("file")){
+       if(urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3")){
             logger.info("文件地址异常", urlPath);
         }else if(!urlPath.toLowerCase().startsWith("http")){
            urlPath ="file:///"+  FILE_DIR + urlPath;

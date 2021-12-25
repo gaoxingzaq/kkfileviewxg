@@ -130,7 +130,9 @@ public class PdfFilePreviewImpl implements FilePreview {
 
                     }else {
                         pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
-                        pdfName =baseUrl+"download?urlPath="+pdfName+"?page="+pdfpagee;
+                        pdfName ="download?urlPath="+pdfName+"&"+FileHandlerService.pdfpage(pdfName);
+                        model.addAttribute("pdfUrl",pdfName);
+                        return FYPDF_FILE_PREVIEW_PAGE;
                     }
                     model.addAttribute("pdfUrl", pdfName);
                 }
@@ -172,8 +174,10 @@ public class PdfFilePreviewImpl implements FilePreview {
                         }
                         String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
                         if (geshi.equals(".pdf")){
-                            model.addAttribute("pdfUrl",url);
-                            return PDF_FILE_PREVIEW_PAGE;
+                            pdfName = url.replace(baseUrl, "");
+                            pdfName ="download?urlPath="+pdfName+"&"+FileHandlerService.pdfpage(pdfName);
+                            model.addAttribute("pdfUrl",pdfName);
+                            return FYPDF_FILE_PREVIEW_PAGE;
                         }else if (geshi.equals(".ofd")){
                             model.addAttribute("pdfUrl",url);
                             return OFD_FILE_PREVIEW_PAGE;
