@@ -107,6 +107,10 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
+2021年12月24日，v4.3.2版本发布:<br>  
+1、pdf分页功能<br>
+2、更新PDF.JS插件<br><br> 			
+			
 2021年12月24日，v4.3.1版本发布:<br>  
 1、新增是否启用首页功能<br><br> 				
 					
