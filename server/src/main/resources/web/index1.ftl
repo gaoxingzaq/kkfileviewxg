@@ -107,6 +107,10 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
+2021年12月28日，v4.4版本发布:<br>  
+1、修复一个重命名规则BUG<br>
+2、正对TIFF文件生成PDF文件调整<br><br> 				
+			
 2021年12月27日，v4.3.2版本发布:<br>  
 1、pdf分页功能<br>
 2、更新PDF.JS插件<br><br> 			

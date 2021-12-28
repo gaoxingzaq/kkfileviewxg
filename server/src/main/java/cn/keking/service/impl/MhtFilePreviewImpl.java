@@ -42,7 +42,7 @@ public class MhtFilePreviewImpl implements FilePreview {
         // 预览Type，参数传了就取参数的，没传取系统默认
         String gengxin=fileAttribute.getgengxin();
         String fileName = fileAttribute.getName();
-        String regEx = "[`#%:;\"\\\\]";
+        String regEx = "[`#%:;.\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String imagesss = FILE_DIR + fileName;
         String pdfName =  fileNamee + "." + "html";

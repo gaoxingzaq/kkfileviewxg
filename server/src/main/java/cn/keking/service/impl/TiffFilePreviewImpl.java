@@ -41,7 +41,7 @@ public class TiffFilePreviewImpl implements FilePreview {
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String gengxin=fileAttribute.getgengxin();
         String fileName = fileAttribute.getName();
-        String regEx = "[`#%:;\"\\\\]";
+        String regEx = "[`#%:;.\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String officePreviewType = fileAttribute.getOfficePreviewType();
         String pdfName =  fileNamee + "." +  "pdf";
@@ -74,12 +74,14 @@ public class TiffFilePreviewImpl implements FilePreview {
                     tifoutFilePath = response.getContent();
                     String geshi =FileHandlerService.geshi(tifoutFilePath,0);// 获取文件头信息
                     if (geshi.equals(".tif") || geshi.equals(".tiff") ){
-                        if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
+
+                        if(ConvertPicUtil.convertTif2Pdf(tifoutFilePath, outFilePath)){
 
                         }else {
                             model.addAttribute("currentUrl", url);
                             return TIFF_FILE_PREVIEW_PAGE;
                         }
+
                     }else {
                         return otherFilePreview.notSupportedFile(model, fileAttribute, "文件类型不正确");
                     }
@@ -92,21 +94,22 @@ public class TiffFilePreviewImpl implements FilePreview {
                     }
                     String geshi =FileHandlerService.geshi(tifoutFilePath,0);// 获取文件头信息
                     if (geshi.equals(".tif") || geshi.equals(".tiff") ){
-                        if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
+                        if(ConvertPicUtil.convertTif2Pdf(tifoutFilePath, outFilePath)){
 
                         }else {
-                           model.addAttribute("currentUrl", url);
+                            model.addAttribute("currentUrl", url);
                             return TIFF_FILE_PREVIEW_PAGE;
                         }
+
                     }else {
                         return otherFilePreview.notSupportedFile(model, fileAttribute, "文件类型不正确");
                     }
                 }
-              //  System.out.println(tifoutFilePath);
-            if (ConfigConstants.isCacheEnabled()) {
-                // 加入缓存
-                fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
-            }
+                // System.out.println(outFilePath);
+                if (ConfigConstants.isCacheEnabled()) {
+                    // 加入缓存
+                    fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
+                }
             }
             if ("pdf".equalsIgnoreCase(officePreviewType)) {
                 model.addAttribute("pdfUrl", pdfName);

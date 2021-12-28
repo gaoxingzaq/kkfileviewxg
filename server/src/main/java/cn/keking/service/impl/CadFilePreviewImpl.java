@@ -45,7 +45,7 @@ public class CadFilePreviewImpl implements FilePreview {
         String officePreviewType;
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String fileName = fileAttribute.getName();
-        String regEx = "[`#%:;\"\\\\]";
+        String regEx = "[`#%:;.\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String cadpdf = fileName.substring(fileName.lastIndexOf("."));
         String pdfName =  fileNamee + "." +  "pdf";
