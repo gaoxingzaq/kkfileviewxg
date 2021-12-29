@@ -84,7 +84,6 @@ public class OfficeFilePreviewImpl implements FilePreview {
         }
         String pdfName = fileNamee + "." + (isHtml ? "html" : "pdf");
         String ptxName = fileNamee + "." + "file";
-        System.out.println(pdfName);
         String outFilePath = FILE_DIR + pdfName;
         // 判断之前是否已转换过，如果转换过，直接返回，否则执行转换
         boolean pdfgx ;
