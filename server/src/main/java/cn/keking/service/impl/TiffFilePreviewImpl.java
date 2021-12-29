@@ -33,9 +33,6 @@ public class TiffFilePreviewImpl implements FilePreview {
         this.fileHandlerService = fileHandlerService;
         this.otherFilePreview = otherFilePreview;
     }
-    private static final String INITIALIZE_MEMORY_SIZE = "initializeMemorySize";
-    //默认初始化 50MB 内存
-    private static final long INITIALIZE_MEMORY_SIZE_VALUE_DEFAULT = 1024L * 1024 * 50;
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         String baseUrl = BaseUrlFilter.getBaseUrl();
@@ -57,12 +54,7 @@ public class TiffFilePreviewImpl implements FilePreview {
         }
         String tifPreviewType = ConfigConstants.getTifPreviewType();
         if("tif".equalsIgnoreCase(tifPreviewType)){
-            String fileSize = WebUtils.getUrlParameterReg(url,INITIALIZE_MEMORY_SIZE);
-            if(StringUtils.hasText(fileSize)){
-                model.addAttribute(INITIALIZE_MEMORY_SIZE,fileSize);
-            }else {
-                model.addAttribute(INITIALIZE_MEMORY_SIZE,Long.toString(INITIALIZE_MEMORY_SIZE_VALUE_DEFAULT));
-            }
+            model.addAttribute("currentUrl",url);
             return TIFF_FILE_PREVIEW_PAGE;
         }else if("pdf".equalsIgnoreCase(tifPreviewType)){
             if (!pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
