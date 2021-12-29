@@ -75,7 +75,7 @@ public class TiffFilePreviewImpl implements FilePreview {
                     String geshi =FileHandlerService.geshi(tifoutFilePath,0);// 获取文件头信息
                     if (geshi.equals(".tif") || geshi.equals(".tiff") ){
 
-                        if(ConvertPicUtil.convertTif2Pdf(tifoutFilePath, outFilePath)){
+                        if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
 
                         }else {
                             model.addAttribute("currentUrl", url);
@@ -94,7 +94,7 @@ public class TiffFilePreviewImpl implements FilePreview {
                     }
                     String geshi =FileHandlerService.geshi(tifoutFilePath,0);// 获取文件头信息
                     if (geshi.equals(".tif") || geshi.equals(".tiff") ){
-                        if(ConvertPicUtil.convertTif2Pdf(tifoutFilePath, outFilePath)){
+                        if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
 
                         }else {
                             model.addAttribute("currentUrl", url);
