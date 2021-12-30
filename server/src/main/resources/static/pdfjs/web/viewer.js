@@ -19040,7 +19040,7 @@ var BasePreferences = /*#__PURE__*/function () {
         "useOnlyCssZoom": false,
         "viewerCssTheme": 0,
         "viewOnLoad": 0,
-        "disableAutoFetch": true,
+        "disableAutoFetch": false,  //自动分加载
         "disableFontFace": false,
         "disableRange": false,
         "disableStream": false,
@@ -20865,7 +20865,7 @@ function renderProgress(index, total, l10n) {
 window.addEventListener("keydown", function (event) {
   if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
 
- if ('false' == disableDownload88) {   //限制打印快捷键
+ if ('false' == disableDownload88) {  
       initWaterMark();  //添加打印水印
 	 window.print(); 
  }

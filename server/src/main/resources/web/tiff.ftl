@@ -15,7 +15,7 @@
         } 
     </style>
 <body>
-<#if "true" != pdfXianzhi>
+<#if "false" == pdfDownloadDisable>
 	<!--endprint-->
 <button type="button" onclick="doPrint()">打印</button> 
 <!--startprint-->

@@ -17,7 +17,6 @@
 <#else>
     <#assign finalUrl="${baseUrl}${pdfUrl}">
 </#if>
-
 	<script>
     /**
      * 初始化水印
@@ -62,11 +61,13 @@
         <div id="lucky-mask-demo" style="position: absolute;z-index: 1000000;left: 0px;top: 0px;bottom: 0px;right: 0px; background: rgba(255, 255, 255, 0.8); text-align: center;font-size: 40px;align-items:center;justify-content: center;display: none;">加载中</div>
         <p style="text-align:center;"> 
 		
- <label><button onclick="tiaozhuan()">跳转HTML预览</button></label>
- 
+
+ <div id="button-area">
+  <label><button onclick="tiaozhuan()">跳转HTML预览</button></label>
+      <button id="confirm-button" onclick="print()">打印</button>
+    </div>
 		<div id="luckysheet" style="margin:0px;padding:0px;position:absolute;width:100%;left: 0px;top: 20px;bottom: 0px;outline: none;"></div>
-      
-    
+   
 	  <script src="xlsx/luckyexcel.umd.js"></script>
         <script>
 
@@ -129,7 +130,18 @@ function tiaozhuan(){
 			
 　　     window.location.href=test;
 　　}
-				
+
+
+				// 打印方法
+		// 打印时，获取luckysheet指定区域html内容，拼接至div，隐藏luckysheet容器并显示打印区域html
+        function to_print() {
+            const html = luckysheet.getRangeHtml();
+            document.querySelector('#print-html').innerHTML = html;
+            document.querySelector('#print-area').style.display = 'block';
+            document.querySelector('#button-area').style.display = 'none';
+      
+        }
+		
         </script>
     </body>
 </html>
