@@ -1,5 +1,7 @@
 package cn.keking.utils;
 
+import cn.keking.config.ConfigConstants;
+import cn.keking.service.FileHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +14,7 @@ public class KkFileUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(KkFileUtils.class);
 
     public static final String DEFAULT_FILE_ENCODING = "UTF-8";
-
+    private static final String FILE_DIR = ConfigConstants.getFileDir();
     /**
      * 判断url是否是http资源
      *
@@ -40,6 +42,9 @@ public class KkFileUtils {
      * @return 单个文件删除成功返回true，否则返回false
      */
     public static boolean deleteFileByName(String fileName) {
+   if(FileHandlerService.kuayu(FILE_DIR+"demo",fileName)){  //取消删除demo目录
+      return false;
+       }
         File file = new File(fileName);
         // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
         if (file.exists() && file.isFile()) {

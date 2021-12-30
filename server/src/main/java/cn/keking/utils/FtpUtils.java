@@ -37,6 +37,9 @@ public class FtpUtils {
     }
 
     public static void download(String ftpUrl, String localFilePath, String ftpUsername, String ftpPassword, String ftpControlEncoding) throws IOException {
+        FTPClient ftpClient=null;
+        OutputStream outputStream=null;
+ try{
         String username = StringUtils.isEmpty(ftpUsername) ? ConfigConstants.getFtpUsername() : ftpUsername;
         String password = StringUtils.isEmpty(ftpPassword) ? ConfigConstants.getFtpPassword() : ftpPassword;
         String controlEncoding = StringUtils.isEmpty(ftpControlEncoding) ? ConfigConstants.getFtpControlEncoding() : ftpControlEncoding;
@@ -45,14 +48,22 @@ public class FtpUtils {
         int port = (url.getPort() == -1) ? url.getDefaultPort() : url.getPort();
         String remoteFilePath = url.getPath();
         LOGGER.debug("FTP connection url:{}, username:{}, password:{}, controlEncoding:{}, localFilePath:{}", ftpUrl, username, password, controlEncoding, localFilePath);
-        FTPClient ftpClient = connect(host, port, username, password, controlEncoding);
-        OutputStream outputStream = new FileOutputStream(localFilePath);
+     ftpClient = connect(host, port, username, password, controlEncoding);
+        outputStream = new FileOutputStream(localFilePath);
         ftpClient.enterLocalPassiveMode();
         boolean downloadResult = ftpClient.retrieveFile(new String(remoteFilePath.getBytes(controlEncoding), StandardCharsets.ISO_8859_1), outputStream);
         LOGGER.debug("FTP download result {}", downloadResult);
         outputStream.flush();
-        outputStream.close();
-        ftpClient.logout();
-        ftpClient.disconnect();
-    }
+    } catch (IOException e) {
+     e.printStackTrace();
+   }finally {
+    if(null !=outputStream){
+    outputStream.close();
+   }
+  if(null !=ftpClient){
+    ftpClient.logout();
+    ftpClient.disconnect();
+  }
+  }
+     }
 }
