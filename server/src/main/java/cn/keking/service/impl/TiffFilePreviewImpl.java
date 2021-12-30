@@ -7,12 +7,10 @@ import cn.keking.service.FileHandlerService;
 import cn.keking.service.FilePreview;
 import cn.keking.utils.ConvertPicUtil;
 import cn.keking.utils.DownloadUtils;
-import cn.keking.utils.WebUtils;
 import cn.keking.web.filter.BaseUrlFilter;
 import jodd.util.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -28,7 +26,6 @@ public class TiffFilePreviewImpl implements FilePreview {
     private final FileHandlerService fileHandlerService;
     private final OtherFilePreviewImpl otherFilePreview;
     private static final String FILE_DIR = ConfigConstants.getFileDir();
-
     public TiffFilePreviewImpl(FileHandlerService fileHandlerService, OtherFilePreviewImpl otherFilePreview) {
         this.fileHandlerService = fileHandlerService;
         this.otherFilePreview = otherFilePreview;
@@ -73,11 +70,9 @@ public class TiffFilePreviewImpl implements FilePreview {
                             model.addAttribute("currentUrl", url);
                             return TIFF_FILE_PREVIEW_PAGE;
                         }
-
                     }else {
                         return otherFilePreview.notSupportedFile(model, fileAttribute, "文件类型不正确");
                     }
-
                 }else {
                     tifoutFilePath = FILE_DIR +url.replace(baseUrl, "");  //本地URL 不下载去掉ULR 组合成本地路径
                     File filee = new File(tifoutFilePath);   //判断文件是否存在
@@ -87,12 +82,10 @@ public class TiffFilePreviewImpl implements FilePreview {
                     String geshi =FileHandlerService.geshi(tifoutFilePath,0);// 获取文件头信息
                     if (geshi.equals(".tif") || geshi.equals(".tiff") ){
                         if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
-
                         }else {
                             model.addAttribute("currentUrl", url);
                             return TIFF_FILE_PREVIEW_PAGE;
                         }
-
                     }else {
                         return otherFilePreview.notSupportedFile(model, fileAttribute, "文件类型不正确");
                     }

@@ -22,10 +22,15 @@
 
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
+var disableDownload88;
+var watermarkTxt88;
 /******/ 	var __webpack_modules__ = ([
 /* 0 */,
 /* 1 */
-/***/ ((__unused_webpack_module, exports) => {
+/***/ 
+
+
+((__unused_webpack_module, exports) => {
 
 
 
@@ -182,7 +187,7 @@ var defaultOptions = {
     kind: OptionKind.API
   },
   disableAutoFetch: {
-    value: false,
+    value: true,
     kind: OptionKind.API + OptionKind.PREFERENCE
   },
   disableFontFace: {
@@ -2456,7 +2461,10 @@ var PDFViewerApplication = {
       return;
     }
 
-    window.print();
+    if ('false' == disableDownload88) {   //限制打印快捷键
+      initWaterMark();  //添加打印水印
+	 window.print(); 
+ }
   },
   bindEvents: function bindEvents() {
     var eventBus = this.eventBus,
@@ -2771,9 +2779,9 @@ var validateFileURL;
           origin = _URL.origin,
           protocol = _URL.protocol;
 
-      if (origin !== viewerOrigin && protocol !== "blob:") {
-        throw new Error("file origin does not match viewer's");
-      }
+    //  if (origin !== viewerOrigin && protocol !== "blob:") {
+    //    throw new Error("file origin does not match viewer's");
+ //     }
     } catch (ex) {
       PDFViewerApplication.l10n.get("loading_error").then(function (msg) {
         PDFViewerApplication._documentError(msg, {
@@ -2864,18 +2872,19 @@ function reportPageStatsPDFBug(_ref10) {
 
 function webViewerInitialized() {
   var _params$get;
-
   var appConfig = PDFViewerApplication.appConfig;
   var file;
   var disableDownload;
   var pdfXianzhid;
   var queryString = document.location.search.substring(1);
   var params = (0, _ui_utils.parseQueryString)(queryString);
-  var  indexxx = queryString .lastIndexOf( "&" ); 
-  var strr  = queryString .substring(indexxx + 1, queryString .length);
+ // var  indexxx = queryString .lastIndexOf( "&" ); 
+ // var strr  = queryString .substring(indexxx + 1, queryString .length);
   file = (_params$get = params.get("file")) !== null && _params$get !== void 0 ? _params$get : _app_options.AppOptions.get("defaultUrl");
-  disableDownload = 'disabledownload' in params ? params.disabledownload : 'true';
-  pdfXianzhid = strr.replace("pdfXianzhi=","");;
+  disableDownload =params.get('disabledownload');
+  disableDownload88 = disableDownload;
+  watermarkTxt88= params.get('watermarktxt');
+  pdfXianzhid = params.get('pdfxianzhi');
   validateFileURL(file);
   var fileInput = document.createElement("input");
   fileInput.id = appConfig.openFileInputName;
@@ -2958,18 +2967,12 @@ function webViewerInitialized() {
       PDFViewerApplication._documentError(msg, reason);
     });
   }
-  
-   if ('true' === disableDownload) {
+ 
+   if ('false' != disableDownload) {
     document.getElementById("download").style.display='none';
-  }
-   if ('true' === disableDownload) {
-    document.getElementById("openFile").style.display='none';
-  }
-   if ('true' === disableDownload) {
-    document.getElementById("print").style.display='none';
-  }
-    if ('true' === disableDownload) {
-    document.getElementById("viewBookmark").style.display='none';
+	document.getElementById("openFile").style.display='none';
+	document.getElementById("print").style.display='none';
+	  document.getElementById("viewBookmark").style.display='none';
   }
    if ('false' != pdfXianzhid) {
 	  
@@ -3649,10 +3652,13 @@ function webViewerKeyDown(evt) {
   if (cmd === 1 || cmd === 8) {
     switch (evt.keyCode) {
       case 83:
-        eventBus.dispatch("download", {
+		 if ('false' == disableDownload88) {   //限制另存为
+		  eventBus.dispatch("download", {
           source: window
         });
-        handled = true;
+	  handled = false;
+ }
+
         break;
 
       case 79:
@@ -16754,7 +16760,7 @@ var PDFPageView = /*#__PURE__*/function () {
         textLayerDiv.className = "textLayer";
         textLayerDiv.style.width = canvasWrapper.style.width;
         textLayerDiv.style.height = canvasWrapper.style.height;
-
+       //这里可以添加水印参数
         if ((_this$annotationLayer3 = this.annotationLayer) !== null && _this$annotationLayer3 !== void 0 && _this$annotationLayer3.div) {
           div.insertBefore(textLayerDiv, this.annotationLayer.div);
         } else {
@@ -19016,7 +19022,7 @@ var BasePreferences = /*#__PURE__*/function () {
     Object.defineProperty(this, "defaults", {
       value: Object.freeze({
         "annotationMode": 2,
-        "cursorToolOnLoad": 0,
+        "cursorToolOnLoad": 1,   //手势
         "defaultZoomValue": "",
         "disablePageLabels": false,
         "enablePermissions": false,
@@ -20792,6 +20798,7 @@ PDFPrintService.prototype = {
     }
   }
 };
+
 var print = window.print;
 
 window.print = function () {
@@ -20855,10 +20862,14 @@ function renderProgress(index, total, l10n) {
     progressPerc.textContent = msg;
   });
 }
-
 window.addEventListener("keydown", function (event) {
   if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
-    window.print();
+
+ if ('false' == disableDownload88) {   //限制打印快捷键
+      initWaterMark();  //添加打印水印
+	 window.print(); 
+ }
+   
     event.preventDefault();
 
     if (event.stopImmediatePropagation) {
@@ -20967,6 +20978,27 @@ function getXfaHtmlForPrinting(printContainer, pdfDocument) {
 
 /***/ })
 /******/ 	]);
+	    function initWaterMark() {
+        let watermarkTxt = watermarkTxt88;
+        if (watermarkTxt !== '') {
+            watermark.init({
+                watermark_txt: watermarkTxt88,
+                watermark_x: 0,
+                watermark_y: 0,
+                watermark_rows: 0,
+                watermark_cols: 0,
+                watermark_x_space: 10,
+                watermark_y_space: 10,
+                watermark_font: '微软雅黑',
+                watermark_fontsize: '18px',
+                watermark_color: 'black',
+                watermark_alpha: 0.2,
+                watermark_width: 180,
+                watermark_height: 80,
+                watermark_angle: 10,
+            });
+        }
+    }
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};

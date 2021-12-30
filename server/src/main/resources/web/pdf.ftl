@@ -44,7 +44,7 @@ String.prototype.endsWithh = function(str) {
 {
  document.getElementsByTagName('iframe')[0].src = "${baseUrl}IEpdfjs/web/viewer.html?file=" + encodeURIComponent(url) + "&disabledownload=${pdfDownloadDisable}&pdfXianzhi=${pdfXianzhi}";
 }else{
- document.getElementsByTagName('iframe')[0].src = "${baseUrl}pdfjs/web/viewer.html?file=" + encodeURIComponent(url) + "&disabledownload=${pdfDownloadDisable}&pdfXianzhi=${pdfXianzhi}";
+ document.getElementsByTagName('iframe')[0].src = "${baseUrl}pdfjs/web/viewer.html?file=" + encodeURIComponent(url) + "&disabledownload=${pdfDownloadDisable}&pdfXianzhi=${pdfXianzhi}&watermarkTxt=${watermarkTxt}";
 
 }
    

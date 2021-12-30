@@ -15,24 +15,12 @@
         } 
     </style>
 <body>
-
 <#if "true" != pdfXianzhi>
 	<!--endprint-->
 <button type="button" onclick="doPrint()">打印</button> 
 <!--startprint-->
 </#if>
 <div id="tiff"></div>
-<script type="text/javascript">
-  function doPrint() {   
-    bdhtml=window.document.body.innerHTML;   
-    sprnstr="<!--startprint-->";   
-    eprnstr="<!--endprint-->";   
-    prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17);   
-    prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));   
-    window.document.body.innerHTML=prnhtml;  
-    window.print();   
-} 
-</script>
 <script>
   let pages;
       let p;
@@ -89,6 +77,17 @@ String.prototype.endsWithh = function(str) {
  initWaterMark();
 }
 </script>
+<script type="text/javascript">
+  function doPrint() {   
+    bdhtml=window.document.body.innerHTML;   
+    sprnstr="<!--startprint-->";   
+    eprnstr="<!--endprint-->";   
+    prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17);   
+    prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));   
+    window.document.body.innerHTML=prnhtml;  
+	 initWaterMark();
+    window.print();   
+} 
+</script>
 </body>
-
 </html>
