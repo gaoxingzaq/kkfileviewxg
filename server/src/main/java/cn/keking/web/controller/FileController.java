@@ -76,9 +76,17 @@ public class FileController {
             logger.error("创建文件夹【{}】失败，请检查目录权限！",fileDir + demoPath);
         }
         logger.info("上传文件：{}", fileDir + demoPath + fileName);
-        try(InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(fileDir + demoPath + fileName)) {
-            StreamUtils.copy(in, out);
-            return new ObjectMapper().writeValueAsString(ReturnResponse.success(null));
+        try(InputStream in = file.getInputStream()) {
+            if(in.available() <= 0){
+                return new ObjectMapper().writeValueAsString(ReturnResponse.failure("文件错误小于等于0KB"));
+            }else {
+                OutputStream out = new FileOutputStream(fileDir + demoPath + fileName);
+                StreamUtils.copy(in, out);
+                in.close();
+                out.close();
+                return new ObjectMapper().writeValueAsString(ReturnResponse.success(null));
+            }
+
         } catch (IOException e) {
             logger.error("文件上传失败", e);
             return new ObjectMapper().writeValueAsString(ReturnResponse.failure());

@@ -38,7 +38,6 @@
      */
     window.onload = function () {
         $("#markdown_btn").hide()
-        initWaterMark();
         loadMarkdown();
     }
 
@@ -63,7 +62,7 @@
         var textData = Base64.decode($("#textData").val())
 		  textData = htmlttt(textData);
         window.textPreData = "<pre style='background-color: #FFFFFF;border:none'>" + textData + "</pre>";
-        window.textMarkdownData = marked(textData);
+        window.textMarkdownData = marked.parse(textData);
         $("#markdown").html(window.textMarkdownData);
     }
 
@@ -81,6 +80,8 @@
             $("#markdown").html(window.textPreData);
         });
     });
+
+ initWaterMark();
 
 </script>
 </body>

@@ -48,6 +48,11 @@ public class DownloadUtils {
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {
             URL url = WebUtils.normalizedURL(urlStr);
+            HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();  //判断下载文件是否为0KB
+            if(urlcon.getContentLength() <= 0){   //判断文件是否正确
+                System.out.println("文件不存在或者文件等于0KB");
+                return response;
+            }
             if (isHttpUrl(url)) {
                 File realFile = new File(realPath);
                 FileUtils.copyURLToFile(url,realFile);
