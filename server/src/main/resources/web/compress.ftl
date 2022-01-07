@@ -11,18 +11,23 @@
         body {
             background-color: #404040;
         }
+		li{
+    border-radius:5px 5px 0px 0px;
+    border:1px solid #ccc;
+    border-bottom:none;
+    text-align: left;
+    line-height: 30px;
+    background-color:#EEEEEE;
+  
+}
         h1, h2, h3, h4, h5, h6 {color: #2f332a;font-weight: bold;font-family: Helvetica, Arial, sans-serif;padding-bottom: 5px;}
-        h1 {font-size: 24px;line-height: 34px;text-align: center;}
-        h2 {font-size: 14px;line-height: 24px;padding-top: 5px;}
-        h6 {font-weight: normal;font-size: 12px;letter-spacing: 1px;line-height: 24px;text-align: center;}
-        a {color:#3C6E31;text-decoration: underline;}
-        
-        code {color: #2f332a;}
-        div.zTreeDemoBackground {width:600px;text-align:center;margin: 0 auto;background-color: #ffffff;}
-		a:link{color: red;}  /*超链接默认样式*/
-a:visited{color: blue;}  /*超链接被访问后的样式*/
-a:hover{color: green;}   /*鼠标经过超链接的样式*/
-a:active{color: yellow;}  /*超链接被激活时的样式*/
+		h2 {color: red;font-weight: normal;font-size: 22px;letter-spacing: 1px;line-height: 24px;}
+        h6 {font-weight: normal;font-size: 18px;letter-spacing: 1px;line-height: 24px;text-align: left;}
+        div.zTreeDemoBackground {width:800px;text-align:center;margin: 0 auto;background-color: #ffffff;}
+		a:link{color: 000;}  /*超链接默认样式*/
+        a:visited{color: blue;}  /*超链接被访问后的样式*/
+        a:hover{color: red;}   /*鼠标经过超链接的样式*/
+        a:active{color: yellow;}  /*超链接被激活时的样式*/
     </style>
 
 </head>
@@ -30,15 +35,16 @@ a:active{color: yellow;}  /*超链接被激活时的样式*/
 
 <div class="zTreeDemoBackground left">
     <ul id="treeDemo" class="ztree"></ul>
+	  <h2>${file.name}列表</font></h2> 
 	  <#list fileTree as img>
 	<#if img?contains("http://") || img?contains("https://")>
     <#assign finalUrl="${img}">
 <#else>
     <#assign finalUrl="${baseUrl}${img}">
 </#if>
-
- <li><a href="javascript:void(0);" onclick="deleteFile('${finalUrl}')">${img}</a></li>
-     
+<div class="zTreeDemoBackground left">
+ <h6><li><a href="javascript:void(0);" onclick="deleteFile('${finalUrl}')">${img}</a></li>
+     </div>
     </#list>
 </div>
 <script>
