@@ -16,91 +16,35 @@
         h2 {font-size: 14px;line-height: 24px;padding-top: 5px;}
         h6 {font-weight: normal;font-size: 12px;letter-spacing: 1px;line-height: 24px;text-align: center;}
         a {color:#3C6E31;text-decoration: underline;}
-        a:hover {background-color:#3C6E31;color:white;}
+        
         code {color: #2f332a;}
         div.zTreeDemoBackground {width:600px;text-align:center;margin: 0 auto;background-color: #ffffff;}
+		a:link{color: red;}  /*超链接默认样式*/
+a:visited{color: blue;}  /*超链接被访问后的样式*/
+a:hover{color: green;}   /*鼠标经过超链接的样式*/
+a:active{color: yellow;}  /*超链接被激活时的样式*/
     </style>
+
 </head>
 <body>
 
 <div class="zTreeDemoBackground left">
     <ul id="treeDemo" class="ztree"></ul>
+	  <#list fileTree as img>
+	<#if img?contains("http://") || img?contains("https://")>
+    <#assign finalUrl="${img}">
+<#else>
+    <#assign finalUrl="${baseUrl}${img}">
+</#if>
+
+ <li><a href="javascript:void(0);" onclick="deleteFile('${finalUrl}')">${img}</a></li>
+     
+    </#list>
 </div>
-<script type="text/javascript" src="js/jquery.ztree.core.js"></script>
-
-<script type="text/javascript">
-    const data = JSON.parse('${fileTree}');
-    var baseUrl = "${baseUrl}";
-    var setting = {
-        view: {
-            fontCss : {"color":"blue"},
-            showLine: true
-        },
-        data: {
-            key: {
-                children: 'childList',
-                name: 'originName'
-            }
-        },
-        callback:{
-            beforeClick:function (treeId, treeNode, clickFlag) {
-                console.log("节点参数：treeId-" + treeId + "treeNode-"
-                        + JSON.stringify(treeNode) + "clickFlag-" + clickFlag);
-            },
-            onClick:function (event, treeId, treeNode) {
-                if (!treeNode.directory) {
-                    /**实现窗口最大化**/
-                    var fulls = "left=0,screenX=0,top=0,screenY=0,scrollbars=1";    //定义弹出窗口的参数
-                    if (window.screen) {
-                        var ah = screen.availHeight - 30;
-                        var aw = (screen.availWidth - 10) / 2;
-                        fulls += ",height=" + ah;
-                        fulls += ",innerHeight=" + ah;
-                        fulls += ",width=" + aw;
-                        fulls += ",innerWidth=" + aw;
-                        fulls += ",resizable"
-                    } else {
-                        fulls += ",resizable"; // 对于不支持screen属性的浏览器，可以手工进行最大化。 manually
-                    }
-                    var previewUrl = baseUrl + treeNode.fileName
-                    window.open("onlinePreview?url=" + encodeURIComponent(Base64.encode(previewUrl)) +"&fileKey="+ treeNode.fileKey, "_self",fulls);
-                }
-            }
-        }
-    };
-    var height = 0;
-    $(document).ready(function(){
-        var treeObj = $.fn.zTree.init($("#treeDemo"), setting, data);
-        treeObj.expandAll(true);
-        height = getZtreeDomHeight();
-        $(".zTreeDemoBackground").css("height", height);
-    });
-
-    /*初始化水印*/
-    window.onload = function() {
-      initWaterMark();
-    }
-
-    /**
-     *  计算ztreedom的高度
-     */
-    function getZtreeDomHeight() {
-        return $("#treeDemo").height() > window.document.documentElement.clientHeight - 1
-                ? $("#treeDemo").height() : window.document.documentElement.clientHeight - 1;
-    }
-    /**
-     * 页面变化调整高度
-     */
-    window.onresize = function(){
-        height = getZtreeDomHeight();
-        $(".zTreeDemoBackground").css("height", height);
-    }
-    /**
-     * 滚动时调整高度
-     */
-    window.onscroll = function(){
-        height = getZtreeDomHeight();
-        $(".zTreeDemoBackground").css("height", height);
+<script>
+ function deleteFile(fileName) {
+ window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(fileName)));
+  
     }
 </script>
 </body>

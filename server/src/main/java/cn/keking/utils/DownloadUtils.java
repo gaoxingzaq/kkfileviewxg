@@ -8,6 +8,8 @@ import io.mola.galimatias.GalimatiasParseException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.*;
@@ -19,6 +21,7 @@ import static cn.keking.utils.KkFileUtils.isHttpUrl;
 /**
  * @author yudian-it
  */
+@Component
 public class DownloadUtils {
 
     private final static Logger logger = LoggerFactory.getLogger(DownloadUtils.class);
@@ -26,7 +29,11 @@ public class DownloadUtils {
     private static final String URL_PARAM_FTP_USERNAME = "ftp.username";
     private static final String URL_PARAM_FTP_PASSWORD = "ftp.password";
     private static final String URL_PARAM_FTP_CONTROL_ENCODING = "ftp.control.encoding";
-
+    private static  String preview;
+    @Value("${local.preview.dir:true}")
+    public void setpdfhtmlqy(String pdfhtmlqy){
+        preview = pdfhtmlqy;
+    }
     /**
      * @param fileAttribute fileAttribute
      * @param fileName      文件名
@@ -48,10 +55,12 @@ public class DownloadUtils {
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {
             URL url = WebUtils.normalizedURL(urlStr);
-            HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();  //判断下载文件是否为0KB
-            if(urlcon.getContentLength() <= 0){   //判断文件是否正确
-                System.out.println("文件不存在或者文件等于0KB");
-                return response;
+            if(preview.equalsIgnoreCase("true")) {
+                HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();
+                if(urlcon.getContentLength() <= 0){   //判断文件是否正确
+                    System.out.println("文件不存在或者文件等于0KB");
+                    return response;
+                }
             }
             if (isHttpUrl(url)) {
                 File realFile = new File(realPath);

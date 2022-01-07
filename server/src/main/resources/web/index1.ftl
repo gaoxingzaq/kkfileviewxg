@@ -46,7 +46,7 @@
                 </pre>
             </div>
 			<div>
-                文件流方法，接口如下：
+                下载流方法，接口如下：
                 <pre style="background-color: #2f332a;color: #cccccc">
                  var originUrl = 'http://127.0.0.1:8080/filedownload?fileId=1'; //要预览文件的访问地址
                  var previewUrl = originUrl + '&fullfilename=/test.txt'   //这里必须加反斜杠
@@ -107,6 +107,11 @@
         <div class="panel-body">
            <div class="panel-body">
             <div>
+2022年1月7日，v4.5版本发布:<br>  
+1、重构压缩包目录样式<br>
+2、修复全局FILE协议错误问题<br>  			
+3、新增生成的图片压缩功能<br><br>  			
+			
 2022年1月4日，v4.4.2版本发布:<br>  
 1、针对0KB的文件进行限制 <br><br>  			
 			

@@ -16,6 +16,7 @@ import com.aspose.cad.imageoptions.CadRasterizationOptions;
 import com.aspose.cad.imageoptions.PdfOptions;
 import com.itextpdf.text.pdf.PdfReader;
 import jodd.util.StringUtil;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -324,6 +325,8 @@ public class FileHandlerService {
     private String pdffy;
     @Value("${pdfpagee:0}")
     private String pdfpagee;
+    @Value("${yashuo:false}")
+    private String yashuo;
     public List<String> pdf2jpg(String pdfFilePath, String pdfName, String baseUrl, FileAttribute fileAttribute) {
         String gengxin=fileAttribute.getgengxin();
         List<String> imageUrls = new ArrayList<>();
@@ -382,7 +385,11 @@ public class FileHandlerService {
             for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
                 imageFilePath = folder + File.separator + pageIndex + imageFileSuffix;
                 BufferedImage image = pdfRenderer.renderImageWithDPI(pageIndex, pdfjpg, ImageType.RGB);
-                ImageIOUtil.writeImage(image, imageFilePath, pdfjpg);
+                if(yashuo.equalsIgnoreCase("true")) {
+                    Thumbnails.of(image).scale(1.0).outputQuality(0.5).toFile(new File(imageFilePath));   //压缩图片
+                }else {
+                    ImageIOUtil.writeImage(image, imageFilePath, pdfjpg);
+                }
                 imageUrls.add(urlPrefix + "/" + pageIndex + imageFileSuffix);
             }
             doc.close();

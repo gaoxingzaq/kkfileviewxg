@@ -142,6 +142,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                         model.addAttribute("pdfUrl",url);
                         return PDF_FILE_PREVIEW_PAGE;
                     }else { //是本地文件
+					outFilePath = FILE_DIR +url.replace(baseUrl, "");
                         File file = new File(outFilePath);   //判断文件是否存在
                         if(!file.exists() || file.length() == 0) {
                             outFilePath = FILE_DIR +"demo/" + pdfName;

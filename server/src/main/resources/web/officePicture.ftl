@@ -17,6 +17,8 @@
             text-align: center
         }
 img {
+max-width: 100%;
+ margin:0 auto;
  border-radius:3px;
  box-shadow:rgba(0,0,0,0.15) 0 0 8px;
  background:#FBFBFB;

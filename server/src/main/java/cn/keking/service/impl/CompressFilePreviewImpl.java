@@ -7,9 +7,17 @@ import cn.keking.service.CompressFileReader;
 import cn.keking.service.FileHandlerService;
 import cn.keking.service.FilePreview;
 import cn.keking.utils.DownloadUtils;
+import cn.keking.utils.KkFileUtils;
+import jodd.util.StringUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by kl on 2018/1/17.
@@ -21,25 +29,37 @@ public class CompressFilePreviewImpl implements FilePreview {
     private final FileHandlerService fileHandlerService;
     private final CompressFileReader compressFileReader;
     private final OtherFilePreviewImpl otherFilePreview;
+    private static final String FILE_DIR = ConfigConstants.getFileDir();
 
     public CompressFilePreviewImpl(FileHandlerService fileHandlerService, CompressFileReader compressFileReader, OtherFilePreviewImpl otherFilePreview) {
         this.fileHandlerService = fileHandlerService;
         this.compressFileReader = compressFileReader;
         this.otherFilePreview = otherFilePreview;
     }
+    @Value("${file.ysb:ashuobao789}")
+    private String ysb;
 
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         String fileName=fileAttribute.getName();
+        String regEx = "[`#%:;.\"\\\\]";
+        String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String fileTree;
+        String gengxin=fileAttribute.getgengxin();
+        boolean pdfgx ;
+        if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
+            pdfgx= false;
+        }else {
+            pdfgx= ConfigConstants.isCacheEnabled();
+        }
         // 判断文件名是否存在(redis缓存读取)
-        if (!StringUtils.hasText(fileHandlerService.getConvertedFile(fileName))  || !ConfigConstants.isCacheEnabled()) {
+        if (!pdfgx||  !StringUtils.hasText(fileHandlerService.getConvertedFile(fileName))  || !ConfigConstants.isCacheEnabled()) {
             ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
             if (response.isFailure()) {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
             }
             String filePath = response.getContent();
-            fileTree = compressFileReader.unRar(filePath, fileName);
+            fileTree = compressFileReader.un7z(filePath, FILE_DIR+"/"+ysb+"/"+fileNamee);
             if (fileTree != null && !"null".equals(fileTree) && ConfigConstants.isCacheEnabled()) {
                 fileHandlerService.addConvertedFile(fileName, fileTree);  //加入缓存
             }
@@ -47,10 +67,32 @@ public class CompressFilePreviewImpl implements FilePreview {
             fileTree = fileHandlerService.getConvertedFile(fileName);
         }
         if (fileTree != null && !"null".equals(fileTree)) {
-            model.addAttribute("fileTree", fileTree);
+            List<String> fileNames = new ArrayList<>();
+            File file = new File(FILE_DIR+"/"+ysb+"/"+fileNamee);
+            findFileList(file,fileNames);
+            model.addAttribute("fileTree", fileNames);
             return COMPRESS_FILE_PREVIEW_PAGE;
         } else {
             return otherFilePreview.notSupportedFile(model, fileAttribute, "压缩文件类型不受支持,或者没加入KK识别");
+        }
+    }
+    public  void findFileList(File dir, List<String> fileNames) {
+        if (!dir.exists() || !dir.isDirectory()) {// 判断是否存在目录
+            return;
+        }
+        String newStr = String.valueOf(dir);
+        KkFileUtils.deleteFileByPath(newStr + "/__MACOSX");
+        KkFileUtils.deleteFileByPath(newStr + "/.DS_Store");
+        String[] files = dir.list();// 读取目录下的所有目录文件信息
+        for (int i = 0; i < files.length; i++) {// 循环，添加文件名或回调自身
+            File file = new File(dir, files[i]);
+            if (file.isFile()) {// 如果文件
+                newStr = newStr.replace(FILE_DIR, "");
+                newStr = newStr.replace("\\", "/");
+                fileNames.add(newStr + "/" + file.getName());// 添加文件全路径名
+            } else {// 如果是目录
+                findFileList(file, fileNames);// 回调自身继续查询
+            }
         }
     }
 }
