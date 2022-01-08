@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
@@ -18,6 +19,20 @@ import java.util.Arrays;
  */
 @Component
 public class CompressFileReader {
+
+    public String getUtf8String(String str) {
+        if (str != null && str.length() > 0) {
+            String needEncodeCode = "ISO-8859-1";
+            try {
+                if (Charset.forName(needEncodeCode).newEncoder().canEncode(str)) {//这个方法是关键，可以判断乱码字符串是否为指定的编码
+                    str = new String(str.getBytes(needEncodeCode), "UTF-8");
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        return str;
+    }
 
     public String un7z(String file7zPath, final String outPutPath){
         RandomAccessFile randomAccessFile = null;
@@ -33,7 +48,7 @@ public class CompressFileReader {
                     final long[] sizeArray = new long[1];
                     result = item.extractSlow(data -> {
                         try {
-                            String str = item.getPath();
+                            String str = getUtf8String(item.getPath());
                             String  str1 = str.substring(0, str.lastIndexOf(File.separator)+ 1);
                             File file = new File(outPutPath + File.separator + str1);
                             if (!file.exists()) {
@@ -50,7 +65,7 @@ public class CompressFileReader {
                         return data.length; // Return amount of consumed
                     });
                     if (result == ExtractOperationResult.OK) {
-                        // System.out.println("解压成功...." + String.format("%9X | %10s | %s", hash[0], sizeArray[0], item.getPath()));
+                        // System.out.println("解压成功...." + String.format("%9X | %10s | %s", hash[0], sizeArray[0], getUtf8String(item.getPath())));
                     } else {
                         System.out.println("解压失败：密码错误或者其他错误...." + result);
                         return null;
