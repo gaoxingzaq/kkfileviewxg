@@ -82,7 +82,7 @@ public class CompressFilePreviewImpl implements FilePreview {
             return;
         }
         String newStr = String.valueOf(dir);
-        KkFileUtils.deleteFileByPath(newStr + "/__MACOSX");
+        KkFileUtils.deleteDirectory(newStr + "/__MACOSX");
         KkFileUtils.deleteFileByPath(newStr + "/.DS_Store");
         String[] files = dir.list();// 读取目录下的所有目录文件信息
         for (int i = 0; i < files.length; i++) {// 循环，添加文件名或回调自身
