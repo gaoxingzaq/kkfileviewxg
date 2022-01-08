@@ -59,7 +59,8 @@ public class CompressFilePreviewImpl implements FilePreview {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
             }
             String filePath = response.getContent();
-            fileTree = compressFileReader.un7z(filePath, FILE_DIR+"/"+ysb+"/"+fileNamee);
+            KkFileUtils.deleteDirectory(FILE_DIR+ysb+"/"+fileNamee);
+            fileTree = compressFileReader.un7z(filePath, FILE_DIR+ysb+"/"+fileNamee);
             if (fileTree != null && !"null".equals(fileTree) && ConfigConstants.isCacheEnabled()) {
                 fileHandlerService.addConvertedFile(fileName, fileTree);  //加入缓存
             }
@@ -68,7 +69,7 @@ public class CompressFilePreviewImpl implements FilePreview {
         }
         if (fileTree != null && !"null".equals(fileTree)) {
             List<String> fileNames = new ArrayList<>();
-            File file = new File(FILE_DIR+"/"+ysb+"/"+fileNamee);
+            File file = new File(FILE_DIR+ysb+"/"+fileNamee);
             findFileList(file,fileNames);
             model.addAttribute("fileTree", fileNames);
             return COMPRESS_FILE_PREVIEW_PAGE;

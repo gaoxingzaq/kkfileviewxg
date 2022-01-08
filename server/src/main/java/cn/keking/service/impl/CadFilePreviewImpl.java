@@ -64,7 +64,9 @@ public class CadFilePreviewImpl implements FilePreview {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
             }
             filePath = response.getContent();
+            String geshi =FileHandlerService.geshi(filePath,0);// 获取文件头信息
             if (StringUtils.hasText(outFilePath)) {
+                if (geshi.equals(".cad")){
                 boolean convertResult = fileHandlerService.cadToPdf(filePath, outFilePath);
                 if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
                     KkFileUtils.deleteFileByPath(filePath);
@@ -76,9 +78,12 @@ public class CadFilePreviewImpl implements FilePreview {
                     // 加入缓存
                     fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
                 }
+            } else {
+                    return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
+                }
             }
         }
-        if(cadpdf.equalsIgnoreCase(".dwg") ||cadpdf.equalsIgnoreCase(".dxf") ){
+        if(cadpdf.equalsIgnoreCase(".dwg") ||cadpdf.equalsIgnoreCase(".dxf") ||cadpdf.equalsIgnoreCase(".dwf") ){
             officePreviewType = "pdf";  //CAD格式强制使用PDF模式
         }else {
           officePreviewType = fileAttribute.getOfficePreviewType() == null ? ConfigConstants.getOfficePreviewType() : fileAttribute.getOfficePreviewType();

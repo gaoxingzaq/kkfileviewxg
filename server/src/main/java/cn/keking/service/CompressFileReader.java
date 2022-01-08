@@ -34,12 +34,12 @@ public class CompressFileReader {
                     result = item.extractSlow(data -> {
                         try {
                             String str = item.getPath();
-                            str = str.substring(0, str.lastIndexOf(File.separator)+ 1);
-                            File file = new File(outPutPath + File.separator + str);
+                            String  str1 = str.substring(0, str.lastIndexOf(File.separator)+ 1);
+                            File file = new File(outPutPath + File.separator + str1);
                             if (!file.exists()) {
                                 file.mkdirs();
                             }
-                            OutputStream out = new FileOutputStream( outPutPath + File.separator + item.getPath(), true);
+                            OutputStream out = new FileOutputStream( outPutPath + File.separator + str, true);
                             IOUtils.write(data, out);
                             out.close();
                         } catch (Exception e) {
@@ -50,7 +50,7 @@ public class CompressFileReader {
                         return data.length; // Return amount of consumed
                     });
                     if (result == ExtractOperationResult.OK) {
-                        //  System.out.println("解压成功...." + String.format("%9X | %10s | %s", hash[0], sizeArray[0], item.getPath()));
+                        // System.out.println("解压成功...." + String.format("%9X | %10s | %s", hash[0], sizeArray[0], item.getPath()));
                     } else {
                         System.out.println("解压失败：密码错误或者其他错误...." + result);
                         return null;

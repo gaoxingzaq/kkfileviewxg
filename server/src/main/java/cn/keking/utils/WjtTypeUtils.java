@@ -14,7 +14,9 @@ public class WjtTypeUtils {
     public static final String TYPE_WEBP = ".webp";
     public static final String TYPE_TIF = ".tif";
     public static final String TYPE_TIFF = ".tiff";
-    public static final String TYPE_CAD = ".dwg";
+    public static final String TYPE_CAD = ".cad";
+    public static final String TYPE_DXF = ".cad";
+    public static final String TYPE_DWF = ".cad";
     public static final String TYPE_XML= ".xml";
     public static final String TYPE_PDF = ".pdf";
     public static final String TYPE_OFD = ".ofd";
@@ -78,6 +80,10 @@ public class WjtTypeUtils {
                 return TYPE_TIFF;
             }else if(type.contains("41433130")){
                 return TYPE_CAD;
+            }else if(type.contains("2020300D")){
+                return TYPE_DXF;
+            }else if(type.contains("28445746")){
+                return TYPE_DWF;
             }else if(type.contains("3C3F786D")){
                 return TYPE_XML;
             }else if(type.contains("25504446")){
