@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/loading.css"/>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="bootstrap-table/bootstrap-table.min.css"/>
-    <link rel="stylesheet" href="gitalk/gitalk.css"/>
     <script type="text/javascript" src="js/jquery-3.0.0.min.js"></script>
     <script type="text/javascript" src="js/jquery.form.min.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
@@ -101,14 +100,18 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                    发版记录
+                <a data-toggle="collapse" data-parent="#accordion" onclick="show()">
+                    点我查看更新记录 
                 </a>
             </h4>
         </div>
-       <div class="panel-body">
-           <div class="panel-body">
-            <div>
+       <div id="div" class="panel-body" style="display:none;">
+2022年1月8日，v4.5.1版本发布:<br>  
+1、更新CAD转换工具包<br>
+2、对CAD的文件进行了文件头识别<br>			
+3、对压缩包文件 新增解压前删除旧文件功能<br>
+4、修复LINUX下压缩包乱码<br><br> 			
+			
 2022年1月7日，v4.5版本发布:<br>  
 1、重构压缩包目录样式<br>
 2、修复全局FILE协议错误问题<br>  			
@@ -212,19 +215,19 @@
 3、修复一处BUG 任意文件读取漏洞<br>     
 4、更新OFD到最新版本<br><br>    
 
-> 2021年11月05日，v4.0.9版本发布:<br>  
+2021年11月05日，v4.0.9版本发布:<br>  
 1、更新了一些组件<br>   
 2、更新windows下OFFICE版本7.22<br>   
 3、修复文件流截取问题   文件流方式修改为&fullfilename=/test.txt   斜杠必须有   这块以后有时间重新写个方法吧<br>   
 4、修复了pdfbox 转图片出现图片元素丢失问题<br><br> 
 
 
-> 2021年11月03日，v4.0.8版本发布 :<br>  
+2021年11月03日，v4.0.8版本发布 :<br>  
 1、修复XML、markdown文件预览反义乱码问题<br>   
 2、更新PDF.js文件 版本为2.10.377  修复了签名丢失问题<br>   
 3、更新aspose-cad为21.8版本<br> <br>
 
-> 2021年10月29日，v4.0.7版本发布:<br>  
+2021年10月29日，v4.0.7版本发布:<br>  
 1、修复openoffice 或lieboffice转换内核模式下PPT PPTX图片页码和水印问题<br>    
 2、修复PDF浏览模式有的发票不显示文字<br>     
 3、增加OFD模式打印功能<br>     
@@ -357,39 +360,8 @@
 
                 2017年12月12日：<br>
                 1.项目gitee开源:<a href="https://gitee.com/kekingcn/file-online-preview" target="_blank">https://gitee.com/kekingcn/file-online-preview</a><br>
-                2.项目github开源:<a href="https://github.com/kekingcn/kkFileView" target="_blank">https://github.com/kekingcn/kkFileView</a>
-            </div>
-        </div>
-
-       
-
+                2.高雄修改版本开源:<a href="https://gitee.com/gaoxingzaq/file-online-preview-master" target="_blank">https://gitee.com/gaoxingzaq/file-online-preview-master</a><br>
     </div>
-
-        
-
-    </div>
-</div>
-
-<div class="loading_container">
-    <div class="spinner">
-        <div class="spinner-container container1">
-            <div class="circle1"></div>
-            <div class="circle2"></div>
-            <div class="circle3"></div>
-            <div class="circle4"></div>
-        </div>
-        <div class="spinner-container container2">
-            <div class="circle1"></div>
-            <div class="circle2"></div>
-            <div class="circle3"></div>
-            <div class="circle4"></div>
-        </div>
-        <div class="spinner-container container3">
-            <div class="circle1"></div>
-            <div class="circle2"></div>
-            <div class="circle3"></div>
-            <div class="circle4"></div>
-        </div>
     </div>
 </div>
 <script>
@@ -463,19 +435,31 @@
                 type: "post", /*设置表单以post方法提交*/
                 dataType: "json" /*设置返回值类型为文本*/
             });
-        });
-        var gitalk = new Gitalk({
-            clientID: '525d7f16e17aab08cef5',
-            clientSecret: 'd1154e3aee5c8f1cbdc918b5c97a4f4157e0bfd9',
-            repo: 'kkFileView',
-            owner: 'kekingcn',
-            admin: ['kekingcn,klboke,gitchenjh'],
-            language: 'zh-CN',
-            id: location.pathname,
-            distractionFreeMode: false
-        })
-        gitalk.render((document.getElementById('comments')))
+        }); 
     });
+	
+	
+     function show (event) {
+        //取消冒泡
+        let oevent = event || window.event
+        if (document.all) {
+            oevent.cancelBubble = true
+        } else {
+            oevent.stopPropagation()
+        }
+        if (document.getElementById('div').style.display === 'none' || document.getElementById('div').style.display === '') {
+            document.getElementById('div').style.display = 'block'
+        } else {
+            document.getElementById('div').style.display = 'none'
+        }
+    }
+    document.onclick = function () {
+        document.getElementById('div').style.display = 'none'
+    }
+    document.getElementById('div').onclick = function (event) {
+        let oevent = event || window.event
+        oevent.stopPropagation()
+    }
 </script>
 </body>
 </html>
