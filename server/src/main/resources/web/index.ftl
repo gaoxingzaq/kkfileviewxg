@@ -369,8 +369,10 @@
         $.ajax({
             url: '${baseUrl}deleteFile?fileName=' + encodeURIComponent(fileName),
             success: function (data) {
+			console.log(data);
                 // 删除完成，刷新table
                 if (1 === data.code) {
+				console.log(data);
                     alert(data.msg);
                 } else {
                     $('#table').bootstrapTable('refresh', {});

@@ -2,6 +2,7 @@ package cn.keking.web.filter;
 
 import cn.keking.config.ConfigConstants;
 import cn.keking.config.WatermarkConfigConstants;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +45,7 @@ public class AttributeSetFilter implements Filter {
      */
     private void setWatermarkAttribute(ServletRequest request) {
         String watermarkTxt = request.getParameter("watermarkTxt");
+        watermarkTxt= HtmlUtils.htmlEscape(watermarkTxt);
         request.setAttribute("watermarkTxt", watermarkTxt != null ? watermarkTxt : WatermarkConfigConstants.getWatermarkTxt());
         request.setAttribute("watermarkXSpace", WatermarkConfigConstants.getWatermarkXSpace());
         request.setAttribute("watermarkYSpace", WatermarkConfigConstants.getWatermarkYSpace());
