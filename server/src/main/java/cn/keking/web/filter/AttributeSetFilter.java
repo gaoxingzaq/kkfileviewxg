@@ -45,7 +45,10 @@ public class AttributeSetFilter implements Filter {
      */
     private void setWatermarkAttribute(ServletRequest request) {
         String watermarkTxt = request.getParameter("watermarkTxt");
-        watermarkTxt= HtmlUtils.htmlEscape(watermarkTxt);
+        if(watermarkTxt == null || "".equals(watermarkTxt)){
+        }else {
+            watermarkTxt= HtmlUtils.htmlEscape(watermarkTxt);
+        }
         request.setAttribute("watermarkTxt", watermarkTxt != null ? watermarkTxt : WatermarkConfigConstants.getWatermarkTxt());
         request.setAttribute("watermarkXSpace", WatermarkConfigConstants.getWatermarkXSpace());
         request.setAttribute("watermarkYSpace", WatermarkConfigConstants.getWatermarkYSpace());
