@@ -55,7 +55,7 @@ public class DownloadUtils {
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {
             URL url = WebUtils.normalizedURL(urlStr);
-            if(preview.equalsIgnoreCase("true")) {
+            if(preview.equalsIgnoreCase("true") && !urlStr.toLowerCase().startsWith("ftp")) {
                 HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();
                 if(urlcon.getContentLength() <= 0){   //判断文件是否正确
                     System.out.println("文件不存在或者文件等于0KB");
