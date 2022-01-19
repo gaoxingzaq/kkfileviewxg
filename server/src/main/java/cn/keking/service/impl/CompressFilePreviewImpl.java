@@ -59,9 +59,15 @@ public class CompressFilePreviewImpl implements FilePreview {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
             }
             String filePath = response.getContent();
+            File file = new File(filePath);   //判断文件是否存在
+            if(!file.exists() || file.length() == 0) {
+                return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
+            }
             KkFileUtils.deleteDirectory(FILE_DIR+ysb+"/"+fileNamee);
             fileTree = compressFileReader.un7z(filePath, FILE_DIR+ysb+"/"+fileNamee);
             if (fileTree != null && !"null".equals(fileTree) && ConfigConstants.isCacheEnabled()) {
+                KkFileUtils.deleteDirectory(FILE_DIR+ysb+"/"+fileNamee + "/__MACOSX");
+                KkFileUtils.deleteFileByPath(FILE_DIR+ysb+"/"+fileNamee + "/.DS_Store");
                 fileHandlerService.addConvertedFile(fileName, fileTree);  //加入缓存
             }
         } else {
@@ -82,8 +88,6 @@ public class CompressFilePreviewImpl implements FilePreview {
             return;
         }
         String newStr = String.valueOf(dir);
-        KkFileUtils.deleteDirectory(newStr + "/__MACOSX");
-        KkFileUtils.deleteFileByPath(newStr + "/.DS_Store");
         String[] files = dir.list();// 读取目录下的所有目录文件信息
         for (int i = 0; i < files.length; i++) {// 循环，添加文件名或回调自身
             File file = new File(dir, files[i]);
