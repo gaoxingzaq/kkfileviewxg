@@ -37,12 +37,15 @@ public class OfficeToPdfService {
 
     public void office2pdf(String inputFilePath, String outputFilePath) {
         OfficeDocumentConverter converter = officePluginManager.getDocumentConverter();
+        File inputFile = new File(inputFilePath);
+        File inputFilef = new File(outputFilePath);
+        FileHandlerService.AT_CONVERT_MAP.put(inputFilef.getName(), 1);  //添加转换记录
         if (null != inputFilePath) {
-            File inputFile = new File(inputFilePath);
             // 判断目标文件路径是否为空
             if (null == outputFilePath) {
                 // 转换后的文件路径
                 String outputFilePath_end = getOutputFilePath(inputFilePath);
+                FileHandlerService.AT_CONVERT_MAP.remove(inputFilef.getName(), 1);  //转换成功删除转换记录
                 if (inputFile.exists()) {
                     // 找不到源文件, 则返回
                     converterFile(inputFile, outputFilePath_end,converter);
@@ -51,6 +54,7 @@ public class OfficeToPdfService {
                 if (inputFile.exists()) {
                     // 找不到源文件, 则返回
                     converterFile(inputFile, outputFilePath, converter);
+                    FileHandlerService.AT_CONVERT_MAP.remove(inputFilef.getName(), 1);  //转换成功删除转换记录
                 }
             }
         }

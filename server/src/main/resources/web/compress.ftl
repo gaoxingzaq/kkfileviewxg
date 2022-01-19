@@ -12,6 +12,7 @@
             background-color: #404040;
         }
 		li{
+	list-style-type: none;
     border-radius:5px 5px 0px 0px;
     border:1px solid #ccc;
     border-bottom:none;
@@ -22,7 +23,7 @@
 }
         h1, h2, h3, h4, h5, h6 {color: #2f332a;font-weight: bold;font-family: Helvetica, Arial, sans-serif;padding-bottom: 5px;}
 		h2 {color: red;font-weight: normal;font-size: 22px;letter-spacing: 1px;line-height: 24px;}
-        h6 {font-weight: normal;font-size: 18px;letter-spacing: 1px;line-height: 24px;text-align: left;}
+        h6 {font-weight: normal;font-size: 18px;letter-spacing: 1px;line-height: 24px}
         div.zTreeDemoBackground {width:800px;text-align:center;margin: 0 auto;background-color: #ffffff;}
 		a:link{color: 000;}  /*超链接默认样式*/
         a:visited{color: blue;}  /*超链接被访问后的样式*/
@@ -50,7 +51,6 @@
 <script>
  function deleteFile(fileName) {
  window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(fileName)));
-  
     }
 </script>
 </body>

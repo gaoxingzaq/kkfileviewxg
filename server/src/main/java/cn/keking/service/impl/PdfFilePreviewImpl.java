@@ -52,10 +52,10 @@ public class PdfFilePreviewImpl implements FilePreview {
             if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
                 pdfgx= false;
             }else {
-                pdfgx= ConfigConstants.isCacheEnabled();
+                pdfgx= true;
             }
             //当文件不存在时，就去下载
-            if (!pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
+            if (pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
                 if(!bendi){
                     ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
                 if (response.isFailure()) {

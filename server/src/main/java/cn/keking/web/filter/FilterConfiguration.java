@@ -29,6 +29,7 @@ public class FilterConfiguration {
     public FilterRegistrationBean getTrustHostFilter() {
         Set<String> filterUri = new HashSet<>();
         filterUri.add("/onlinePreview");
+        filterUri.add("/onlinePrevieww");
         filterUri.add("/picturesPreview");
         TrustHostFilter filter = new TrustHostFilter();
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
@@ -42,6 +43,7 @@ public class FilterConfiguration {
         Set<String> filterUri = new HashSet<>();
         filterUri.add("/index");
         filterUri.add("/onlinePreview");
+        filterUri.add("/onlinePrevieww");
         filterUri.add("/picturesPreview");
         BaseUrlFilter filter = new BaseUrlFilter();
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
@@ -55,6 +57,7 @@ public class FilterConfiguration {
         Set<String> filterUri = new HashSet<>();
         filterUri.add("/index");
         filterUri.add("/onlinePreview");
+        filterUri.add("/onlinePrevieww");
         filterUri.add("/picturesPreview");
         AttributeSetFilter filter = new AttributeSetFilter();
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();

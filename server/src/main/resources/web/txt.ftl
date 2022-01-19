@@ -49,8 +49,6 @@ line-height：30px；
   background-color: #000;
         }
     </style>
-	
-
 	<div class="container">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -372,13 +370,15 @@ line-height：30px；
         var textPreData = "<xmp style='background-color: #FFFFFF;overflow-y: scroll;border:none'>" + textData + "</xmp>";
         $("#text").append(textPreData);
     }
-   /**
-     * 初始化
-     */
-    window.onload = function () {
-        initWaterMark();
-        loadText();
-    }
+
+loadText();
+ 
+	  		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 	 </#if>
 

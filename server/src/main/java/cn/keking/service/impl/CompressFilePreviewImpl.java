@@ -48,12 +48,12 @@ public class CompressFilePreviewImpl implements FilePreview {
         String gengxin=fileAttribute.getgengxin();
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
-            pdfgx= false;
+            pdfgx= true;
         }else {
-            pdfgx= ConfigConstants.isCacheEnabled();
+            pdfgx= false;
         }
         // 判断文件名是否存在(redis缓存读取)
-        if (!pdfgx||  !StringUtils.hasText(fileHandlerService.getConvertedFile(fileName))  || !ConfigConstants.isCacheEnabled()) {
+        if (pdfgx||!fileHandlerService.listConvertedFiles().containsKey(fileName) || !ConfigConstants.isCacheEnabled()) {
             ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
             if (response.isFailure()) {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
@@ -65,22 +65,31 @@ public class CompressFilePreviewImpl implements FilePreview {
             }
             KkFileUtils.deleteDirectory(FILE_DIR+ysb+"/"+fileNamee);
             fileTree = compressFileReader.un7z(filePath, FILE_DIR+ysb+"/"+fileNamee);
-            if (fileTree != null && !"null".equals(fileTree) && ConfigConstants.isCacheEnabled()) {
-                KkFileUtils.deleteDirectory(FILE_DIR+ysb+"/"+fileNamee + "/__MACOSX");
-                KkFileUtils.deleteFileByPath(FILE_DIR+ysb+"/"+fileNamee + "/.DS_Store");
+            if ("null".equals(fileTree)){
+                return otherFilePreview.notSupportedFile(model, fileAttribute, "压缩文件类型不受支持");
+            }
+            KkFileUtils.deleteDirectory(FILE_DIR+ysb+"/"+fileNamee + "/__MACOSX");
+            KkFileUtils.deleteFileByPath(FILE_DIR+ysb+"/"+fileNamee + "/.DS_Store");
+            if ( ConfigConstants.isCacheEnabled()) {
                 fileHandlerService.addConvertedFile(fileName, fileTree);  //加入缓存
             }
-        } else {
-            fileTree = fileHandlerService.getConvertedFile(fileName);
-        }
-        if (fileTree != null && !"null".equals(fileTree)) {
             List<String> fileNames = new ArrayList<>();
-            File file = new File(FILE_DIR+ysb+"/"+fileNamee);
-            findFileList(file,fileNames);
+            File filee = new File(FILE_DIR+ysb+"/"+fileNamee);
+            findFileList(filee,fileNames);
             model.addAttribute("fileTree", fileNames);
             return COMPRESS_FILE_PREVIEW_PAGE;
-        } else {
-            return otherFilePreview.notSupportedFile(model, fileAttribute, "压缩文件类型不受支持,或者没加入KK识别");
+
+        }else {
+            fileTree = fileHandlerService.getConvertedFile(fileName);
+            if (fileTree != null && !"null".equals(fileTree)) {
+                List<String> fileNames = new ArrayList<>();
+                File file = new File(FILE_DIR+ysb+"/"+fileNamee);
+                findFileList(file,fileNames);
+                model.addAttribute("fileTree", fileNames);
+                return COMPRESS_FILE_PREVIEW_PAGE;
+            } else {
+                return otherFilePreview.notSupportedFile(model, fileAttribute, "压缩文件类型不受支持,或者没加入KK识别");
+            }
         }
     }
     public  void findFileList(File dir, List<String> fileNames) {

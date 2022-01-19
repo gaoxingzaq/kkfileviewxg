@@ -9,7 +9,6 @@
 </head>
 <body>
 <input hidden id="textData" value="${textData}"/>
-
 <div class="container">
     <div class="panel panel-default">
         <div id="markdown_btn" class="panel-heading">
@@ -31,16 +30,8 @@
         </div>
     </div>
 </div>
-
 <script>
-    /**
-     * 初始化
-     */
-    window.onload = function () {
-        $("#markdown_btn").hide()
-        loadMarkdown();
-    }
-
+ 
     /**
      * 加载markdown
      */
@@ -65,9 +56,9 @@
         window.textMarkdownData = marked.parse(textData);
         $("#markdown").html(window.textMarkdownData);
     }
-
-
-    $(function () {
+    $("#markdown_btn").hide();
+       loadMarkdown();
+	   
         $("#markdown_btn").click(function () {
             $("#markdown").html(window.textMarkdownData);
             $("#text_btn").show()
@@ -79,9 +70,14 @@
             $("#text_btn").hide();
             $("#markdown").html(window.textPreData);
         });
-    });
+  
+	
 
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
  initWaterMark();
+}
 
 </script>
 </body>

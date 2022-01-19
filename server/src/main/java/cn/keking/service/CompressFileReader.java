@@ -33,10 +33,10 @@ public class CompressFileReader {
         }
         return str;
     }
-
     public String un7z(String file7zPath, final String outPutPath){
         RandomAccessFile randomAccessFile = null;
         IInArchive archive = null;
+        String panduan = outPutPath;
         try {
             randomAccessFile = new RandomAccessFile(file7zPath, "r");
             archive = SevenZip.openInArchive(null, new RandomAccessFileInStream(randomAccessFile));
@@ -68,7 +68,7 @@ public class CompressFileReader {
                         // System.out.println("解压成功...." + String.format("%9X | %10s | %s", hash[0], sizeArray[0], getUtf8String(item.getPath())));
                     } else {
                         System.out.println("解压失败：密码错误或者其他错误...." + result);
-                        return null;
+                        panduan ="null";
                     }
                 }
             }
@@ -92,6 +92,6 @@ public class CompressFileReader {
                 }
             }
         }
-        return outPutPath;
+        return panduan;
     }
 }

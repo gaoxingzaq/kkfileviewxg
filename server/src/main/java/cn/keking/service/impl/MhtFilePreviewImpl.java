@@ -51,10 +51,10 @@ public class MhtFilePreviewImpl implements FilePreview {
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
             pdfgx= false;
         }else {
-            pdfgx= ConfigConstants.isCacheEnabled();
+            pdfgx= true;
         }
         // 判断之前是否已转换过，如果转换过，直接返回，否则执行转换
-        if (!pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
+        if (pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
             String filePath;
             ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, null);
             if (response.isFailure()) {

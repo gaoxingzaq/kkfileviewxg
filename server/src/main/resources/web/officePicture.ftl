@@ -17,7 +17,7 @@
             text-align: center
         }
 img {
-max-width: 100%;
+max-width: 98%;
  margin:0 auto;
  border-radius:3px;
  box-shadow:rgba(0,0,0,0.15) 0 0 8px;
@@ -27,8 +27,8 @@ max-width: 100%;
  margin-left: 15px;
  padding:5px;
 }
- 
-    </style>
+
+</style>
 </head>
 <body>
 <div class="container">
@@ -47,11 +47,7 @@ max-width: 100%;
     <img src="images/pdf.svg" width="63" height="63" style="position: fixed; cursor: pointer; top: 40%; right: 48px; z-index: 999;" alt="使用PDF预览" title="使用PDF预览" onclick="changePreviewType('pdf')"/>
 </#if>
 <script>
-    window.onload = function () {
-        /*初始化水印*/
-        initWaterMark();
-        checkImgs();
-    };
+	 checkImgs();
     window.onscroll = throttle(checkImgs);
     function changePreviewType(previewType) {
         var url = window.location.href;
@@ -66,6 +62,12 @@ max-width: 100%;
             window.location.href = url;
         }
     }
+	 		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 </body>
 </html>

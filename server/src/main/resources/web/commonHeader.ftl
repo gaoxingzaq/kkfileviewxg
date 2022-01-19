@@ -37,8 +37,6 @@ document.onpaste = function (event) {
   }
 }
 //屏蔽复制
-
-//屏蔽剪切
 document.oncut = function (event) {
   if (window.event) {
     event = window.event;
@@ -116,15 +114,21 @@ document.onkeydown = function (event) {
     (event.keyCode == 120) || //屏蔽 F9
     (event.keyCode == 121) || //屏蔽 F10
     (event.keyCode == 122) || //屏蔽 F11
+	(event.keyCode == 80) ||
     (event.keyCode == 123)) //屏蔽 F12
   {
     return false;
   }
 }
+
+document.ondragstart = function() {
+        return false;
+};
 window.onhelp = function () {
   return false;
 }
 </script>
+
 </#if>
 
 <script>

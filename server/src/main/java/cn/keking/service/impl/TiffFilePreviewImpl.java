@@ -47,14 +47,14 @@ public class TiffFilePreviewImpl implements FilePreview {
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
             pdfgx= false;
         }else {
-            pdfgx= ConfigConstants.isCacheEnabled();
+            pdfgx= true;
         }
         String tifPreviewType = ConfigConstants.getTifPreviewType();
         if("tif".equalsIgnoreCase(tifPreviewType)){
             model.addAttribute("currentUrl",url);
             return TIFF_FILE_PREVIEW_PAGE;
         }else if("pdf".equalsIgnoreCase(tifPreviewType)){
-            if (!pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
+            if (pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
                 if(!bendi){
                     ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
                     if (response.isFailure()) {

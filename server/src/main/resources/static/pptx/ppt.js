@@ -11,10 +11,10 @@ var curSlide = 1;
 var totalSize = 1;	// PPT当前获取到的总页数
 var slideCount = 1;	// PPT文件总页数
 var size = (!!$.url().param('size') ? $.url().param('size') : 0);
-$(document).ready(function() {
+function jiazaiaa() {
 	
 	// async method:
-	$.get('onlinePreview?' , params,  function(data, status) {
+	$.get('onlinePrevieww?' , params,  function(data, status) {
 		var data = JSON.parse(data);
 		var code = data.code;
 		if (1 == code) {
@@ -81,8 +81,9 @@ $(document).ready(function() {
 	} catch (err) {
 
 	}
-});
+};
 
+jiazaiaa();
 var remainContentInterval;
 function checkRemainContent () {
 	clearInterval(remainContentInterval);

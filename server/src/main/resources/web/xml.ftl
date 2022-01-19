@@ -35,15 +35,6 @@
 
 <script>
     /**
-     * 初始化
-     */
-    window.onload = function () {
-        $("#xml_btn").hide()
-   
-        loadXmlData()
-    }
-
-    /**
      * 加载xml数据
      */
 	  function htmlttt (str){ 
@@ -70,7 +61,8 @@
         $("#xml").html(window.retNode);
     }
 
-    $(function () {
+   $("#xml_btn").hide()
+        loadXmlData()
         $("#xml_btn").click(function () {
             $("#xml").html(window.retNode);
             $("#text_btn").show()
@@ -82,8 +74,9 @@
             $("#text_btn").hide();
             $("#xml").html(window.textPreData);
         });
-    });
-	   /*初始化水印*/
+  
+	     
+		 /*初始化水印*/
  if (!!window.ActiveXObject || "ActiveXObject" in window)
 {
 }else{

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0">
     <title>${file.name}代码预览</title>
     <#include  "*/commonHeader.ftl">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/highlight.min.js"></script>
-    <script>hljs.highlightAll()</script>
+ <link rel="stylesheet" href="css/vs2015.min.css">
+<script src="js/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
 
     <style>
         div.code {
@@ -37,14 +37,6 @@
 
 <script>
     /**
-     * 初始化
-     */
-    window.onload = function () {
-        initWaterMark();
-        loadText();
-    }
-
-    /**
      *加载普通文本
      */
     function loadText() {
@@ -58,7 +50,14 @@
             hljs.highlightBlock(block);
         });
     }
-
+	
+loadText();
+if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
+     
 </script>
 
 </body>

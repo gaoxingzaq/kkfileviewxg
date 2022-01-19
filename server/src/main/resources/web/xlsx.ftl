@@ -70,15 +70,14 @@
    
 	  <script src="xlsx/luckyexcel.umd.js"></script>
         <script>
-
-		    var url = '${finalUrl}';
+     var url = '${finalUrl}';
     var baseUrl = '${baseUrl}'.endsWith('/') ? '${baseUrl}' : '${baseUrl}' + '/';
     if (!url.startsWith(baseUrl)) {
         url = baseUrl + 'getCorsFile?urlPath=' + encodeURIComponent(url);
     }
                 let mask = document.getElementById("lucky-mask-demo");
 
-                    window.onload = () => {
+                   function loadText() {
 					  initWaterMark(); // 是否显示水印
                             var value = url;
                             var name = '${file.name}';
@@ -119,29 +118,22 @@
                                     userInfo:exportJson.info.name.creator
                                 });
                             });
-            
                     }
+					loadText();
 				
-function tiaozhuan(){
+               function tiaozhuan(){
 					var test = window.location.href;
 					 test = test.replace(new RegExp("&officePreviewType=xlsx",("gm")),"");
-					
   				    test = test+'&officePreviewType=html';
-			
-　　     window.location.href=test;
-　　}
-
-
-				// 打印方法
+　　          window.location.href=test;
+　        　}
 		// 打印时，获取luckysheet指定区域html内容，拼接至div，隐藏luckysheet容器并显示打印区域html
         function to_print() {
             const html = luckysheet.getRangeHtml();
             document.querySelector('#print-html').innerHTML = html;
             document.querySelector('#print-area').style.display = 'block';
             document.querySelector('#button-area').style.display = 'none';
-      
         }
-		
         </script>
     </body>
 </html>

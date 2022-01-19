@@ -25,9 +25,12 @@
 </div>
 <script>
     plyr.setup();
-    window.onload = function () {
-        initWaterMark();
-    }
+  		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 </body>
 </html>

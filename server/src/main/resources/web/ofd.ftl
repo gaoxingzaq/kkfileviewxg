@@ -23,7 +23,7 @@
         url = baseUrl + 'getCorsFile?urlPath=' + encodeURIComponent(url);
     }
 
-	document.getElementsByTagName('iframe')[0].src = "${baseUrl}ofd/index.html?file=" + encodeURIComponent(url);
+	document.getElementsByTagName('iframe')[0].src = "${baseUrl}ofd/index.html?file=" + encodeURIComponent(url)+"&pdfXianzhi=${pdfXianzhi}";
     document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight - 10;
     /**
      * 页面变化调整高度
@@ -34,9 +34,11 @@
     }
 
 
-    /*初始化水印*/
-    window.onload = function () {
-        initWaterMark();
-    }
+   		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 </html>

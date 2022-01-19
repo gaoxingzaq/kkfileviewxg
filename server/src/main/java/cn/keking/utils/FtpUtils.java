@@ -47,8 +47,9 @@ public class FtpUtils {
         String host = url.getHost();
         int port = (url.getPort() == -1) ? url.getDefaultPort() : url.getPort();
         String remoteFilePath = url.getPath();
-        LOGGER.debug("FTP connection url:{}, username:{}, password:{}, controlEncoding:{}, localFilePath:{}", ftpUrl, username, password, controlEncoding, localFilePath);
-     ftpClient = connect(host, port, username, password, controlEncoding);
+       // LOGGER.debug("FTP connection url:{}, username:{}, password:{}, controlEncoding:{}, localFilePath:{}", ftpUrl, username, password, controlEncoding, localFilePath);
+        //System.out.println( ftpUrl+username+password+ controlEncoding+localFilePath);
+        ftpClient = connect(host, port, username, password, controlEncoding);
         outputStream = new FileOutputStream(localFilePath);
         ftpClient.enterLocalPassiveMode();
         boolean downloadResult = ftpClient.retrieveFile(new String(remoteFilePath.getBytes(controlEncoding), StandardCharsets.ISO_8859_1), outputStream);

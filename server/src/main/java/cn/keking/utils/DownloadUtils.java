@@ -45,8 +45,8 @@ public class DownloadUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String urlStr = fileAttribute.getUrl().replace("+", "%20");  //URL 转义
-        String  urlStrr = urlStr.toLowerCase();
+        String urlStr = fileAttribute.getUrl().replaceAll("\\+", "%20");
+        String  urlStrr = urlStr.toLowerCase();  //转换为小写对比
         boolean wjl = FileHandlerService.kuayu("&fullfilename=", urlStrr);  //判断是否启用文件流
         if(wjl){
             urlStr =  urlStr.substring(0,urlStr.lastIndexOf("&"));  //删除添加的文件流内容
@@ -57,22 +57,35 @@ public class DownloadUtils {
             URL url = WebUtils.normalizedURL(urlStr);
             if(preview.equalsIgnoreCase("true") && !urlStr.toLowerCase().startsWith("ftp")) {
                 HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();
+                urlcon.setInstanceFollowRedirects(false);
+                urlcon.setConnectTimeout(5000);
+               // System.out.println("返回码: " + urlcon.getResponseCode());
+                if(urlcon.getResponseCode() ==404){
+                    System.out.println("文件不存在或者文件等于0KB");
+                    return response;
+                }
                 if(urlcon.getContentLength() <= 0){   //判断文件是否正确
                     System.out.println("文件不存在或者文件等于0KB");
                     return response;
                 }
+                if(urlcon.getResponseCode() ==302){
+                    url =new URL(urlcon.getHeaderField("Location"));
+                }
+                urlcon.disconnect();
             }
-            if (isHttpUrl(url)) {
-                File realFile = new File(realPath);
-                FileUtils.copyURLToFile(url,realFile);
-            } else if (isFtpUrl(url)) {
-                String ftpUsername = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_USERNAME);
-                String ftpPassword = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_PASSWORD);
-                String ftpControlEncoding = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_CONTROL_ENCODING);
-                FtpUtils.download(fileAttribute.getUrl(), realPath, ftpUsername, ftpPassword, ftpControlEncoding);
-            } else {
-                response.setCode(1);
-                response.setMsg("url不能识别url" + urlStr);
+            if (!fileAttribute.getSkipDownLoad()) {
+                if (isHttpUrl(url)) {
+                    File realFile = new File(realPath);
+                    FileUtils.copyURLToFile(url, realFile);
+                } else if (isFtpUrl(url)) {
+                    String ftpUsername = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_USERNAME);
+                    String ftpPassword = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_PASSWORD);
+                    String ftpControlEncoding = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_CONTROL_ENCODING);
+                    FtpUtils.download(fileAttribute.getUrl(), realPath, ftpUsername, ftpPassword, ftpControlEncoding);
+                } else {
+                    response.setCode(1);
+                    response.setMsg("url不能识别url" + urlStr);
+                }
             }
             response.setContent(realPath);
             response.setMsg(fileName);

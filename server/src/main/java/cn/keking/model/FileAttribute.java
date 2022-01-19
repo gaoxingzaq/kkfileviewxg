@@ -16,6 +16,7 @@ public class FileAttribute {
     private String officePreviewType = ConfigConstants.getOfficePreviewType();
     private String gengxin;
     private String tifPreviewType;
+    private Boolean skipDownLoad = false;
 
     public FileAttribute() {
     }
@@ -97,6 +98,13 @@ public class FileAttribute {
     public void setUrl(String url) {
         this.url = url;
     }
+    public Boolean getSkipDownLoad() {
+        return skipDownLoad;
+    }
+    public void setSkipDownLoad(Boolean skipDownLoad) {
+        this.skipDownLoad = skipDownLoad;
+    }
+
     public String getTifPreviewType() {
         return tifPreviewType;
     }

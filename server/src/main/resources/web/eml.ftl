@@ -21,7 +21,7 @@
     if (!url.startsWith(baseUrl)) {
         url = baseUrl + 'getCorsFile?urlPath=' + encodeURIComponent(url);
     }
-    document.getElementsByTagName('iframe')[0].src =  "eml/index.html?file="+url;
+    document.getElementsByTagName('iframe')[0].src =  "${baseUrl}eml/index.html?file="+url+"?pdfXianzhi=${pdfXianzhi}";
     document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight - 10;
     /**
      * 页面变化调整高度
@@ -31,9 +31,11 @@
         fm.height = window.document.documentElement.clientHeight - 10;
     }
 	
-    /*初始化水印*/
-    window.onload = function() {
-      initWaterMark();
-    }
+  		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 </html>

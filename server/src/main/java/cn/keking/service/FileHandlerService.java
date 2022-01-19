@@ -35,6 +35,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -91,6 +92,12 @@ public class FileHandlerService {
     public String getRelativePath(String absolutePath) {
         return absolutePath.substring(fileDir.length());
     }
+    /**
+     * 记录是否转换
+     *
+     */
+
+    public static Map<String, Integer> AT_CONVERT_MAP =  new HashMap<>();
 
     /**
      * 添加转换后PDF缓存
@@ -415,6 +422,8 @@ public class FileHandlerService {
      * @return 转换是否成功
      */
     public boolean cadToPdf(String inputFilePath, String outputFilePath)  {
+        File outputFile = new File(outputFilePath);
+        FileHandlerService.AT_CONVERT_MAP.put(outputFile.getName(), 1);
         LoadOptions opts = new LoadOptions();
         opts.setSpecifiedEncoding(CodePages.SimpChinese);
         com.aspose.cad.Image cadImage = Image.load(inputFilePath, opts);
@@ -427,13 +436,13 @@ public class FileHandlerService {
         cadRasterizationOptions.setDrawType(1);
         PdfOptions pdfOptions = new PdfOptions();
         pdfOptions.setVectorRasterizationOptions(cadRasterizationOptions);
-        File outputFile = new File(outputFilePath);
         OutputStream stream;
         try {
             stream = new FileOutputStream(outputFile);
             cadImage.save(stream, pdfOptions);
             stream.close();
             cadImage.close();
+            FileHandlerService.AT_CONVERT_MAP.remove(outputFile.getName(), 1);
             return true;
         } catch (IOException e) {
             logger.error("PDFFileNotFoundException，inputFilePath：{}", inputFilePath, e);

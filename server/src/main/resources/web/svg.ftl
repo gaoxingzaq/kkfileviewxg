@@ -16,24 +16,23 @@
 <div id="container">
 </div>
 <script type="text/javascript">
-      $(function(){
-	    var url = '${finalUrl}';
+     
+	var url = '${finalUrl}';
     var baseUrl = '${baseUrl}'.endsWith('/') ? '${baseUrl}' : '${baseUrl}' + '/';
     if (!url.startsWith(baseUrl)) {
         url = baseUrl + 'getCorsFile?urlPath=' + encodeURIComponent(url);
     }
 	 
+      function createNewEmbed(src){
 	  var lastEventListener = null;
 	  var gaodu1 =$(document).height();
 	  var gaodu=gaodu1-5; 
-        function createNewEmbed(src){
           var embed = document.createElement('embed');
           embed.setAttribute('style', 'width: 99%; height: '+gaodu+'px; border:1px solid black;');
           embed.setAttribute('type', 'image/svg+xml');
           embed.setAttribute('src', src);
-
-          document.getElementById('container').appendChild(embed)
-
+		  $('#container').html(embed);
+        //document.getElementById('embed').appendChild(embed);
          lastEventListener = function(){
             svgPanZoom(embed, {
               zoomEnabled: true,
@@ -43,10 +42,7 @@
           embed.addEventListener('load', lastEventListener)
           return embed;
         }
-        var lastEmbedSrc = url, lastEmbed = createNewEmbed(lastEmbedSrc);
-     
-});
-   
+		createNewEmbed(url);
     /*初始化水印*/
    if (!!window.ActiveXObject || "ActiveXObject" in window)
 {

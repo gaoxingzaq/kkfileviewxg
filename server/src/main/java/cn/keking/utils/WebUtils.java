@@ -21,6 +21,15 @@ public class WebUtils {
      * @return 标准的URL
      */
     public static URL normalizedURL(String urlStr) throws GalimatiasParseException, MalformedURLException {
+        /**
+        try {
+            String newFileName = java.net.URLDecoder.decode(urlStr, "utf-8");
+            URL urlStrr = new URL(newFileName);
+            return io.mola.galimatias.URL.parse(urlStr).toJavaURL();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+         */
         return io.mola.galimatias.URL.parse(urlStr).toJavaURL();
     }
 

@@ -1,7 +1,7 @@
 <#if RequestParameters['name']??> 
 {
 	"code": 1,
-	"name": "PPT预览",
+	"name": "${file.name}预览",
 	"totalSize": 0,
 	"curPage": 1,
 	"totalPage": 1,
@@ -28,12 +28,11 @@
 </#list>],
 	"desc": "Success"
 }
-
 <#else>
 <!DOCTYPE html>
 <html lang="en">
  <head>
- <title>${file.name}文件预览</title>
+ <title>${file.name}预览</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -82,7 +81,6 @@
 
 </style>
     <!-- BOOTSTRAP STYLE end -->
-    
     <script type="text/javascript">
       var windowWidth = document.documentElement.clientWidth;
       var searchStr = window.location.search.substr(1);
@@ -102,7 +100,7 @@
     </style>
     
     <!--[if lt IE 9]>
-      <script src="static/bootstrap/js/html5shiv.js"></script>
+      <script src="static/bootstrap/js/html5shiv.min.js"></script>
     <![endif]-->
 
   </head>
@@ -113,9 +111,7 @@
     <div class="loading-zone">
         <div class="text"><img src="pptx/img/loader_indicator_lite.gif">加载中...</div>
     </div>
-  
 </div>
-
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -126,7 +122,6 @@
           </button>
           <!-- FILE NAME HERE -->
           <!-- SIGN UP & SIGN IN -->
-          
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
               <a href="#" title="全屏" class="fullscreen-link"><i class="icon-fullscreen icon-white"></i></a>
@@ -175,18 +170,12 @@
 <script src="pptx/idocv/idocv_common.min.js"></script>
 
 <script>
-    var contextPath = '';
-    // var urlObj = $.url($.url().attr('source').replace(contextPath, ''));
-    var id = window.location.pathname.replace(contextPath, '').split('/')[2];
-    var uuid = id;
     var params = getAllUrlParams(window.location.href); // 如果用urlObj.param()方法获取则被非正常解码
-    // var queryStr = urlObj.attr('query'); // 参数被decode，IE下如果有中文参数则报错，需要获取原生参数
-    var queryStr = window.location.search.slice(1);
-    uuid = !!'' ? '' : uuid;
     var name = 'pptx';
     if (!!name) {
         params.name = name;
     }
+	//window.alert(params);
     var authMap = '{}';
     var baseUrl = '${baseUrl}';
 </script>
@@ -194,13 +183,13 @@
 <script src="pptx/jquery.mobile-events.min.js"></script>
 <script src="pptx/ppt.js"></script>
 <script type="text/javascript">
-    /*初始化水印*/
-    window.onload = function () {
-        initWaterMark();
-    }
+ 		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
-</body>
-</html>
 </body>
 </html>
 </#if>

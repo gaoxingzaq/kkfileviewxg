@@ -8,6 +8,7 @@ import cn.keking.service.FilePreviewFactory;
 import cn.keking.service.cache.CacheService;
 import cn.keking.service.impl.OtherFilePreviewImpl;
 import cn.keking.utils.WebUtils;
+import cn.keking.web.filter.BaseUrlFilter;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
@@ -35,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+import static cn.keking.service.FilePreview.Jiaz_FILE_PAGE;
 import static cn.keking.service.FilePreview.PICTURE_FILE_PREVIEW_PAGE;
 
 /**
@@ -63,8 +65,8 @@ public class OnlinePreviewController {
     private String preview;
     @Value("${pdfpagee:0}")
     private String pdfpagee;
-    @RequestMapping(value = "/onlinePreview")
-    public String onlinePreview(String url, Model model, HttpServletRequest req) {
+    @RequestMapping(value = "/onlinePrevieww")
+    public String onlinePrevieww(String url, Model model, HttpServletRequest req) {
         String fileUrl;
         try {
             if(base641.equalsIgnoreCase("true")){
@@ -91,6 +93,14 @@ public class OnlinePreviewController {
         }
         logger.info("预览文件url：{}，previewType：{}", fileUrl, fileAttribute.getType());
         return filePreview.filePreviewHandle(fileUrl, model, fileAttribute);
+    }
+    @RequestMapping(value = "/onlinePreview")
+    public String onlinePreview(HttpServletRequest request, Model model) throws IOException{
+        String baseUrl = BaseUrlFilter.getBaseUrl();
+        String query = request.getQueryString();
+        String urlPath = query.replaceFirst("url=","");
+        model.addAttribute("pdfUrl",urlPath);
+        return Jiaz_FILE_PAGE;
     }
 
     @RequestMapping(value = "/picturesPreview")

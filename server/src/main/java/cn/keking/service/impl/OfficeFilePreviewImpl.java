@@ -88,9 +88,9 @@ public class OfficeFilePreviewImpl implements FilePreview {
         // 判断之前是否已转换过，如果转换过，直接返回，否则执行转换
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
-            pdfgx= false;
+            pdfgx= true;
         }else {
-            pdfgx= ConfigConstants.isCacheEnabled();
+            pdfgx= false;
         }
         boolean xlsx =  suffix.equalsIgnoreCase("xlsx");
 
@@ -112,7 +112,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
 
         }
 
-        if (!pdfgx || !fileHandlerService.listConvertedFiles().containsKey(pdfName)) {
+        if (pdfgx || !fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
             String filePath;
             ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, null);
             if (response.isFailure()) {
@@ -148,7 +148,19 @@ public class OfficeFilePreviewImpl implements FilePreview {
                  String geshi =FileHandlerService.geshi(filePath,0);// 获取文件头信息
                      if (geshi.equals(".2003office") || geshi.equals(".2010offcie")  || geshi.equals(".QT") || geshi.equals(".rtf") || geshi.equals(".xmln") || suffix.equalsIgnoreCase("wmf") || suffix.equalsIgnoreCase("emf") ){  //判断是什么格式的文件
                          KkFileUtils.deleteFileByPath(outFilePath);
-                         officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //如果存在以上格式就进行转换
+                         File file = new File(outFilePath);
+                         if (ConfigConstants.isCacheEnabled()) {
+                             if (FileHandlerService.AT_CONVERT_MAP.get(file.getName()) != null) {   //判断文件是否在转换中
+                                 //  System.out.println(" 文件 [%s] 正在转换中" +file.getName());
+                                 return otherFilePreview.notSupportedFile(model, fileAttribute, "文件["+fileNamee+"]正在转换中,请稍后刷新访问");
+                             }else {
+                                 officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //转换
+
+                              //   officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //转换
+                             }
+                         }else {
+                             officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //转换
+                         }
                      }else if(geshi.equals(".xml")) {  //如果是XML格式的WORD就用下面方法
                          String fileData = null;
                          try {
@@ -178,7 +190,8 @@ public class OfficeFilePreviewImpl implements FilePreview {
                      // 对转换后的文件进行操作(改变编码方式)
                      fileHandlerService.doActionConvertedFile(outFilePath);
                  }
-             } }
+             }
+         }
             if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
                 KkFileUtils.deleteFileByPath(filePath);
             }

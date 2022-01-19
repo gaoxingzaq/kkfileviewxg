@@ -38,10 +38,12 @@
     });
     document.getElementById("${baseUrl}getCorsFile?urlPath=${currentUrl}").click();
 
-    /*初始化水印*/
-    window.onload = function() {
-        initWaterMark();
-    }
+ 		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 </body>
 
