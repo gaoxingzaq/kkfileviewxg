@@ -49,9 +49,9 @@ public class MhtFilePreviewImpl implements FilePreview {
         String outFilePath = FILE_DIR + pdfName;
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
-            pdfgx= false;
-        }else {
             pdfgx= true;
+        }else {
+            pdfgx= false;
         }
         // 判断之前是否已转换过，如果转换过，直接返回，否则执行转换
         if (pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {

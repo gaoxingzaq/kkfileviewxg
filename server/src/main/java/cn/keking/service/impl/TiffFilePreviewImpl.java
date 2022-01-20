@@ -45,9 +45,9 @@ public class TiffFilePreviewImpl implements FilePreview {
         boolean bendi = FileHandlerService.kuayu(host, baseUrl); //判断是否是本地URL 是本地的启用分页功能 不是就直接在跨域输出
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
-            pdfgx= false;
-        }else {
             pdfgx= true;
+        }else {
+            pdfgx= false;
         }
         String tifPreviewType = ConfigConstants.getTifPreviewType();
         if("tif".equalsIgnoreCase(tifPreviewType)){
