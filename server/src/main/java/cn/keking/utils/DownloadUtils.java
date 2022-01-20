@@ -73,7 +73,7 @@ public class DownloadUtils {
                     xiazai.setContent(null);
                     return xiazai;
                 }
-                if(urlcon.getResponseCode() ==302){
+                if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
                     url =new URL(urlcon.getHeaderField("Location"));
                 }
                 urlcon.disconnect();
