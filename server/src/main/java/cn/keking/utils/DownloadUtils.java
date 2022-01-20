@@ -52,21 +52,26 @@ public class DownloadUtils {
             urlStr =  urlStr.substring(0,urlStr.lastIndexOf("&"));  //删除添加的文件流内容
         }
         ReturnResponse<String> response = new ReturnResponse<>(0, "下载成功!!!", "");
+        ReturnResponse<String> xiazai = new ReturnResponse<>(0, "下载失败!!!", "");
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {
             URL url = WebUtils.normalizedURL(urlStr);
-            if(preview.equalsIgnoreCase("true") && !urlStr.toLowerCase().startsWith("ftp")) {
+            if(!preview.equalsIgnoreCase("false") && !urlStr.toLowerCase().startsWith("ftp")) {
                 HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();
                 urlcon.setInstanceFollowRedirects(false);
                 urlcon.setConnectTimeout(5000);
-               // System.out.println("返回码: " + urlcon.getResponseCode());
+                //  System.out.println("返回码: " + urlcon.getResponseCode());
                 if(urlcon.getResponseCode() ==404){
-                    System.out.println("文件不存在或者文件等于0KB");
-                    return response;
+                    System.out.println("地址错误");
+                    xiazai.setCode(1);
+                    xiazai.setContent(null);
+                    return xiazai;
                 }
                 if(urlcon.getContentLength() <= 0){   //判断文件是否正确
                     System.out.println("文件不存在或者文件等于0KB");
-                    return response;
+                    xiazai.setCode(1);
+                    xiazai.setContent(null);
+                    return xiazai;
                 }
                 if(urlcon.getResponseCode() ==302){
                     url =new URL(urlcon.getHeaderField("Location"));
