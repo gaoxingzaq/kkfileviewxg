@@ -89,7 +89,7 @@ public class PdfFilePreviewImpl implements FilePreview {
             }else {
                 outFilePath = FILE_DIR +url.replace(baseUrl, "");  //本地URL 不下载去掉ULR 组合成本地路径
             }
-            System.out.println(8888);
+
             List<String> imageUrls = fileHandlerService.pdf2jpg(outFilePath, pdfName, baseUrl,fileAttribute);
             if (imageUrls == null || imageUrls.size() < 1) {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, "pdf转图片异常，请联系管理员");
@@ -102,7 +102,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                 return PICTURE_FILE_PREVIEW_PAGE;
             }
         } else {
-            System.out.println(777);
+
             // 不是http开头，浏览器不能直接访问，需下载到本地
             if (url != null && !url.toLowerCase().startsWith("http")) {
                 if (!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
@@ -138,7 +138,11 @@ public class PdfFilePreviewImpl implements FilePreview {
                     model.addAttribute("pdfUrl", pdfName);
                 }
             } else {
-                System.out.println(666);
+                if(fileHandlerService.listConvertedFiles().containsKey(pdfName)){
+                    String  fileTree =fileHandlerService.getConvertedFile(pdfName);
+                    model.addAttribute("pdfUrl",fileTree);
+                    return PDF_FILE_PREVIEW_PAGE;
+                }
                 if( pdffy.equalsIgnoreCase("false")){  //查询是否开启分页模式
                     if(!bendi){  //不是本地直接输出
                         model.addAttribute("pdfUrl",url);

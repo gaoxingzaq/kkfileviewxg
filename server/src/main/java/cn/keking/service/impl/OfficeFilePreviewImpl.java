@@ -155,8 +155,6 @@ public class OfficeFilePreviewImpl implements FilePreview {
                                  return otherFilePreview.notSupportedFile(model, fileAttribute, "文件["+fileNamee+"]正在转换中,请稍后刷新访问");
                              }else {
                                  officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //转换
-
-                              //   officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //转换
                              }
                          }else {
                              officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //转换
