@@ -63,14 +63,13 @@ public class SimTextFilePreviewImpl implements FilePreview {
 
         }else{
             if(fileHandlerService.listConvertedFiles().containsKey(fileName)){
-                String  fileTree =fileHandlerService.getConvertedFile(fileName);
-                File filee = new File(fileTree);   //判断文件是否存在
+                File filee = new File(outFilePath);   //判断文件是否存在
                 if(!filee.exists() || filee.length() == 0) {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
                 }
                 String  fileData = null;
                 try {
-                    fileData = HtmlUtils.htmlEscape(textData(fileTree));
+                    fileData = HtmlUtils.htmlEscape(textData(outFilePath));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
