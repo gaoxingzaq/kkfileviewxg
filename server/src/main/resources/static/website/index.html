@@ -2,31 +2,16 @@
 <html> 
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <title>Online 3D Viewer</title>
-    <link rel="stylesheet" type="text/css" href="website/pickr.monolith.min.css">
+    <link rel="stylesheet" type="text/css" href="./website/pickr.monolith.min.css">
     <script type="text/javascript" src="website/pickr.es5.min.js"></script>
     <script type="text/javascript" src="website/three.min.js"></script>
-    <script type="text/javascript" src="website/o3dv.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="website/o3dv.website.min.css">
-    <script type="text/javascript" src="website/o3dv.website.min.js"></script>
-    <script type="text/javascript">
-        window.addEventListener ('load', function () {
-            let website = new OV.Website ({
-                headerDiv : document.getElementById ('header'),
-                toolbarDiv : document.getElementById ('toolbar'),
-                mainDiv : document.getElementById ('main'),
-                introDiv : document.getElementById ('intro'),
-                fileNameDiv : document.getElementById ('main_file_name'),
-                navigatorDiv : document.getElementById ('main_navigator'),
-                navigatorSplitterDiv : document.getElementById ('main_navigator_splitter'),
-                sidebarDiv : document.getElementById ('main_sidebar'),
-                sidebarSplitterDiv : document.getElementById ('main_sidebar_splitter'),
-                viewerDiv : document.getElementById ('main_viewer'),
-                fileInput : document.getElementById ('open_file'),
-                eventHandler : window.viewerEventHandler
-            });
-            website.Load ();
-        });
-var url= window.location.href;
+   <meta property="og:type" content="website">
+    <meta property="og:title" content="Online 3D Viewer">
+<link rel="stylesheet" type="text/css" href="website/o3dv.website.min.css">
+<script type="text/javascript" src="website/o3dv.website.min.js"></script>
+<script type="text/javascript">
+         OV.StartWebsite ('libs');
+		 var url= window.location.href;
 var index = url .lastIndexOf("=");  
 var pdfXianzhid =url .substring(index + 1, url .length);
 //window.alert(pdfXianzhid);
@@ -151,9 +136,7 @@ window.onhelp = function () {
   return false;
 }
   } 
-    </script>
-</head>
-
+</script>
 <body>
     <input type="file" id="open_file" style="display:none;" multiple></input>
     <div class="header" id="header">
@@ -172,8 +155,6 @@ window.onhelp = function () {
         <div class="main_sidebar ov_panel_set_right_container only_full_width" id="main_sidebar"></div>
     </div>
     <div class="intro ov_thin_scrollbar" id="intro">
-       
-  
     </div>
 </body>
-		</html>
+</html>
