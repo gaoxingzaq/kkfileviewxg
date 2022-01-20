@@ -104,14 +104,14 @@
             </h4>
         </div>
          <div id="div" class="panel-body" style="display:none;">
-2022年1月17日，v4.6版本发布:<br>  
+2022年1月20日，v4.6版本发布:<br>  
 1、加入异步方法<br>
 2、修复水印方法的执行代码漏洞<br>
 3、修复FTP方法错误<br>					
 4、针对转换方法加入缓存参数 判断是否在转换中<br>
 5、新增VUE格式,对 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv进行了修正<br>
-6、下载方法新增判断重定向方法 <br><br>
- 	 
+6、下载方法新增判断重定向方法 <br>
+7、新增TXT文本文件加入缓存功能 <br><br>   	 
 		 
 2022年1月8日，v4.5.1版本发布:<br>  
 1、更新CAD转换工具包<br>

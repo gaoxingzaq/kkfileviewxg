@@ -3,9 +3,11 @@ package cn.keking.service.impl;
 import cn.keking.config.ConfigConstants;
 import cn.keking.model.FileAttribute;
 import cn.keking.model.ReturnResponse;
+import cn.keking.service.FileHandlerService;
 import cn.keking.service.FilePreview;
 import cn.keking.utils.DownloadUtils;
 import cn.keking.utils.EncodingDetects;
+import jodd.util.StringUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -20,26 +22,60 @@ import java.io.*;
 @Service
 public class SimTextFilePreviewImpl implements FilePreview {
 
+    private final FileHandlerService fileHandlerService;
     private final OtherFilePreviewImpl otherFilePreview;
 
-    public SimTextFilePreviewImpl(OtherFilePreviewImpl otherFilePreview) {
+    public SimTextFilePreviewImpl(FileHandlerService fileHandlerService,OtherFilePreviewImpl otherFilePreview) {
+        this.fileHandlerService = fileHandlerService;
         this.otherFilePreview = otherFilePreview;
     }
     private static final String FILE_DIR = ConfigConstants.getFileDir();
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         String fileName = fileAttribute.getName();
-        String baseUrll = FILE_DIR + fileName;
-        //  String suffix = fileAttribute.getSuffix();
+        String gengxin=fileAttribute.getgengxin();
+        String outFilePath = FILE_DIR + fileName;
+        boolean pdfgx ;
+        if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
+            pdfgx= true;
+        }else {
+            pdfgx= false;
+        }
+        if (pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(fileName) || !ConfigConstants.isCacheEnabled()) {
         ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
         if (response.isFailure()) {
             return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
         }
+            outFilePath = response.getContent();
+         if (ConfigConstants.isCacheEnabled()) {
+                fileHandlerService.addConvertedFile(fileName, outFilePath);  //加入缓存
+            }
         try {
-            String   fileData = HtmlUtils.htmlEscape(textData(baseUrll));
+            File filee = new File(outFilePath);   //判断文件是否存在
+            if(!filee.exists() || filee.length() == 0) {
+                return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
+            }
+            String  fileData = HtmlUtils.htmlEscape(textData(outFilePath));
             model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
         } catch (IOException e) {
             return otherFilePreview.notSupportedFile(model, fileAttribute, e.getLocalizedMessage());
+        }
+
+        }else{
+            if(fileHandlerService.listConvertedFiles().containsKey(fileName)){
+                String  fileTree =fileHandlerService.getConvertedFile(fileName);
+                File filee = new File(fileTree);   //判断文件是否存在
+                if(!filee.exists() || filee.length() == 0) {
+                    return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
+                }
+                String  fileData = null;
+                try {
+                    fileData = HtmlUtils.htmlEscape(textData(fileTree));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
+            }
         }
         return TXT_FILE_PREVIEW_PAGE;
     }
