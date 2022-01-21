@@ -67,12 +67,7 @@ public class DownloadUtils {
                     xiazai.setContent(null);
                     return xiazai;
                 }
-                if(urlcon.getContentLength() <= 0){   //判断文件是否正确
-                    System.out.println("文件不存在或者文件等于0KB");
-                    xiazai.setCode(1);
-                    xiazai.setContent(null);
-                    return xiazai;
-                }
+
                 if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
                     url =new URL(urlcon.getHeaderField("Location"));
                 }

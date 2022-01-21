@@ -41,7 +41,7 @@ public class ConfigConstants {
     private static String tifPreviewType;
 
     public static final String DEFAULT_CACHE_ENABLED = "true";
-    public static final String DEFAULT_TXT_TYPE = "txt,html,htm,asp,jsp,xml,json,properties,md,gitignore,log,java,py,c,cpp,sql,sh,bat,m,bas,prg,cmd";
+    public static final String DEFAULT_TXT_TYPE = "txt,xml,json,properties,md,gitignore,log,m,bas,prg";
     public static final String DEFAULT_MEDIA_TYPE = "mp3,wav,mp4,flv";
     public static final String DEFAULT_OFFICE_PREVIEW_TYPE = "image";
     public static final String DEFAULT_OFFICE_PREVIEW_SWITCH_DISABLED = "false";
