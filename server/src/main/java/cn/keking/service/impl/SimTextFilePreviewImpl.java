@@ -35,13 +35,15 @@ public class SimTextFilePreviewImpl implements FilePreview {
         String fileName = fileAttribute.getName();
         String gengxin=fileAttribute.getgengxin();
         String outFilePath = FILE_DIR + fileName;
+        String suffix = fileAttribute.getSuffix();
         boolean pdfgx ;
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) { //去缓存更新
             pdfgx= true;
         }else {
             pdfgx= false;
         }
-        if (pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(fileName) || !ConfigConstants.isCacheEnabled()) {
+
+        if ( pdfgx || !suffix.equalsIgnoreCase("htm") || !suffix.equalsIgnoreCase("html") ||! suffix.equalsIgnoreCase("shtml")||!fileHandlerService.listConvertedFiles().containsKey(fileName) || !ConfigConstants.isCacheEnabled()) {
         ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
         if (response.isFailure()) {
             return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());

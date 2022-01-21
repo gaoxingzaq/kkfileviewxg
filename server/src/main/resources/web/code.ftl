@@ -11,7 +11,7 @@
 
     <style>
         div.code {
-            white-space: pre;
+           white-space: pre-wrap;
         }
     </style>
 </head>
