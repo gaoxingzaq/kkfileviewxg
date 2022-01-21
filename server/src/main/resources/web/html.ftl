@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -14,19 +13,15 @@
 </#if>
 <body>
 <#if "${file.suffix?lower_case}" == "xlsx">
- <label><button onclick="tiaozhuan()">跳转其他预览方式</button></label>
- 	  </#if>
+<script type="text/javascript">
+$('body').append('<button onclick="tiaozhuan()">跳转其他预览方式</button>');
+</script>
+</#if>
     <iframe src="${finalUrl}" width="100%" frameborder="0"></iframe>
 </body>
+<#if "${file.suffix?lower_case}" == "xlsx">
 <script type="text/javascript">
-    document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight-10;
-    /**
-     * 页面变化调整高度
-     */
-    window.onresize = function(){
-        var fm = document.getElementsByTagName("iframe")[0];
-        fm.height = window.document.documentElement.clientHeight-10;
-    }
+    document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight-30;
 	function tiaozhuan(){
 					var test = window.location.href;
 					    test = test.replace(new RegExp("&officePreviewType=html",("gm")),"");
@@ -41,4 +36,16 @@
  initWaterMark();
 }
 </script>
+<#else>
+<script type="text/javascript">
+    document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight-10;
+  		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
+</script>
+</#if>
+
 </html>
