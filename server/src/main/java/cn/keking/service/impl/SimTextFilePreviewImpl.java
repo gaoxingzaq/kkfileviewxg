@@ -42,8 +42,8 @@ public class SimTextFilePreviewImpl implements FilePreview {
         }else {
             pdfgx= false;
         }
-        if (pdfgx || !suffix.equalsIgnoreCase("htm") || !suffix.equalsIgnoreCase("html") ||! suffix.equalsIgnoreCase("shtml")||!fileHandlerService.listConvertedFiles().containsKey(fileName) || !ConfigConstants.isCacheEnabled()) {
-        ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
+        if (!suffix.equalsIgnoreCase("htm") && !suffix.equalsIgnoreCase("html") &&! suffix.equalsIgnoreCase("shtml")&& pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(fileName) || !ConfigConstants.isCacheEnabled()) {
+            ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
         if (response.isFailure()) {
             return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
         }
