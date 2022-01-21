@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Hello World!</title>
+        <title>Hello xlsx!</title>
         <link rel='stylesheet' href='plugins/css/pluginsCss.css' />
         <link rel='stylesheet' href='plugins/plugins.css' />
         <link rel='stylesheet' href='css/luckysheet.css' />
@@ -16,17 +16,6 @@
     
 		<div id="luckysheet" style="margin:0px;padding:0px;position:absolute;width:100%;left: 0px;top: 50px;bottom: 0px;outline: none;"></div>
         <script src="luckyexcel.umd.js"></script>
-        <!-- <script type="module">
-            import l from './luckyexcel.js';
-            console.info('=====',l)
-            // window.onload = () => {
-            //     let upload = document.getElementById("file");
-            //     upload.addEventListener("change", function(evt){
-            //         var files = evt.target.files;   
-            //         importFile(files[0]);
-            //     });
-            // }
-        </script> -->
         <script>
             function demoHandler(){
            
@@ -52,7 +41,7 @@
                                 window.luckysheet.create({
                                     container: 'luckysheet', //luckysheet is the container id
 									lang: "zh",
-                                  allowCopy: true, // 是否允许拷贝
+                               allowCopy: true, // 是否允许拷贝
                                showtoolbar: true, // 是否显示工具栏
                                showinfobar: false, // 是否显示顶部信息栏
                                showsheetbar: true, // 是否显示底部sheet页按钮
