@@ -42,26 +42,28 @@ public class SimTextFilePreviewImpl implements FilePreview {
         }else {
             pdfgx= false;
         }
-        if (!suffix.equalsIgnoreCase("htm") && !suffix.equalsIgnoreCase("html") &&! suffix.equalsIgnoreCase("shtml")&& pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(fileName) || !ConfigConstants.isCacheEnabled()) {
-            ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
-        if (response.isFailure()) {
-            return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
-        }
-            outFilePath = response.getContent();
-         if (ConfigConstants.isCacheEnabled()) {
-                fileHandlerService.addConvertedFile(fileName, outFilePath);  //加入缓存
-            }
-        try {
-            File filee = new File(outFilePath);   //判断文件是否存在
-            if(!filee.exists() || filee.length() == 0) {
-                return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
-            }
-            String  fileData = HtmlUtils.htmlEscape(textData(outFilePath));
-            model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
-        } catch (IOException e) {
-            return otherFilePreview.notSupportedFile(model, fileAttribute, e.getLocalizedMessage());
-        }
+        if(!suffix.equalsIgnoreCase("htm") && !suffix.equalsIgnoreCase("html") && !suffix.equalsIgnoreCase("shtml") ){
+            if (pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(fileName) || !ConfigConstants.isCacheEnabled()) {
+                ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, fileName);
+                if (response.isFailure()) {
+                    return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
+                }
+                outFilePath = response.getContent();
+                if (ConfigConstants.isCacheEnabled()) {
+                    fileHandlerService.addConvertedFile(fileName, outFilePath);  //加入缓存
+                }
+                try {
+                    File filee = new File(outFilePath);   //判断文件是否存在
+                    if(!filee.exists() || filee.length() == 0) {
+                        return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
+                    }
+                    String  fileData = HtmlUtils.htmlEscape(textData(outFilePath));
+                    model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
+                } catch (IOException e) {
+                    return otherFilePreview.notSupportedFile(model, fileAttribute, e.getLocalizedMessage());
+                }
 
+            }
         }else{
             if(fileHandlerService.listConvertedFiles().containsKey(fileName)){
                 File filee = new File(outFilePath);   //判断文件是否存在
