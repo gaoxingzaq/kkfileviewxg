@@ -149,6 +149,9 @@ public class OfficeFilePreviewImpl implements FilePreview {
                      if (geshi.equals(".2003office") || geshi.equals(".2010offcie")  || geshi.equals(".QT") || geshi.equals(".rtf") || geshi.equals(".xmln") || suffix.equalsIgnoreCase("wmf") || suffix.equalsIgnoreCase("emf") ){  //判断是什么格式的文件
                          KkFileUtils.deleteFileByPath(outFilePath);
                          File file = new File(outFilePath);
+                         if(pdfgx){
+                             FileHandlerService.AT_CONVERT_MAP.remove(file.getName(), 1);
+                         }
                          if (ConfigConstants.isCacheEnabled()) {
                              if (FileHandlerService.AT_CONVERT_MAP.get(file.getName()) != null) {   //判断文件是否在转换中
                                  //  System.out.println(" 文件 [%s] 正在转换中" +file.getName());

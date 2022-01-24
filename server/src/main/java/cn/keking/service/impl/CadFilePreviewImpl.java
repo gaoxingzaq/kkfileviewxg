@@ -71,6 +71,9 @@ public class CadFilePreviewImpl implements FilePreview {
                     boolean convertResult;
                     if (ConfigConstants.isCacheEnabled()) {
                         File file = new File(outFilePath);
+                        if(pdfgx){
+                            FileHandlerService.AT_CONVERT_MAP.remove(file.getName(), 1);
+                        }
                         if (FileHandlerService.AT_CONVERT_MAP.get(file.getName()) != null) {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件["+fileNamee+"]正在转换中,请稍后刷新访问");
                         }else {
