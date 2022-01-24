@@ -62,7 +62,7 @@ public class SimTextFilePreviewImpl implements FilePreview {
                 } catch (IOException e) {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, e.getLocalizedMessage());
                 }
-
+                return TXT_FILE_PREVIEW_PAGE;
             }
         }
                 File filee = new File(outFilePath);   //判断文件是否存在
