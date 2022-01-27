@@ -58,8 +58,9 @@ public class DownloadUtils {
             URL url = WebUtils.normalizedURL(urlStr);
             if(!preview.equalsIgnoreCase("false") && !urlStr.toLowerCase().startsWith("ftp")) {
                 HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();
+                urlcon.setConnectTimeout(30000);
+                urlcon.setReadTimeout(30000);
                 urlcon.setInstanceFollowRedirects(false);
-                urlcon.setConnectTimeout(5000);
                 //  System.out.println("返回码: " + urlcon.getResponseCode());
                 if(urlcon.getResponseCode() ==404){
                     System.out.println("地址错误");
