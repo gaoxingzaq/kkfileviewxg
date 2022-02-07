@@ -1,6 +1,22 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="favicon.ico"><title>ofd.js</title><script src="OfdParser.js"></script><script src="FreetypeKit.js"></script><link href="css/app.e6bfd87a.css" rel="preload" as="style"><link href="css/chunk-vendors.a16c4353.css" rel="preload" as="style"><link href="js/app.4e3c4068.js" rel="preload" as="script"><link href="js/chunk-vendors.013adbd4.js" rel="preload" as="script"><link href="css/chunk-vendors.a16c4353.css" rel="stylesheet"><link href="css/app.e6bfd87a.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but ofd.js doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="js/chunk-vendors.013adbd4.js"></script><script src="js/app.4e3c4068.js"></script>
-
-
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ofd.js</title>
+    <link href="css/app.0ef57741.css" rel="preload" as="style" />
+    <link href="css/chunk-vendors.a16c4353.css" rel="preload" as="style" />
+    <link href="js/app.9d584a17.js" rel="preload" as="script" />
+    <link href="js/chunk-vendors.239dd91c.js" rel="preload" as="script" />
+    <link href="css/chunk-vendors.a16c4353.css" rel="stylesheet" />
+    <link href="css/app.0ef57741.css" rel="stylesheet" />
+  </head>
+  <body>
+    <noscript ><strong>We're sorry but ofd.js doesn't work properly without JavaScript enabled. Please enable it to continue.</strong ></noscript>
+    <div id="app"></div>
+    <script src="js/chunk-vendors.239dd91c.js"></script>
+    <script src="js/app.9d584a17.js"></script>
 <script>
 function getParam(url, name) {
     try {
@@ -15,10 +31,10 @@ function getParam(url, name) {
         return "";//如果此处只写return;则返回的是undefined
     }
 }
-var url= window.location.href;
+  var url= window.location.search;
 var name="pdfXianzhi";
 var pdfXianzhid=getParam(url,name);
-if ('false' != pdfXianzhid) {
+     if ('false' != pdfXianzhid) {
 	  
   //屏蔽右键菜单
 document.oncontextmenu = function (event) {
@@ -140,4 +156,5 @@ window.onhelp = function () {
 }
   } 
 	 </script>
-</body></html>
+  </body>
+</html>
