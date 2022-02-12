@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <description xmlns="http://openoffice.org/extensions/description/2006" xmlns:d="http://openoffice.org/extensions/description/2006"  xmlns:xlink="http://www.w3.org/1999/xlink">
-    <version value="2021.05.01" />
+    <version value="2021.11.01" />
     <identifier value="org.openoffice.en.hunspell.dictionaries" />
     <display-name>
         <name lang="en-US">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
@@ -23,7 +23,7 @@
         <name lang="cs">Slovník kontroly pravopisu, dělení slov, slovník synonym a kontrola gramatiky pro angličtinu</name>
         <name lang="cy">Saesneg - geiriaduron sillafu, rheolau cysylltnodi, thesawrws a gwirydd gramadeg</name>
         <name lang="da">Engelsk ordbog for stavekontrol, orddelingsregler, synonymer og grammatikkontrol</name>
-        <name lang="de">Englische Wörterbücher für Rechtschreibprüfung, Silbentrennung, Thesaurus und Grammatikprüfung</name>
+        <name lang="de">Englisches Wörterbuch für Rechtschreibprüfung, Silbentrennung, Thesaurus und Grammatikprüfung</name>
         <name lang="dgo">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="dsb">Engelske pšawopisne słowniki, pšawidła źělenja złožkow, tezawrus a kontrola gramatiki</name>
         <name lang="dz">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
@@ -76,7 +76,7 @@
         <name lang="nb">Engelsk stavekontroll, orddeling, synonymer og grammatikkkontroll</name>
         <name lang="ne">अंग्रेज़ी हिज्जे शब्दकोशहरू, योजकचिन्ह राख्ने कार्य नियमहरू, पर्यायकोश, र व्याकरण संशोधक</name>
         <name lang="nl">Engelse spelling woordenboeken, woordafbrekingsregels, thesaurus en grammaticacontrole</name>
-        <name lang="nn">Engelsk stavekontroll, orddeling, synonym, og grammatikkkontroll</name>
+        <name lang="nn">Engelsk stavekontroll, orddeling, synonym, og grammatikk-kontroll</name>
         <name lang="nr">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="nso">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="oc">Diccionaris d'ortografia, dels sinonims, de gramatica e règla de copadura dels mots angleses</name>

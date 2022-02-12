@@ -78,7 +78,6 @@
                 <property name="can-focus">True</property>
                 <property name="receives-default">False</property>
                 <property name="use-underline">True</property>
-                <property name="active">True</property>
                 <property name="draw-indicator">True</property>
                 <property name="group">linear</property>
                 <child internal-child="accessible">
@@ -99,7 +98,6 @@
                 <property name="can-focus">True</property>
                 <property name="receives-default">False</property>
                 <property name="use-underline">True</property>
-                <property name="active">True</property>
                 <property name="draw-indicator">True</property>
                 <property name="group">linear</property>
                 <child internal-child="accessible">
@@ -120,7 +118,6 @@
                 <property name="can-focus">True</property>
                 <property name="receives-default">False</property>
                 <property name="use-underline">True</property>
-                <property name="active">True</property>
                 <property name="draw-indicator">True</property>
                 <property name="group">linear</property>
                 <child internal-child="accessible">
@@ -581,7 +578,6 @@
                 <property name="text">0</property>
                 <property name="truncate-multiline">True</property>
                 <property name="caps-lock-warning">False</property>
-                <property name="input-purpose">number</property>
                 <property name="adjustment">adjustmentForwardBackward2</property>
                 <property name="digits">2</property>
                 <accessibility>

@@ -36,6 +36,7 @@ Private ConsoleDialog		As Object	&apos; SFDialogs.Dialog object
 Private ConsoleControl		As Object	&apos; SFDialogs.DialogControl object
 Private DisplayEnabled		As Boolean	&apos; When True, display of console or error messages is allowed
 Private StopWhenError		As Boolean	&apos; When True, process stops after error &gt; &quot;WARNING&quot;
+Private TriggeredByPython	As Boolean	&apos; When True, the actual user script is a Python script
 Private DebugMode			As Boolean	&apos; When True, log enter/exit each official Sub
 
 &apos;	Progress and status bars
@@ -58,6 +59,7 @@ Private DispatchHelper		As Object	&apos; com.sun.star.frame.DispatchHelper
 Private TextSearch			As Object	&apos; com.sun.star.util.TextSearch
 Private SearchOptions		As Object	&apos; com.sun.star.util.SearchOptions
 Private Locale				As Object	&apos; com.sun.star.lang.Locale
+Private PrinterServer		As Object	&apos; com.sun.star.awt.PrinterServer
 Private CharacterClass		As Object	&apos; com.sun.star.i18n.CharacterClassification
 Private FileAccess			As Object	&apos; com.sun.star.ucb.SimpleFileAccess
 Private FilterFactory		As Object	&apos; com.sun.star.document.FilterFactory
@@ -70,11 +72,13 @@ Private DatabaseContext		As Object	&apos; com.sun.star.sdb.DatabaseContext
 Private ConfigurationProvider _
 							As Object	&apos; com.sun.star.configuration.ConfigurationProvider
 Private MailService			As Object	&apos; com.sun.star.system.SimpleCommandMail or com.sun.star.system.SimpleSystemMail
-Private TreeDataModel		As Object	&apos; com.sun.star.awt.tree.MutableTreeDataModel
+Private GraphicExportFilter	As Object	&apos; com.sun.star.drawing.GraphicExportFilter
+Private Toolkit				As Object	&apos; com.sun.star.awt.Toolkit
 
 &apos;	Specific persistent services objects or properties
 Private FileSystemNaming	As String	&apos; If &quot;SYS&quot;, file and folder naming is based on operating system notation
 Private PythonHelper		As String	&apos; File name of Python helper functions (stored in $(inst)/share/Scripts/python)
+Private PythonHelper2		As String	&apos; Alternate Python helper file name for test purposes
 Private Interface			As Object	&apos; ScriptForge own L10N service
 Private OSName				As String	&apos; WIN, LINUX, MACOS
 Private SFDialogs			As Variant	&apos; Persistent storage for the SFDialogs library
@@ -98,6 +102,7 @@ Private Sub Class_Initialize()
 	Set ConsoleControl = Nothing
 	DisplayEnabled = True
 	StopWhenError = True
+	TriggeredByPython = False
 	DebugMode = False
 	Set ProgressBarDialog = Nothing
 	Set ProgressBarText = Nothing
@@ -114,6 +119,7 @@ Private Sub Class_Initialize()
 	Set TextSearch = Nothing
 	Set SearchOptions = Nothing
 	Set Locale = Nothing
+	Set PrinterServer = Nothing
 	Set CharacterClass = Nothing
 	Set FileAccess = Nothing
 	Set FilterFactory = Nothing
@@ -123,12 +129,14 @@ Private Sub Class_Initialize()
 	Set Introspection = Nothing
 	FileSystemNaming = &quot;ANY&quot;
 	PythonHelper = &quot;ScriptForgeHelper.py&quot;
+	PythonHelper2 = &quot;&quot;
 	Set Interface = Nothing
 	Set BrowseNodeFactory = Nothing
 	Set DatabaseContext = Nothing
 	Set ConfigurationProvider = Nothing
 	Set MailService = Nothing
-	Set TreeDataModel = Nothing
+	Set GraphicExportFilter = Nothing
+	Set Toolkit = Nothing
 	OSName = &quot;&quot;
 	SFDialogs = Empty
 	SFForms = Empty
@@ -275,7 +283,7 @@ Try:
 		&apos;	Build the po file name
 		With SF_FileSystem
 			sInstallFolder = ._SFInstallFolder()	&apos;	ScriptForge installation folder
-			sLocale = SF_Utils._GetUNOService(&quot;Locale&quot;).Language
+			sLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;).Language
 			sPOFolder = .BuildPath(sInstallFolder, &quot;po&quot;)
 			sPOFile = .BuildPath(sPOFolder, sLocale &amp; &quot;.po&quot;)
 			If Not .FileExists(sPOFile) Then	&apos;	File not found =&gt; load texts from code below
@@ -605,8 +613,8 @@ Try:
 									&amp;	&quot;%1: &apos;Basic&apos; or &apos;Python&apos;\n&quot; _
 									&amp;	&quot;%2: An identifier\n&quot; _
 									&amp;	&quot;%3: A string\n&quot; _
-									&amp;	&quot;%2: An identifier\n&quot; _
-									&amp;	&quot;%3: A string&quot; _
+									&amp;	&quot;%4: An identifier\n&quot; _
+									&amp;	&quot;%5: A string&quot; _
 					)
 	&apos;	SF_Session.ExecuteBasicScript
 			.AddText(	Context := &quot;SCRIPTEXEC&quot; _
@@ -816,6 +824,32 @@ Try:
 									&amp;	&quot;%11: An identifier\n&quot; _
 									&amp;	&quot;%12: A file name&quot; _
 					)
+	&apos;	SF_Calc.CreateChart
+			.AddText(	Context := &quot;DUPLICATECHART&quot; _
+						, MsgId := &quot;A chart with the same name exists already in the sheet.\n\n&quot; _
+									&amp; &quot;« %1 » = %2\n&quot; _
+									&amp; &quot;« %3 » = %4\n&quot; _
+									&amp; &quot;« %5 » = %6\n&quot; _
+						, Comment :=	&quot;SF_Calc CreateChart\n&quot; _
+									&amp;	&quot;%1: An identifier\n&quot; _
+									&amp;	&quot;%2: A string\n&quot; _
+									&amp;	&quot;%3: An identifier\n&quot; _
+									&amp;	&quot;%4: A string\n&quot; _
+									&amp;	&quot;%5: An identifier\n&quot; _
+									&amp;	&quot;%6: A file name&quot; _
+					)
+	&apos;	SF_Chart.ExportToFile
+			.AddText(	Context := &quot;CHARTEXPORT&quot; _
+						, MsgId := &quot;The chart could not be exported.\n&quot; _
+									&amp; &quot;Either the destination file must not be overwritten, or it has a read-only attribute set.\n\n&quot; _
+									&amp; &quot;%1 = &apos;%2&apos;\n&quot; _
+									&amp; &quot;%3 = %4&quot; _
+						, Comment :=	&quot;SF_Chart.ExportToFile error message\n&quot; _
+									&amp;	&quot;%1: An identifier\n&quot; _
+									&amp;	&quot;%2: A file name\n&quot; _
+									&amp;	&quot;%3: An identifier\n&quot; _
+									&amp;	&quot;%4: True or False\n&quot; _
+					)
 	&apos;	SF_Form._IsStillAlive
 			.AddText(	Context := &quot;FORMDEAD&quot; _
 						, MsgId := &quot;The requested action could not be executed because the form is not open or the document was closed inadvertently.\n\n&quot; _
@@ -971,6 +1005,7 @@ Public Sub _StackReset()
 	MainFunction = &quot;&quot;
 	MainFunctionArgs = &quot;&quot;
 	StackLevel = 0
+	TriggeredByPython = False
 
 End Sub		&apos;		ScriptForge.SF_Root._StackReset
 

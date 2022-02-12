@@ -8,7 +8,7 @@
 # Description:  v1.1：修改进程启动机制为pid形式。
 #############################
 #
-DIR_HOME=("/opt/openoffice.org3" "/opt/libreoffice" "/opt/libreoffice5.0" "/opt/libreoffice5.2" "/opt/libreoffice6.0" "/opt/libreoffice6.1" "/opt/libreoffice6.2" "/opt/libreoffice6.3" "/opt/libreoffice6.4" "/opt/libreoffice7.0" "/opt/libreoffice7.1" "/opt/libreoffice7.2" "/opt/openoffice4" "/usr/lib/openoffice" "/usr/lib/libreoffice" "/usr/lib64/libreoffice")
+DIR_HOME=("/opt/openoffice.org3" "/opt/libreoffice" "/opt/libreoffice5.0" "/opt/libreoffice5.2" "/opt/libreoffice6.0" "/opt/libreoffice6.1" "/opt/libreoffice6.2" "/opt/libreoffice6.3" "/opt/libreoffice6.4" "/opt/libreoffice7.0" "/opt/libreoffice7.1" "/opt/libreoffice7.2" "/opt/libreoffice7.3" "/opt/libreoffice7.4" "/opt/libreoffice7.5" "/opt/openoffice4" "/usr/lib/openoffice" "/usr/lib/libreoffice" "/usr/lib64/libreoffice")
 FLAG=
 OFFICE_HOME=
 KKFILEVIEW_BIN_FOLDER=$(cd "$(dirname "$0")" || exit 1 ;pwd)

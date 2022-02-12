@@ -82,7 +82,7 @@
         	<value xml:lang="id">Operasi &apos;Kirim ke MediaWiki&apos; tidak dapat diselesaikan dengan baik.</value>
         	<value xml:lang="is">Ekki var hægt að ljúka aðgerðinni &apos;Senda á MediaWiki&apos;.</value>
         	<value xml:lang="it">L&apos;operazione &apos;Invia a Media Wiki&apos; non è stata completata correttamente.</value>
-        	<value xml:lang="ja">「MediaWiki へ送信」を正常に完了できませんでした。</value>
+        	<value xml:lang="ja">「MediaWikiへ送信」を正常に完了できませんでした。</value>
         	<value xml:lang="ka">The operation &apos;Send to MediaWiki&apos; could not be completed successfully.</value>
         	<value xml:lang="kab">Tamhelt &apos;Azen ɣer MediaWiki&apos; ulamek ara teddu akken iwata.</value>
         	<value xml:lang="kk">MediaWiki-ге жіберу әрекетін аяқтау мүмкін емес.</value>
@@ -203,7 +203,7 @@
         	<value xml:lang="id">Penyaring ekspor MediaWiki tidak ditemukan. Pilih &apos;Perkakas-Pengaturan Penyaring XML&apos; untuk memasang penyaring tersebut, atau gunakan setup untuk memasang komponen itu.</value>
         	<value xml:lang="is">MediaWiki útflutningssían fannst ekki. Farðu í &apos;Verkfæri-&gt;Stillingar XML síu&apos; til að setja upp síuna, eða notaðu uppsetningarforritið til að setja upp þessa einingu.</value>
         	<value xml:lang="it">Impossibile trovare il filtro di esportazione di MediaWiki. Fai clic su &apos;Strumenti - Impostazioni filtro XML&apos; per installare il filtro, oppure installa il componente tramite la configurazione iniziale.</value>
-        	<value xml:lang="ja">MediaWiki エクスポートフィルターが見つかりません。「ツール」→「XML フィルター設定」を選択してフィルターをインストールするか、セットアップを実行してコンポーネントをインストールしてください。</value>
+        	<value xml:lang="ja">MediaWikiエクスポートフィルターが見つかりません。「ツール」→「XMLフィルター設定」を選択してフィルターをインストールするか、セットアップを実行してコンポーネントをインストールしてください。</value>
         	<value xml:lang="ka">The MediaWiki export filter cannot be found. Choose &apos;Tools-XML Filter Settings&apos; to install the filter, or use the setup to install the component.</value>
         	<value xml:lang="kab">Tastayt n usifeḍ MediaWiki ulac-itt. Fren &apos;Ifecka - Iɣewwaren n testayt XML&apos; iwakken ad tesbeddeḍ tastayt, neɣ seqdec setup iwakken ad tesbeddeḍ isger.</value>
         	<value xml:lang="kk">MediaWiki экспорттау сүзгісі табылмады. Сүзгіні орнату үшін «Саймандар - XML сүзгілерін баптау» мәзірін ашыңыз, немесе, орнату бағдарламасын қолданып, сәйкес құрауышты таңдаңыз.</value>
@@ -327,7 +327,7 @@
         	<value xml:lang="id">Koneksi ke sistem MediaWiki pada &apos;$ARG1&apos; tak dapat dibuat.</value>
         	<value xml:lang="is">Ekki tókst að koma á tengingu við MediaWiki-kerfið á &apos;$ARG1&apos;.</value>
         	<value xml:lang="it">Impossibile creare una connessione con il sistema MediaWiki a &quot;$ARG1&quot;.</value>
-        	<value xml:lang="ja">&apos;$ARG1&apos; の MediaWiki システムへの接続を作成できませんでした。</value>
+        	<value xml:lang="ja">&apos;$ARG1&apos;のMediaWikiシステムへの接続を作成できませんでした。</value>
         	<value xml:lang="ka">A connection to the MediaWiki system at &apos;$ARG1&apos; could not be created.</value>
         	<value xml:lang="kab">D awezɣi asnulfu n tuqqna ɣer unagraw MediaWiki di &apos;$ARG1&apos;.</value>
         	<value xml:lang="kk">«$ARG1» MediaWiki жүйесімен байланысты орнату мүмкін емес.</value>
@@ -692,7 +692,7 @@
         	<value xml:lang="id">Tentukan server MediaWiki dengan menyediakan sebuah URL.</value>
         	<value xml:lang="is">Tilgreindu MediaWiki-miðlara með því að gefa upp slóð (URL).</value>
         	<value xml:lang="it">Indica un server MediaWiki inserendo un URL.</value>
-        	<value xml:lang="ja">URL を入力して MediaWiki サーバーを指定してください。</value>
+        	<value xml:lang="ja">URLを入力してMediaWikiサーバーを指定してください。</value>
         	<value xml:lang="ka">Specify a MediaWiki server by providing a URL.</value>
         	<value xml:lang="kab">Efk-d aqeddac MediaWiki s tukci n URL.</value>
         	<value xml:lang="kk">URL көрсету арқылы MediWiki серверін көрсетіңіз.</value>
@@ -709,7 +709,7 @@
         	<value xml:lang="mai">Specify a MediaWiki server by providing a URL.</value>
         	<value xml:lang="mk">Одреди сервер за MediaWiki преку доделување на URL</value>
         	<value xml:lang="ml">ഒരു യുആര്‍എല്‍ നല്‍കി ഒരു മീഡിയാവിക്കി വ്യക്തമാക്കുക.</value>
-        	<value xml:lang="mn">УРЛ ийг олгож МэдиаВики серверийг тодорхойлно уу </value>
+        	<value xml:lang="mn">URL оруулах замаар MediaWiki серверийг зааж өгнө үү.</value>
         	<value xml:lang="mni">Specify a MediaWiki server by providing a URL.</value>
         	<value xml:lang="mr">URL पूरवून तुम्ही MediaWiki सर्व्हर निर्देशीत करा.</value>
         	<value xml:lang="my">URL လုပ်ဆောင်မှုပြုခြင်းဖြင့် မီဒီယာဝီကီဆာဗာတစ်ခုသတ်မှတ်ပါ။</value>
@@ -1298,7 +1298,7 @@
         	<value xml:lang="id">Kirim ke MediaWiki</value>
         	<value xml:lang="is">Senda á MediaWiki</value>
         	<value xml:lang="it">Invia a MediaWiki</value>
-        	<value xml:lang="ja">MediaWiki へ送信</value>
+        	<value xml:lang="ja">MediaWikiへ送信</value>
         	<value xml:lang="ka">Send to MediaWiki</value>
         	<value xml:lang="kab">Azen ɣer MediaWiki</value>
         	<value xml:lang="kk">MediaWiki-ге жіберу</value>
@@ -2510,7 +2510,7 @@
         	<value xml:lang="id">Server Media~Wiki</value>
         	<value xml:lang="is">~MediaWiki netþjónn</value>
         	<value xml:lang="it">Server Media~Wiki</value>
-        	<value xml:lang="ja">Media~Wiki サーバー</value>
+        	<value xml:lang="ja">Media~Wikiサーバー</value>
         	<value xml:lang="ka">Media~Wiki Server</value>
         	<value xml:lang="kab">Aqeddac Media~Wiki</value>
         	<value xml:lang="kk">Media~Wiki сервері</value>
@@ -3478,7 +3478,7 @@
         	<value xml:lang="id">Server MediaWiki</value>
         	<value xml:lang="is">MediaWiki netþjónn</value>
         	<value xml:lang="it">Server MediaWiki</value>
-        	<value xml:lang="ja">MediaWiki サーバー</value>
+        	<value xml:lang="ja">MediaWikiサーバー</value>
         	<value xml:lang="ka">MediaWiki Server</value>
         	<value xml:lang="kab">Aqeddac MediaWiki</value>
         	<value xml:lang="kk">MediaWiki сервері</value>

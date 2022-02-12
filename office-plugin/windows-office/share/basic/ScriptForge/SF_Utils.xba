@@ -21,7 +21,7 @@ REM ===================================================================== GLOBAL
 Global _SF_		As Variant		&apos;	SF_Root (Basic) object)
 
 &apos;&apos;&apos;	ScriptForge version
-Const SF_Version = &quot;7.2&quot;
+Const SF_Version = &quot;7.3&quot;
 
 &apos;&apos;&apos;	Standard symbolic names for VarTypes
 &apos;				V_EMPTY = 0
@@ -358,24 +358,16 @@ Dim vNodePath As Variant
 					Set .FunctionAccess = CreateUnoService(&quot;com.sun.star.sheet.FunctionAccess&quot;)
 				End If
 				Set _GetUNOService = .FunctionAccess
+			Case &quot;GraphicExportFilter&quot;
+				If IsEmpty(.GraphicExportFilter) Or IsNull(.GraphicExportFilter) Then
+					Set .GraphicExportFilter = CreateUnoService(&quot;com.sun.star.drawing.GraphicExportFilter&quot;)
+				End If
+				Set _GetUNOService = .GraphicExportFilter
 			Case &quot;Introspection&quot;
 				If IsEmpty(.Introspection) Or IsNull(.Introspection) Then
 					Set .Introspection = CreateUnoService(&quot;com.sun.star.beans.Introspection&quot;)
 				End If
 				Set _GetUNOService = .Introspection
-			Case &quot;Locale&quot;
-				If IsEmpty(.Locale) Or IsNull(.Locale) Then
-					.Locale = CreateUnoStruct(&quot;com.sun.star.lang.Locale&quot;)
-					&apos;	Derived from the Tools library
-					Set oConfigProvider = createUnoService(&quot;com.sun.star.configuration.ConfigurationProvider&quot;)
-					vNodePath = Array()	:	ReDim vNodePath(0)
-					vNodePath(0) = New com.sun.star.beans.PropertyValue
-					vNodePath(0).Name = &quot;nodepath&quot;	:	vNodePath(0).Value = &quot;org.openoffice.Setup/L10N&quot;
-					sLocale = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, vNodePath()).getByName(&quot;ooLocale&quot;)
-					.Locale.Language = Left(sLocale, 2)
-					.Locale.Country = Right(sLocale, 2)
-				End If
-				Set _GetUNOService = .Locale
 			Case &quot;MacroExpander&quot;
 				Set oDefaultContext = GetDefaultContext()
 				If Not IsNull(oDefaultContext) Then Set _GetUNOService = oDefaultContext.getValueByName(&quot;/singletons/com.sun.star.util.theMacroExpander&quot;)
@@ -398,6 +390,11 @@ Dim vNodePath As Variant
 					Set .PathSubstitution = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
 				End If
 				Set _GetUNOService = .PathSubstitution
+			Case &quot;PrinterServer&quot;
+				If IsEmpty(.PrinterServer) Or IsNull(.PrinterServer) Then
+					Set .PrinterServer = CreateUnoService(&quot;com.sun.star.awt.PrinterServer&quot;)
+				End If
+				Set _GetUNOService = .PrinterServer
 			Case &quot;ScriptProvider&quot;
 				If IsMissing(pvArg) Then pvArg = SF_Session.SCRIPTISAPPLICATION
 				Select Case LCase(pvArg)
@@ -419,6 +416,19 @@ Dim vNodePath As Variant
 					End With
 				End If
 				Set _GetUNOService = .SearchOptions
+			Case &quot;SystemLocale&quot;, &quot;Locale&quot;
+				If IsEmpty(.Locale) Or IsNull(.Locale) Then
+					.Locale = CreateUnoStruct(&quot;com.sun.star.lang.Locale&quot;)
+					&apos;	Derived from the Tools library
+					Set oConfigProvider = createUnoService(&quot;com.sun.star.configuration.ConfigurationProvider&quot;)
+					vNodePath = Array()	:	ReDim vNodePath(0)
+					vNodePath(0) = New com.sun.star.beans.PropertyValue
+					vNodePath(0).Name = &quot;nodepath&quot;	:	vNodePath(0).Value = &quot;org.openoffice.System/L10N&quot;
+					sLocale = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, vNodePath()).getByName(&quot;SystemLocale&quot;)
+					.Locale.Language = Left(sLocale, 2)
+					.Locale.Country = Right(sLocale, 2)
+				End If
+				Set _GetUNOService = .Locale
 			Case &quot;SystemShellExecute&quot;
 				If IsEmpty(.SystemShellExecute) Or IsNull(.SystemShellExecute) Then
 					Set .SystemShellExecute = CreateUnoService(&quot;com.sun.star.system.SystemShellExecute&quot;)
@@ -429,11 +439,11 @@ Dim vNodePath As Variant
 					Set .TextSearch = CreateUnoService(&quot;com.sun.star.util.TextSearch&quot;)
 				End If
 				Set _GetUNOService = .TextSearch
-			Case &quot;TreeDataModel&quot;
-				If IsEmpty(.TreeDataModel) Or IsNull(.TreeDataModel) Then
-					Set .TreeDataModel = CreateUnoService(&quot;com.sun.star.awt.tree.MutableTreeDataModel&quot;)
+			Case &quot;Toolkit&quot;
+				If IsEmpty(.Toolkit) Or IsNull(.Toolkit) Then
+					Set .Toolkit = CreateUnoService(&quot;com.sun.star.awt.Toolkit&quot;)
 				End If
-				Set _GetUNOService = .TreeDataModel
+				Set _GetUNOService = .Toolkit
 			Case &quot;URLTransformer&quot;
 				If IsEmpty(.URLTransformer) Or IsNull(.URLTransformer) Then
 					Set .URLTransformer = CreateUnoService(&quot;com.sun.star.util.URLTransformer&quot;)
@@ -581,35 +591,40 @@ Const cstContinue = &quot;…&quot;			&apos;	Unicode continuation char U+2026
 End Function	&apos;	ScriptForge.SF_Utils._ReprValues
 
 REM -----------------------------------------------------------------------------
-Public Sub _SetPropertyValue(ByRef pvPropertyValue As Variant _
+Public Function _SetPropertyValue(ByVal pvPropertyValue As Variant _
 									, ByVal psName As String _
 									, ByRef pvValue As Variant _
-									)
-&apos;&apos;&apos;	Update the 1st argument (passed by reference), which is an array of property values
-&apos;&apos;&apos;	If the property psName exists, update it with pvValue, otherwise create it on top of the array
+									) As variant
+&apos;&apos;&apos;	Return the 1st argument (passed by reference), which is an array of property values
+&apos;&apos;&apos;	If the property psName exists, update it with pvValue, otherwise create it on top of the returned array
 
 Dim oPropertyValue As New com.sun.star.beans.PropertyValue
 Dim lIndex As Long				&apos;	Found entry
 Dim vValue As Variant			&apos;	Alias of pvValue
+Dim vProperties As Variant		&apos;	Alias of pvPropertyValue
 Dim i As Long
 
 	lIndex = -1
-	For i = 0 To UBound(pvPropertyValue)
-		If pvPropertyValue(i).Name = psName Then
+	vProperties = pvPropertyValue
+	For i = 0 To UBound(vProperties)
+		If vProperties(i).Name = psName Then
 			lIndex = i
 			Exit For
 		End If
 	Next i
 	If lIndex &lt; 0 Then		&apos;	Not found
-		lIndex = UBound(pvPropertyValue) + 1
-		ReDim Preserve pvPropertyValue(0 To lIndex)
+		lIndex = UBound(vProperties) + 1
+		ReDim Preserve vProperties(0 To lIndex)
 		Set oPropertyValue = SF_Utils._MakePropertyValue(psName, pvValue)
-		pvPropertyValue(lIndex) = oPropertyValue
+		vProperties(lIndex) = oPropertyValue
+		vProperties = vProperties
 	Else					&apos;	psName exists already in array of property values
-		pvPropertyValue(lIndex).Value = SF_Utils._CPropertyValue(pvValue)
+		vProperties(lIndex).Value = SF_Utils._CPropertyValue(pvValue)
 	End If
+
+	_SetPropertyValue = vProperties
 	
-End Sub			&apos;	ScriptForge.SF_Utils._SetPropertyValue
+End Function	&apos;	ScriptForge.SF_Utils._SetPropertyValue
 
 REM -----------------------------------------------------------------------------
 Private Function _TypeNames(Optional ByVal pvArgs As Variant) As String

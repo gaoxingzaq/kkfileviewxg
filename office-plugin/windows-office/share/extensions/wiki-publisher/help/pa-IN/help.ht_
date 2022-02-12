@@ -9,7 +9,7 @@
 30 com.sun.star.wiki.MediaWiki.EditSetting.UrlField 3e Enter the URL of a MediaWiki server, starting with "https://".
 35 com.sun.star.wiki.MediaWiki.EditSetting.UsernameField c8 ਮੀਡਿਆਵਿਕਿ ਸਰਵਰ ਉੱਤੇ ਆਪਣਾ ਵਰਤੋਂਕਾਰ ਨਾਂ ਦਿਓ। ਅਣਪਛਾਤੀ (anonymous) ਵਰਤੋਂ ਲਈ ਖਾਲੀ ਛੱਡੋ।
 2f com.sun.star.wiki.MediaWiki.EditSetting.SaveBox 83 Enable to store your password between sessions. The master password must be enabled; see Tools - Options - %PRODUCTNAME - Security.
-20 vnd.com.sun.star.wiki%3Aaboutbox a7 By using the Wiki Publisher you can upload your current Writer text document to a MediaWiki server. After uploading, all wiki users can read your document on the wiki.
+20 vnd.com.sun.star.wiki%3Aaboutbox 1c0 ਤੁਸੀ ਮੌਜੁਦਾ ਰਾਈਟਰ ਲਿਖਤ ਦਸਤਾਵੇਜ਼ ਵਿੱਕੀ ਪਬਲਿਸਰ ਦੀ ਵਰਤੋ ਨਾਲ ਮੀਡਿਆ ਵਿਕੀ ਸਰਵਰ ਉੱਤੇ ਅੱਪਲੋਡ ਕਰ ਸਕਦੇ ਹੋ। ਅੱਪਲੋਡ ਕਰਨ ਤੋ ਬਾਅਦ ਸਾਰੇ ਵਿਕੀ ਵਰਤੋਂਕਾਰ ਤੁਹਾਡੇ ਦਸਤਾਵੇਜ਼ ਵਿਕੀ ਤੋਂ ਪੜ ਸਕਦੇ ਜਨ।
 1c vnd.com.sun.star.wiki%3Asend 11c Choose ਫਾਇਲ - ਭੇਜੋ- ਮੀਡਿਆ-ਵਿਕਿ ਉੱਤੇ ਭੇਜੋ ਦੀ ਚੋਣ ਮੌਜੂਦਾ ਰਾਇਟਰ ਡੌਕੂਮੈਂਟ ਨੂੰ ਮੀਡਿਆ-ਵਿਕਿ ਸਰਵਰ ਉੱਤੇ ਅੱਪਲੋਡ ਕਰਨ ਲਈ ਚੁਣੋ।
 20 vnd.com.sun.star.wiki%3Asettings a2 Click Add to add a new wiki server.Select an entry and click Edit to edit the account settings.Select an entry and click Remove to remove the entry from the list.
 31 com.sun.star.wiki.MediaWiki.Settings.RemoveButton 5f ਲਿਸਟ ਵਿਚੋਂ ਚੁਣੀਆਂ ਐਂਟਰੀਆਂ ਨੂੰ ਹਟਾਓ।

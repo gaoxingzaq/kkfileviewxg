@@ -9,9 +9,9 @@
     <property name="page-increment">10</property>
   </object>
   <object class="GtkDialog" id="QrCodeGenDialog">
-    <property name="can-focus">False</property>
-    <property name="border-width">6</property>
-    <property name="title" translatable="yes" context="qrcodegen|QrCodeGenDialog">QR Code Generator</property>
+    <property name="can_focus">False</property>
+    <property name="border_width">6</property>
+    <property name="title" translatable="yes" context="qrcodegen|QrCodeGenDialog">QR and Barcode</property>
     <property name="modal">True</property>
     <property name="default-width">0</property>
     <property name="default-height">0</property>
@@ -115,7 +115,7 @@
                         <property name="placeholder-text" translatable="yes" context="qrcodegen|edit_name">www.libreoffice.org</property>
                         <child internal-child="accessible">
                           <object class="AtkObject" id="edit_text-atkobject">
-                            <property name="AtkObject::accessible-description" translatable="yes" context="qr text">The text from which to generate the QR code.</property>
+                            <property name="AtkObject::accessible-description" translatable="yes" context="qr text">The text from which to generate the code.</property>
                           </object>
                         </child>
                       </object>
@@ -155,6 +155,43 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkLabel" id="label_type">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes" context="qrcodegen|label_type" comments="Select type">Type:</property>
+                        <property name="use_underline">True</property>
+                        <property name="mnemonic_widget">choose_type</property>
+                        <property name="xalign">0</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="choose_type">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
+                        <property name="active">0</property>
+                        <items>
+                          <item translatable="yes" context="qrcodegen|QrCode">QR Code</item>
+                          <item translatable="yes" context="qrcodegen|BarCode">Barcode</item>
+                        </items>
+                        <child internal-child="accessible">
+                          <object class="AtkObject" id="choose_type-atkobject">
+                            <property name="AtkObject::accessible-description" translatable="yes" context="type">The type of code to generate.</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">3</property>
+                        <property name="width">2</property>
+                      </packing>
+                    </child>
+                    <child>
                       <!-- n-columns=1 n-rows=1 -->
                       <object class="GtkGrid">
                         <property name="visible">True</property>
@@ -165,7 +202,7 @@
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="halign">start</property>
-                            <property name="label" translatable="yes" context="qrcodegen|label_ecc" comments="Error Correction Level of QR code">Error Correction:</property>
+                            <property name="label" translatable="yes" context="qrcodegen|label_ecc" comments="Error Correction Level of QR code">Error correction:</property>
                             <property name="use-underline">True</property>
                             <property name="xalign">0</property>
                             <accessibility>
@@ -197,7 +234,7 @@
                         <property name="numeric">True</property>
                         <child internal-child="accessible">
                           <object class="AtkObject" id="edit_margin-atkobject">
-                            <property name="AtkObject::accessible-description" translatable="yes" context="edit margin">The margin surrounding the QR code.</property>
+                            <property name="AtkObject::accessible-description" translatable="yes" context="edit margin">The margin surrounding the code.</property>
                           </object>
                         </child>
                       </object>
@@ -344,7 +381,7 @@
     </action-widgets>
     <child internal-child="accessible">
       <object class="AtkObject" id="QrCodeGenDialog-atkobject">
-        <property name="AtkObject::accessible-description" translatable="yes" context="qr code dialog title">Generate QR Code for any text or URL.</property>
+        <property name="AtkObject::accessible-description" translatable="yes" context="qr code dialog title">Generate linear and matrix codes for any text or URL.</property>
       </object>
     </child>
   </object>

@@ -23,6 +23,9 @@ Option Explicit
 &apos;&apos;&apos;		Service invocation example:
 &apos;&apos;&apos;			Dim platform As Variant
 &apos;&apos;&apos;			platform = CreateScriptService(&quot;Platform&quot;)
+&apos;&apos;&apos;
+&apos;&apos;&apos;		Detailed user documentation:
+&apos;&apos;&apos;			https://help.libreoffice.org/latest/en-US/text/sbasic/shared/03/sf_platform.html?DbPAR=BASIC
 &apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
 
 REM ================================================================== EXCEPTIONS
@@ -71,6 +74,15 @@ Property Get CurrentUser() As String
 End Property	&apos;	ScriptForge.SF_Platform.CurrentUser (get)
 
 REM -----------------------------------------------------------------------------
+Property Get Fonts() As Variant
+&apos;&apos;&apos;	Returns the list of available fonts as an unsorted array of unique strings
+&apos;&apos;&apos;	To get the list sorted, use SF_Array.Sort()
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;		myFontsList = platform.Fonts
+	Fonts = _PropertyGet(&quot;Fonts&quot;)
+End Property	&apos;	ScriptForge.SF_Platform.Fonts (get)
+
+REM -----------------------------------------------------------------------------
 Property Get Locale() As String
 &apos;&apos;&apos;	Returns the locale combining language-COUNTRY (la-CO)
 &apos;&apos;&apos;	Example:
@@ -91,12 +103,6 @@ Property Get ObjectType As String
 &apos;&apos;&apos;	Only to enable object representation
 	ObjectType = &quot;SF_Platform&quot;
 End Property	&apos;	ScriptForge.SF_Platform.ObjectType
-
-REM -----------------------------------------------------------------------------
-Property Get ServiceName As String
-&apos;&apos;&apos;	Internal use
-	ServiceName = &quot;ScriptForge.Platform&quot;
-End Property	&apos;	ScriptForge.SF_Platform.ServiceName
 
 REM -----------------------------------------------------------------------------
 Property Get OfficeVersion() As String
@@ -139,6 +145,15 @@ Property Get OSVersion() As String
 End Property	&apos;	ScriptForge.SF_Platform.OSVersion (get)
 
 REM -----------------------------------------------------------------------------
+Property Get Printers() As Variant
+&apos;&apos;&apos;	Returns the list of available printers type as a zero-based array
+&apos;&apos;&apos;	The default printer is put in the 1st position in the list (index = 0)
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;		MsgBox join(platform.Printers, &quot;,&quot;)
+	Printers = _PropertyGet(&quot;Printers&quot;)
+End Property	&apos;	ScriptForge.SF_Platform.Printers (get)
+
+REM -----------------------------------------------------------------------------
 Property Get Processor() As String
 &apos;&apos;&apos;	Returns the (real) processor name, e.g. &apos;amdk6&apos;. Might return the same value as Machine
 &apos;&apos;&apos;	Example:
@@ -153,6 +168,12 @@ Property Get PythonVersion() As String
 &apos;&apos;&apos;		MsgBox platform.PythonVersion	&apos;	Python 3.7.7
 	PythonVersion = _PropertyGet(&quot;PythonVersion&quot;)
 End Property	&apos;	ScriptForge.SF_Platform.PythonVersion (get)
+
+REM -----------------------------------------------------------------------------
+Property Get ServiceName As String
+&apos;&apos;&apos;	Internal use
+	ServiceName = &quot;ScriptForge.Platform&quot;
+End Property	&apos;	ScriptForge.SF_Platform.ServiceName
 
 REM ===================================================================== METHODS
 
@@ -206,6 +227,7 @@ Public Function Properties() As Variant
 					, &quot;ComputerName&quot; _
 					, &quot;CPUCount&quot; _
 					, &quot;CurrentUser&quot; _
+					, &quot;Fonts&quot; _
 					, &quot;Locale&quot; _
 					, &quot;Machine&quot; _
 					, &quot;OfficeVersion&quot; _
@@ -213,6 +235,7 @@ Public Function Properties() As Variant
 					, &quot;OSPlatform&quot; _
 					, &quot;OSRelease&quot; _
 					, &quot;OSVersion&quot; _
+					, &quot;Printers&quot; _
 					, &quot;Processor&quot; _
 					, &quot;PythonVersion&quot; _
 					)
@@ -220,6 +243,43 @@ Public Function Properties() As Variant
 End Function	&apos;	ScriptForge.SF_Platform.Properties
 
 REM =========================================================== PRIVATE FUNCTIONS
+
+REM -----------------------------------------------------------------------------
+Public Function _GetPrinters() as Variant
+&apos;&apos;&apos;	Returns the list of available printers.
+&apos;&apos;&apos;	The default printer is put in the 1st position (index = 0)
+
+Dim oPrinterServer As Object		&apos;	com.sun.star.awt.PrinterServer
+Dim vPrinters As Variant			&apos;	Array of printer names
+Dim sDefaultPrinter As String		&apos;	The default printer
+Dim lDefault As Long				&apos;	Initial position of the default printer in the list
+
+	On Local Error GoTo Catch	&apos;	Prevent any error
+	vPrinters = Array()
+
+Try:
+	&apos;	Find printers
+	Set oPrinterServer = SF_Utils._GetUNOService(&quot;PrinterServer&quot;)
+	With oPrinterServer
+		vPrinters = .getPrinterNames()
+		sDefaultPrinter = .getDefaultPrinterName()
+	End With
+
+	&apos;	Put the default printer on top of the list
+	If Len(sDefaultPrinter) &gt; 0 Then
+		lDefault = SF_Array.IndexOf(vPrinters, sDefaultPrinter, CaseSensitive := True)
+		If lDefault &gt; 0 Then	&apos;	Invert 2 printers
+			vPrinters(lDefault) = vPrinters(0)
+			vPrinters(0) = sDefaultPrinter
+		End If
+	End If
+
+Finally:
+	_GetPrinters() = vPrinters()
+	Exit Function
+Catch:
+	GoTo Finally
+End Function	&apos;	ScriptForge.SF_Platform._GetPrinters
 
 REM -----------------------------------------------------------------------------
 Public Function _GetProductName() as String
@@ -257,6 +317,13 @@ Private Function _PropertyGet(Optional ByVal psProperty As String) As Variant
 
 Dim sOSName As String			&apos;	Operating system
 Dim oLocale As Object			&apos;	com.sun.star.lang.Locale
+Dim oPrinterServer As Object	&apos;	com.sun.star.awt.PrinterServer
+Dim oToolkit As Object			&apos;	com.sun.star.awt.Toolkit
+Dim oDevice As Object			&apos;	com.sun.star.awt.XDevice
+Dim oFontDescriptors As Variant	&apos;	Array of com.sun.star.awt.FontDescriptor
+Dim sFonts As String			&apos;	Comma-separated list of fonts
+Dim sFont As String				&apos;	A single font name
+Dim i As Long
 
 Const cstPyHelper = &quot;$&quot; &amp; &quot;_SF_Platform&quot;
 Dim cstThisSub As String
@@ -271,8 +338,20 @@ Const cstSubArgs = &quot;&quot;
 			With ScriptForge.SF_Session
 				_PropertyGet = .ExecutePythonScript(.SCRIPTISSHARED, _SF_.PythonHelper &amp; cstPyHelper, psProperty)
 			End With
+		Case &quot;Fonts&quot;
+			Set oToolkit = SF_Utils._GetUnoService(&quot;Toolkit&quot;)
+			Set oDevice = oToolkit.createScreenCompatibleDevice(0, 0)
+			oFontDescriptors = oDevice.FontDescriptors()
+			sFonts = &quot;,&quot;
+			&apos;	Select only not yet registered fonts
+			For i = 0 To UBound(oFontDescriptors)
+				sFont = oFontDescriptors(i).Name
+				If InStr(1, sFonts, &quot;,&quot; &amp; sFont &amp; &quot;,&quot;, 0) = 0  Then sFonts = sFonts &amp; sFont &amp; &quot;,&quot;	&apos; Case-sensitive comparison
+			Next i
+			&apos;	Remove leading and trailing commas
+			If Len(sFonts) &gt; 1 Then _PropertyGet = Split(Mid(sFonts, 2, Len(sFonts) - 2), &quot;,&quot;) Else _PropertyGet = Array()
 		Case &quot;Locale&quot;
-			Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+			Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 			_PropertyGet = oLocale.Language &amp; &quot;-&quot; &amp; oLocale.Country
 		Case &quot;OfficeVersion&quot;
 			_PropertyGet = _GetProductName()
@@ -290,6 +369,8 @@ Const cstSubArgs = &quot;&quot;
 				End Select
 			EndIf
 			_PropertyGet = sOSName
+		Case &quot;Printers&quot;
+			_PropertyGet = _GetPrinters()
 		Case Else
 			_PropertyGet = Null
 	End Select

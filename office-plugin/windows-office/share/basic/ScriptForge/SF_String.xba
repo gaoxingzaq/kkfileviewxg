@@ -36,6 +36,9 @@ Option Explicit
 &apos;&apos;&apos;		Not printable characters:
 &apos;&apos;&apos;			Defined in the Unicode character database as “Other” or “Separator”
 &apos;&apos;&apos;			In particular, &quot;control&quot; characters (ascii code &lt;= 0x1F) are not printable
+&apos;&apos;&apos;
+&apos;&apos;&apos;		Detailed user documentation:
+&apos;&apos;&apos;			https://help.libreoffice.org/latest/en-US/text/sbasic/shared/03/sf_string.html?DbPAR=BASIC
 &apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
 &apos;&apos;&apos;	Some references:
 &apos;&apos;&apos;		https://api.libreoffice.org/docs/idl/ref/namespacecom_1_1sun_1_1star_1_1i18n_1_1KCharacterType.html
@@ -170,7 +173,7 @@ Check:
 Try:
 	lLength = Len(InputStr)
 	If lLength &gt; 0 Then
-		Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+		Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 		Set oChar = SF_Utils._GetUNOService(&quot;CharacterClass&quot;)
 		sCapital = oChar.toTitle(InputStr, 0, lLength * 4, oLocale)	&apos;	length * 4 because length is expressed in bytes
 	End If
@@ -441,7 +444,7 @@ Try:
 	lLength = Len(InputStr)
 	lReplace = Len(ReplacedBy)
 	If lLength &gt; 0 Then
-		Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+		Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 		Set oChar = SF_Utils._GetUNOService(&quot;CharacterClass&quot;)
 		For i = 0 To lLength - 1
 			sChar = Mid(InputStr, i + 1, 1)
@@ -801,7 +804,7 @@ Check:
 Try:
 	lLength = Len(InputStr)
 	If lLength &gt; 0 Then
-		Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+		Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 		Set oChar = SF_Utils._GetUNOService(&quot;CharacterClass&quot;)
 		For i = 0 To lLength - 1
 			lType = oChar.getCharacterType(InputStr, i, oLocale)
@@ -857,7 +860,7 @@ Try:
 		bAlphanum = ( sFirst &lt; &quot;0&quot; Or sFirst &gt; &quot;9&quot; )
 		If bAlphaNum Then
 			sInputStr = Replace(InputStr, &quot;_&quot;, &quot;A&quot;)		&apos;	Replace by an arbitrary alphabetic character
-			Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+			Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 			Set oChar = SF_Utils._GetUNOService(&quot;CharacterClass&quot;)
 			For i = 0 To lLength - 1
 				lType = oChar.getCharacterType(sInputStr, i, oLocale)
@@ -1300,7 +1303,7 @@ Check:
 Try:
 	lLength = Len(InputStr)
 	If lLength &gt; 0 Then
-		Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+		Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 		Set oChar = SF_Utils._GetUNOService(&quot;CharacterClass&quot;)
 		For i = 0 To lLength - 1
 			sChar = Mid(InputStr, i + 1, 1)
@@ -2334,7 +2337,7 @@ Try:
 	Else
 		If Occurrences &lt; 0 Then Occurrences = 0
 		Set oCharacterClass = SF_Utils._GetUNOService(&quot;CharacterClass&quot;)
-		Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+		Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 
 		&apos;	Build an array of start/end positions of quoted strings containing at least 1x the Delimiter
 		vStart = Array()	:	vEnd = Array()
@@ -2568,7 +2571,7 @@ Try:
 		sUnquote = InputStr
 	Else
 		Set oCharacterClass = SF_Utils._GetUNOService(&quot;CharacterClass&quot;)
-		Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+		Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 
 		&apos;	https://api.libreoffice.org/docs/idl/ref/interfacecom_1_1sun_1_1star_1_1i18n_1_1XCharacterClassification.html#ad5f1be91fbe86853200391f828d4166b
 		Set oParse = oCharacterClass.parsePredefinedToken( _

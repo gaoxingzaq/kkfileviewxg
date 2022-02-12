@@ -704,6 +704,7 @@
                     <property name="image">paragraphstylei</property>
                     <property name="relief">none</property>
                     <property name="image_position">top</property>
+                    <property name="always-show-image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -732,7 +733,6 @@
                             <child>
                               <object class="GtkToolButton" id="fontname">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="hexpand">True</property>
                                 <property name="vexpand">True</property>
                                 <property name="is_important">True</property>
@@ -772,7 +772,6 @@
                             <child>
                               <object class="GtkToolButton" id="fontsize">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="is_important">True</property>
                                 <property name="action_name">.uno:FontHeight</property>
                               </object>
@@ -797,7 +796,6 @@
                             <child>
                               <object class="GtkToolButton" id="grow">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="is_important">True</property>
                                 <property name="action_name">.uno:Grow</property>
                                 <property name="use_underline">True</property>
@@ -810,7 +808,6 @@
                             <child>
                               <object class="GtkToolButton" id="shrink">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="is_important">True</property>
                                 <property name="action_name">.uno:Shrink</property>
                                 <property name="use_underline">True</property>
@@ -903,6 +900,7 @@
                         <property name="image">lefti</property>
                         <property name="relief">none</property>
                         <property name="xalign">0</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -921,6 +919,7 @@
                         <property name="image">centeri</property>
                         <property name="relief">none</property>
                         <property name="xalign">0</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -939,6 +938,7 @@
                         <property name="image">righti</property>
                         <property name="relief">none</property>
                         <property name="xalign">0</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -970,6 +970,7 @@
                         <property name="image">boldi</property>
                         <property name="relief">none</property>
                         <property name="xalign">0</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -988,6 +989,7 @@
                         <property name="image">italicsi</property>
                         <property name="relief">none</property>
                         <property name="xalign">0</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1033,7 +1035,6 @@
                         <child>
                           <object class="GtkMenuToolButton" id="backgroundcolor">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="is_important">True</property>
                             <property name="action_name">.uno:DefaultBullet</property>
                             <property name="use_underline">True</property>
@@ -1060,7 +1061,6 @@
                         <child>
                           <object class="GtkMenuToolButton" id="highlight">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="is_important">True</property>
                             <property name="action_name">.uno:CharBackColor</property>
                             <property name="use_underline">True</property>
@@ -1087,7 +1087,6 @@
                         <child>
                           <object class="GtkMenuToolButton" id="fontcolor">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="is_important">True</property>
                             <property name="action_name">.uno:Color</property>
                             <property name="use_underline">True</property>
@@ -1129,6 +1128,7 @@
                         <property name="image">bulletsi</property>
                         <property name="relief">none</property>
                         <property name="xalign">0</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1148,6 +1148,7 @@
                         <property name="image">numberingi</property>
                         <property name="relief">none</property>
                         <property name="xalign">0</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1247,6 +1248,7 @@
                         <property name="image">startshowi</property>
                         <property name="relief">none</property>
                         <property name="image_position">top</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1271,6 +1273,7 @@
                             <property name="image">masteri</property>
                             <property name="relief">none</property>
                             <property name="xalign">0</property>
+                            <property name="always-show-image">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -1290,6 +1293,7 @@
                             <property name="image">layouti</property>
                             <property name="relief">none</property>
                             <property name="xalign">0</property>
+                            <property name="always-show-image">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -1422,7 +1426,6 @@
                             <child>
                               <object class="GtkToolButton" id="tableb">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="is_important">True</property>
                                 <property name="action_name">.uno:InsertTable</property>
                               </object>
@@ -1447,7 +1450,6 @@
                             <child>
                               <object class="GtkToolButton" id="shapesb">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="is_important">True</property>
                                 <property name="action_name">.uno:BasicShapes</property>
                                 <property name="label" translatable="yes" context="notebookbar_groups|shapesb">Shapes</property>
@@ -1475,6 +1477,7 @@
                             <property name="image">linksi</property>
                             <property name="relief">none</property>
                             <property name="xalign">0</property>
+                            <property name="always-show-image">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -1523,6 +1526,7 @@
                             <property name="image">charti</property>
                             <property name="relief">none</property>
                             <property name="xalign">0</property>
+                            <property name="always-show-image">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -1623,6 +1627,7 @@
                         <property name="image">paragraphstylei</property>
                         <property name="relief">none</property>
                         <property name="image_position">top</property>
+                        <property name="always-show-image">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>

@@ -7,15 +7,29 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-// Pagination and fuzzy search
+// Pagination and bookmark search
 var url = window.location.pathname;
 var moduleRegex = new RegExp('text\\/(\\w+)\\/');
 var regexArray = moduleRegex.exec(url);
+var userModule = currentModule();
 var modules = ['CALC', 'WRITER', 'IMPRESS', 'DRAW', 'BASE', 'MATH', 'CHART', 'BASIC', 'SHARED'];
 var indexEl = document.getElementsByClassName("index")[0];
-var fullLinks = fullLinkify(indexEl, bookmarks, modules, currentModule());
+var fullLinks = fullLinkify(indexEl, bookmarks, modules, userModule);
 var search = document.getElementById('search-bar');
 search.addEventListener('keyup', debounce(filter, 100, indexEl));
+var flexIndex =  new FlexSearch.Document({ document: {
+        // Only the text content gets indexed, the others get stored as-is
+        index: [{
+            field: 'text',
+            tokenize: 'full'
+        }],
+        store: ['url','app','text']
+    }
+});
+// Populate FlexSearch index
+loadSearch();
+// Render the unfiltered index list on page load
+fillIndex(indexEl, fullLinks, modules);
 // Preserve search input value during the session
 search.value = sessionStorage.getItem('searchsave');
 if (search.value !== undefined) {
@@ -24,20 +38,30 @@ if (search.value !== undefined) {
 window.addEventListener('unload', function(event) {
     sessionStorage.setItem('searchsave', search.value);
 });
-// render the unfiltered index list on page load
-fillIndex(indexEl, fullLinks, modules);
+
+function getQuery(q) {
+   var pattern = new RegExp('[?&]' + q + '=([^&]+)');
+   var param = window.location.search.match(pattern);
+   if (param) {
+       return param[1];
+   }
+   return null;
+}
 
 function currentModule() {
-    var module = '';
-    // get the module name from the URL and remove the first character,
-    // but first deal with snowflake Base
-    if(url.indexOf('explorer/database/') !== -1) {
-        module = 'BASE';
-    } else {
-        if (null === regexArray){// comes from search or elsewhere, no defined module in URL
-            module = 'HARED'
+    // We need to know the module that the user is using when they call for help
+    var module = getQuery('DbPAR');
+    if (module == null) {
+        // get the module name from the URL and remove the first character,
+        // but first deal with snowflake Base
+        if(url.indexOf('explorer/database/') !== -1) {
+            module = 'BASE';
         } else {
-            module = regexArray[1].toUpperCase().substring(1);
+            if (null === regexArray){// comes from search or elsewhere, no defined module in URL
+                module = 'HARED'
+            } else {
+                module = regexArray[1].toUpperCase().substring(1);
+            }
         }
     }
     return module;
@@ -54,6 +78,11 @@ function fullLinkify(indexEl, bookmarks, modules, currentModule) {
         fullLinkified += '<a href="' + obj['url'] + '" class="' + obj['app'] + '">' + obj['text'] + '</a>';
     });
     return fullLinkified;
+}
+function loadSearch() {
+    bookmarks.forEach((el, i) => {
+        flexIndex.add(i, el);
+    });
 }
 function fillIndex(indexEl, content, modules) {
     indexEl.innerHTML = content;
@@ -72,20 +101,39 @@ function fillIndex(indexEl, content, modules) {
 }
 // filter the index list based on search field input
 function filter(indexList) {
-    var results = null;
-    var target = search.value.trim();
-    var filtered = '';
+    let group = [];
+    let target = search.value.trim();
+    let filtered = '';
     if (target.length < 1) {
         fillIndex(indexEl, fullLinks, modules);
         return;
     }
-    results = fuzzysort.go(target, bookmarks, {threshold: -15000, key:'text'});
+    // Regex for highlighting the match
+    let regex = new RegExp(target.split(/\s+/).filter((i) => i?.length).join("|"), 'gi');
+    let results = flexIndex.search(target, { pluck: "text", enrich: true, limit: 1000 });
 
-    results.forEach(function(result) {
-        filtered += '<a href="' + result.obj['url'] + '" class="' + result.obj['app'] + '">' + fuzzysort.highlight(result) + '</a>';
+    // Similarly to fullLinkify(), limit search results to the user's current module + shared
+    // unless they're somehow not coming from a module.
+    if(userModule !== 'HARED') {
+        resultModules = [userModule, 'SHARED'];
+    } else {
+        resultModules = modules;
+    }
+
+    // tdf#123506 - Group the filtered list into module groups, keeping the ordering
+    modules.forEach(function(module) {
+        group[module] = '';
     });
-    fillIndex(indexList, filtered, modules);
+    results.forEach(function(result) {
+        group[result.doc.app] += '<a href="' + result.doc.url + '" class="' + result.doc.app + '">' + result.doc.text.replace(regex, (match) => `<strong>${match}</strong>`) + '</a>';
+    });
+    resultModules.forEach(function(module) {
+        if (group[module].length > 0) {
+            filtered += group[module];
+        }
+    });
 
+    fillIndex(indexList, filtered, modules);
 };
 // delay the rendering of the filtered results while user is typing
 function debounce(fn, wait, indexList) {
@@ -185,4 +233,15 @@ if (typeof linkIndex !== "undefined") {
     }
     current.classList.add('contents-current');
 }
+// close navigation menus when clicking anywhere on the page
+// (ignoring menu button clicks and mobile browsing)
+document.addEventListener('click', function(event) {
+    let a11yButton = event.target.getAttribute("data-a11y-toggle");
+    let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    if (!a11yButton && vw >= 960) {
+        document.querySelectorAll("[data-a11y-toggle] + nav").forEach((el) => {
+            el.setAttribute("aria-hidden", true);
+        });
+    }
+});
 /* vim:set shiftwidth=4 softtabstop=4 expandtab cinoptions=b1,g0,N-s cinkeys+=0=break: */

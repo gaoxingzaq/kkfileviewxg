@@ -127,6 +127,7 @@
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="active">True</property>
                             <child internal-child="accessible">
                               <object class="AtkObject" id="RB_NONE-atkobject">
                                 <property name="AtkObject::accessible-description" translatable="yes" context="dlg_InsertErrorBars|extended_tip|RB_NONE">Does not show any error bars.</property>
@@ -298,6 +299,7 @@
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="active">True</property>
                             <child internal-child="accessible">
                               <object class="AtkObject" id="RB_BOTH-atkobject">
                                 <property name="AtkObject::accessible-description" translatable="yes" context="dlg_InsertErrorBars|extended_tip|RB_BOTH">Shows positive and negative error bars.</property>
@@ -487,6 +489,7 @@
                             <property name="receives_default">True</property>
                             <property name="tooltip_text" translatable="yes" context="dlg_InsertErrorBars|IB_RANGE_POSITIVE|tooltip_text">Select data range</property>
                             <property name="image">imageRANGE_SELECT_POSITIVE</property>
+                            <property name="always-show-image">True</property>
                             <child internal-child="accessible">
                               <object class="AtkObject" id="IB_RANGE_POSITIVE-atkobject">
                                 <property name="AtkObject::accessible-description" translatable="yes" context="dlg_InsertErrorBars|extended_tip|IB_RANGE_POSITIVE">Click a button to shrink the dialog, then use the mouse to select the cell range in the spreadsheet. Click the button again to restore the dialog to full size.</property>
@@ -570,6 +573,7 @@
                             <property name="receives_default">True</property>
                             <property name="tooltip_text" translatable="yes" context="dlg_InsertErrorBars|IB_RANGE_NEGATIVE|tooltip_text">Select data range</property>
                             <property name="image">imageRANGE_SELECT_NEG</property>
+                            <property name="always-show-image">True</property>
                             <child internal-child="accessible">
                               <object class="AtkObject" id="IB_RANGE_NEGATIVE-atkobject">
                                 <property name="AtkObject::accessible-description" translatable="yes" context="dlg_InsertErrorBars|extended_tip|IB_RANGE_NEGATIVE">Click a button to shrink the dialog, then use the mouse to select the cell range in the spreadsheet. Click the button again to restore the dialog to full size.</property>

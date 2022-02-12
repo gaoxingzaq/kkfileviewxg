@@ -28,6 +28,9 @@ Option Explicit
 &apos;&apos;&apos;				Register a single event manager
 &apos;&apos;&apos;			- CreateScriptService
 &apos;&apos;&apos;				Called by user scripts to get an object giving access to a service or to the event manager
+&apos;&apos;&apos;
+&apos;&apos;&apos;		Detailed user documentation:
+&apos;&apos;&apos;			https://help.libreoffice.org/latest/en-US/text/sbasic/shared/03/sf_services.html?DbPAR=BASIC
 &apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
 
 REM ================================================================== EXCEPTIONS
@@ -122,11 +125,12 @@ Try:
 		sLibrary = &quot;ScriptForge&quot;	&apos;	Yes, the default value !
 		sService = vSplit(0)
 		&apos;	Accept other default values for associated libraries
-		Select Case sService
-			Case &quot;Document&quot;, &quot;Calc&quot;, &quot;Base&quot;, &quot;DocumentEvent&quot;, &quot;FormEvent&quot;
+		Select Case LCase(sService)
+			Case &quot;document&quot;, &quot;calc&quot;, &quot;writer&quot;, &quot;base&quot;, &quot;documentevent&quot;, &quot;formevent&quot;
 														sLibrary = &quot;SFDocuments&quot;
-			Case &quot;Dialog&quot;, &quot;DialogEvent&quot;			:	sLibrary = &quot;SFDialogs&quot;
-			Case &quot;Database&quot;							:	sLibrary = &quot;SFDatabases&quot;
+			Case &quot;dialog&quot;, &quot;dialogevent&quot;			:	sLibrary = &quot;SFDialogs&quot;
+			Case &quot;database&quot;							:	sLibrary = &quot;SFDatabases&quot;
+			Case &quot;popupmenu&quot;						:	sLibrary = &quot;SFWidgets&quot;
 			Case Else
 		End Select
 	Else
@@ -532,17 +536,18 @@ Dim sEncoding As String		&apos;	Alias for Encoding
 
 Check:
 	If IsMissing(pvArgs) Then pvArgs = Array()
-	If UBound(pvArgs) &lt; 0 Then
-		sPOFile = &quot;&quot;
-		sEncoding = &quot;&quot;
-	Else
-		If Not SF_Utils._ValidateFile(pvArgs(0), &quot;Folder (Arg0)&quot;) Then GoTo Catch
+	sPOFile = &quot;&quot;
+	sEncoding = &quot;&quot;
+	If UBound(pvArgs) &gt;= 0 Then
+		If Not SF_Utils._ValidateFile(pvArgs(0), &quot;Folder (Arg0)&quot;, , True) Then GoTo Catch
 		sFolderName = pvArgs(0)
+		sLocale = &quot;&quot;
 		If UBound(pvArgs) &gt;= 1 Then
 			If Not SF_Utils._Validate(pvArgs(1), &quot;Locale (Arg1)&quot;, V_STRING) Then GoTo Catch
 			sLocale = pvArgs(1)
-		Else
-			Set oLocale = SF_Utils._GetUNOService(&quot;Locale&quot;)
+		End If
+		If Len(sLocale) = 0 Then	&apos;	Called from Python, the Locale argument may be the zero-length string
+			Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
 			sLocale = oLocale.Language &amp; &quot;-&quot; &amp; oLocale.Country
 		End If
 		If UBound(pvArgs) &gt;= 2 Then
@@ -551,8 +556,10 @@ Check:
 		Else
 			sEncoding = &quot;UTF-8&quot;
 		End If
-		sPOFile = SF_FileSystem.BuildPath(sFolderName, sLocale &amp; &quot;.po&quot;)
-		If Not SF_FileSystem.FileExists(sPOFile) Then GoTo CatchNotExists
+		If Len(sFolderName) &gt; 0 Then
+			sPOFile = SF_FileSystem.BuildPath(sFolderName, sLocale &amp; &quot;.po&quot;)
+			If Not SF_FileSystem.FileExists(sPOFile) Then GoTo CatchNotExists
+		End If
 	End If
 
 Try:

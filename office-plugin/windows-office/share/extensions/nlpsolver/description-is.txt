@@ -1,1 +1,1 @@
-This extension integrates into Calc and offers new Solver engines to use for optimizing nonlinear programming models.
+Þessi viðbót er samþætt inn í Calc og gefur kost á nýjum Solver-leysurum til notkunar við bestun ólínulegra forritunarlíkana.

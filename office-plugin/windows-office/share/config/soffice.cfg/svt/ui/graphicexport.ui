@@ -31,6 +31,20 @@
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adjustment6">
+    <property name="lower">1</property>
+    <property name="upper">100</property>
+    <property name="value">75</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment7">
+    <property name="lower">1</property>
+    <property name="upper">9</property>
+    <property name="value">9</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkDialog" id="GraphicExportDialog">
     <property name="can-focus">False</property>
     <property name="border-width">6</property>
@@ -142,7 +156,6 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="margin-start">25</property>
-                        <property name="xpad">0</property>
                         <property name="label" translatable="yes" context="graphicexport|label5">Width:</property>
                         <property name="use-underline">True</property>
                         <property name="xalign">1</property>
@@ -377,7 +390,7 @@
                         <property name="adjustment">adjustment1</property>
                         <child internal-child="accessible">
                           <object class="AtkObject" id="compressionjpgnf-atkobject">
-                            <property name="AtkObject::accessible-description" translatable="yes" context="graphicexport|extended_tip|compressionjpgnf">Sets the quality for the export. Choose from a low quality with minimal file size, up to a high quality and big file size</property>
+                            <property name="AtkObject::accessible-description" translatable="yes" context="graphicexport|extended_tip|compressionjpgnf">Sets the quality for the export. Choose from a low quality with minimal file size, up to a high quality and big file size.</property>
                           </object>
                         </child>
                       </object>
@@ -392,7 +405,7 @@
                         <property name="can-focus">True</property>
                         <property name="valign">center</property>
                         <property name="hexpand">True</property>
-                        <property name="adjustment">adjustment1</property>
+                        <property name="adjustment">adjustment6</property>
                         <property name="digits">0</property>
                       </object>
                       <packing>
@@ -457,7 +470,7 @@
                         <property name="can-focus">True</property>
                         <property name="valign">center</property>
                         <property name="hexpand">True</property>
-                        <property name="adjustment">adjustment2</property>
+                        <property name="adjustment">adjustment7</property>
                         <property name="digits">0</property>
                       </object>
                       <packing>

@@ -54,6 +54,7 @@
                 <property name="receives-default">True</property>
                 <property name="image">imgApply</property>
                 <property name="use-underline">True</property>
+                <property name="always-show-image">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -62,7 +63,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="btnClose">
+              <object class="GtkButton" id="close">
                 <property name="label" translatable="yes" context="stock">_Close</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -130,7 +131,6 @@
                         <property name="receives-default">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
-                        <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rbButton1</property>
                       </object>
@@ -159,7 +159,6 @@
                         <property name="receives-default">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
-                        <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rbButton1</property>
                       </object>
@@ -177,7 +176,6 @@
                         <property name="receives-default">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
-                        <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rbButton1</property>
                       </object>
@@ -195,7 +193,6 @@
                         <property name="receives-default">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
-                        <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rbButton1</property>
                       </object>
@@ -213,7 +210,6 @@
                         <property name="receives-default">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
-                        <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rbButton1</property>
                       </object>
@@ -231,7 +227,6 @@
                         <property name="receives-default">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
-                        <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rbButton1</property>
                       </object>
@@ -249,7 +244,6 @@
                         <property name="receives-default">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
-                        <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rbButton1</property>
                       </object>
@@ -267,7 +261,6 @@
                         <property name="receives-default">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
-                        <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rbButton1</property>
                       </object>
@@ -392,7 +385,7 @@
     <action-widgets>
       <action-widget response="-5">btnApplyAll</action-widget>
       <action-widget response="-5">btnApply</action-widget>
-      <action-widget response="-7">btnClose</action-widget>
+      <action-widget response="-7">close</action-widget>
     </action-widgets>
   </object>
 </interface>

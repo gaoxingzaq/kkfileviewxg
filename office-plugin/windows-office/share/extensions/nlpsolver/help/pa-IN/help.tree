@@ -8,10 +8,10 @@
  *
 -->
 <tree_view>
-<help_section application="scalc" id="08" title="ਗ਼ੈਰ-ਲੀਨੀਅਰ ਸਮੱਸਿਆਵਾਂ ਲਈ ਸੋਲਵਰ ">
+<help_section application="scalc" id="08" title="ਗ਼ੈਰ-ਲੀਨੀਅਰ ਸਮੱਸਿਆਵਾਂ ਲਈ ਸੋਲਵਰ">
     <node id="0816" title="ਗ਼ੈਰ-ਲੀਨੀਅਰ ਸਮੱਸਿਆਵਾਂ ਲਈ ਸੋਲਵਰ">
         <topic id="help/com.sun.star.comp.Calc.NLPSolver/Usage.xhp">ਵਰਤੋਂ</topic>
-        <topic id="help/com.sun.star.comp.Calc.NLPSolver/Options.xhp">ਚੋਣਾਂ </topic>
+        <topic id="help/com.sun.star.comp.Calc.NLPSolver/Options.xhp">ਚੋਣਾਂ</topic>
     </node>
 </help_section>
 </tree_view>

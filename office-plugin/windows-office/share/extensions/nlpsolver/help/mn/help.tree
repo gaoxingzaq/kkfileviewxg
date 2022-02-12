@@ -8,9 +8,9 @@
  *
 -->
 <tree_view>
-<help_section application="scalc" id="08" title="Solver for Nonlinear Problems">
-    <node id="0816" title="Solver for Nonlinear Problems">
-        <topic id="help/com.sun.star.comp.Calc.NLPSolver/Usage.xhp">Usage</topic>
+<help_section application="scalc" id="08" title="Шугаман бус бодлого шийдэгч">
+    <node id="0816" title="Шугаман бус бодлого шийдэгч">
+        <topic id="help/com.sun.star.comp.Calc.NLPSolver/Usage.xhp">Хэрэглээ</topic>
         <topic id="help/com.sun.star.comp.Calc.NLPSolver/Options.xhp">Тохируулга</topic>
     </node>
 </help_section>

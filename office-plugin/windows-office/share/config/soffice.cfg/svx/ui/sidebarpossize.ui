@@ -220,7 +220,7 @@
             <child>
               <object class="GtkToolbar" id="arrangetoolbar">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes" context="sidebarpossize|arrangetoolbar">Arrange</property>
                 <property name="toolbar_style">icons</property>
                 <property name="show_arrow">False</property>
@@ -228,7 +228,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:BringToFront">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -239,7 +238,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:ObjectForwardOne">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -250,7 +248,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:ObjectBackOne">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -261,7 +258,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:SendToBack">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -279,7 +275,7 @@
             <child>
               <object class="GtkToolbar" id="arrangetoolbar2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes" context="sidebarpossize|arrangetoolbar">Arrange</property>
                 <property name="toolbar_style">icons</property>
                 <property name="show_arrow">False</property>
@@ -287,7 +283,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:SetObjectToBackground">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -298,7 +293,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:SetObjectToForeground">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -404,7 +398,7 @@
             <child>
               <object class="GtkToolbar" id="selectrotationtype">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
                 <property name="valign">start</property>
                 <property name="hexpand">True</property>
                 <property name="toolbar_style">icons</property>
@@ -413,7 +407,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:FlipVertical">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes" context="sidebarpossize|flipvertical|tooltip_text">Flip the selected object vertically.</property>
                     <property name="use_underline">True</property>
                   </object>
@@ -425,7 +418,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:FlipHorizontal">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes" context="sidebarpossize|fliphorizontal|tooltip_text">Flip the selected object horizontally.</property>
                     <property name="use_underline">True</property>
                   </object>
@@ -496,7 +488,7 @@
             <child>
               <object class="GtkToolbar" id="aligntoolbar">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes" context="sidebarpossize|arrangetoolbar">Arrange</property>
                 <property name="toolbar_style">icons</property>
                 <property name="show_arrow">False</property>
@@ -504,7 +496,6 @@
                 <child>
                   <object class="GtkToggleToolButton" id=".uno:ObjectAlignLeft">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -515,7 +506,6 @@
                 <child>
                   <object class="GtkToggleToolButton" id=".uno:AlignCenter">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -526,7 +516,6 @@
                 <child>
                   <object class="GtkToggleToolButton" id=".uno:ObjectAlignRight">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -544,7 +533,7 @@
             <child>
               <object class="GtkToolbar" id="aligntoolbar2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes" context="sidebarpossize|arrangetoolbar">Arrange</property>
                 <property name="toolbar_style">icons</property>
                 <property name="show_arrow">False</property>
@@ -552,7 +541,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:AlignUp">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -563,7 +551,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:AlignMiddle">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -574,7 +561,6 @@
                 <child>
                   <object class="GtkToolButton" id=".uno:AlignDown">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>

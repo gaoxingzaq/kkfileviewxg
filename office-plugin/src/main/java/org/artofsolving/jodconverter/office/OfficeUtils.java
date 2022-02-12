@@ -100,7 +100,7 @@ public class OfficeUtils {
             );
         } else {
             // Linux or other *nix variants
-            return findOfficeHome(
+              return findOfficeHome(
                 "/opt/openoffice.org3",
                 "/opt/openoffice",
                 "/opt/libreoffice",
@@ -114,6 +114,9 @@ public class OfficeUtils {
                 "/opt/libreoffice7.0",
                 "/opt/libreoffice7.1",
                 "/opt/libreoffice7.2",
+				"/opt/libreoffice7.3",
+				"/opt/libreoffice7.4",
+				"/opt/libreoffice7.5",
                 "/opt/openoffice4",
                 "/usr/lib/openoffice",
                 "/usr/lib/libreoffice"

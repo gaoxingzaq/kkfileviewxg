@@ -7,7 +7,7 @@
 #  *** are part of the LibreOffice project.                          ***
 #  *********************************************************************
 #
-#  ScriptForge Release 7.2
+#  ScriptForge Release 7.3
 #  -----------------------
 #
 msgid ""

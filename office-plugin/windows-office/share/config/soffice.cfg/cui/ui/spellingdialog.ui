@@ -285,13 +285,12 @@
                 <child>
                   <object class="GtkToolbar" id="toolbar">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
                     <property name="halign">end</property>
                     <property name="toolbar_style">icons</property>
                     <child>
                       <object class="GtkToolButton" id="paste">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" context="spellingdialog|paste">Paste</property>
                         <property name="use_underline">True</property>
                         <property name="icon-name">edit-paste</property>
@@ -304,7 +303,6 @@
                     <child>
                       <object class="GtkToolButton" id="insert">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" context="spellingdialog|insert">Special Character</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">cmd/sc_insertsymbol.png</property>

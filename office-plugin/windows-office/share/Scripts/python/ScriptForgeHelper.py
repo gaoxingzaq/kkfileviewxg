@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019-2020 Jean-Pierre LEDURE, Jean-François NIFENECKER, Alain ROMEDENNE
+# Copyright 2019-2022 Jean-Pierre LEDURE, Rafael LIMA, Alain ROMEDENNE
 
 # ======================================================================================================================
 # ===           The ScriptForge library and its associated libraries are part of the LibreOffice project.            ===
@@ -82,6 +82,20 @@ def _SF_Dictionary__ImportFromJson(jsonstr: str):  # used by Dictionary.ImportFr
                 if isinstance(value[i], dict): value[i] = None
         result.append((key, item))
     return result
+
+
+# #################################################################
+# Exception service
+# #################################################################
+
+def _SF_Exception__PythonPrint(string: str) -> bool:
+    # used by SF_Exception.PythonPrint() Basic method
+    """
+    Write the argument to stdout.
+    If the APSO shell console is active, the argument will be displayed in the console window
+    """
+    print(string)
+    return True
 
 
 # #################################################################
@@ -283,6 +297,7 @@ if __name__ == "__main__":
     print(_SF_Platform('OSRelease'))
     print(_SF_Platform('OSVersion'))
     print(_SF_Platform('Processor'))
+    print(_SF_Platform('PythonVersion'))
     #
     print(hashlib.algorithms_guaranteed)
     print(_SF_FileSystem__HashFile('/opt/libreoffice6.4/program/libbootstraplo.so', 'md5'))

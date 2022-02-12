@@ -1,6 +1,6 @@
 
 ======================================================================
-LibreOffice 7.2 自述文档
+LibreOffice 7.3 自述文档
 ======================================================================
 
 
@@ -85,7 +85,7 @@ sudo dpkg -i *.deb
 
 对于本安装说明中未特别提及的其他 Linux 发行版，安装 LibreOffice 应该很简单。主要的差异大概在桌面集成方面。
 
-RPMS 或 DEBS 目录中分别还包含名为 libreoffice7.2-freedesktop-menus-7.2.0.1-1.noarch.rpm (或者 libreoffice7.2-debian-menus_7.2.0.1-1_all.deb 或类似的) 的软件包。该软件包可供所有支持 Freedesktop.org 规范/推荐 (https://en.wikipedia.org/wiki/Freedesktop.org) 的 Linux 发行版使用，也可在前文说明中未提及的其他 Linux 发行版中安装。
+RPMS 或 DEBS 目录中分别还包含名为 libreoffice7.3-freedesktop-menus-7.3.0.1-1.noarch.rpm (或者 libreoffice7.3-debian-menus_7.3.0.1-1_all.deb 或类似的) 的软件包。该软件包可供所有支持 Freedesktop.org 规范/推荐 (https://en.wikipedia.org/wiki/Freedesktop.org) 的 Linux 发行版使用，也可在前文说明中未提及的其他 Linux 发行版中安装。
 
 安装语言包
 ----------------------------------------------------------------------
@@ -108,7 +108,7 @@ RPMS 或 DEBS 目录中分别还包含名为 libreoffice7.2-freedesktop-menus-7.
 
 对于其它使用RPM的系统 (openSUSE等): rpm -Uvh *.rpm
 
-现在启动一个 LibreOffice 应用程序 - 比如 Writer。进入「Tools」菜单并选择 Options。在 Options 对话框中点击「Language Settings」，然后点击「Languages」。在「User interface」下拉框中选择您刚安装的语言。如果愿意，为「Locale setting」(区域设置)、「Default currency」(默认货币) 以及「Default languages for documents」(默认文档语言) 执行相同的操作。
+现在启动一个 LibreOffice 应用程序——比如 Writer。在「工具」菜单中选择「选项」。在选项对话框中点击「语言设置」，然后点击「语言」。在「用户界面」下拉列表中选择您刚安装的语言。如果需要，也可以对「区域设置」、「默认货币」和「文档的默认语言」做相同操作。
 
 调整这些设置后点击「确定」。对话框将关闭，您将看到一条信息提示，告知您您的变更需要退出并重新启动 LibreOffice 方可生效 (如果启动了「快速启动器」，也应退出它)。
 
@@ -118,7 +118,7 @@ RPMS 或 DEBS 目录中分别还包含名为 libreoffice7.2-freedesktop-menus-7.
 程序启动时出现的问题
 ----------------------------------------------------------------------
 
-显卡驱动程序经常会引发 LibreOffice 启动问题 (例如应用程序挂起) 和屏幕显示问题。如果出现这些问题，请更新您的显卡驱动程序或尝试使用操作系统附带的图形驱动程序。如果显示 3D 对象时出现问题，则通常可以通过禁用「工具」-「选项」- LibreOffice -「视图」-「3D 视图」下的「使用 OpenGL」选项解决。
+显卡驱动程序经常会引发 LibreOffice 启动问题 (例如应用程序挂起) 和屏幕显示问题。如果出现这些问题，请更新您的显卡驱动程序或尝试使用操作系统附带的显卡驱动程序。
 
 ----------------------------------------------------------------------
 Windows 下的 ALPS/Synaptics 笔记本触摸板
@@ -198,7 +198,7 @@ SF |= 0x00004000
 
 您可以为这个重要的开源项目做出主要的贡献，即使您的软件设计和编码经验有限。是的，您可以！
 
-我们希望您能够愉快地使用新的 LibreOffice 7.2 并在线加入我们。
+我们希望您能够愉快地使用新的 LibreOffice 7.3 并在线加入我们。
 
 LibreOffice 社区
 

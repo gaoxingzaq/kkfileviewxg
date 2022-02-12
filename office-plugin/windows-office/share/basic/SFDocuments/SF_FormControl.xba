@@ -37,6 +37,9 @@ Option Explicit
 &apos;&apos;&apos;			Dim myControl As Object
 &apos;&apos;&apos;				Set myControl = CreateScriptService(&quot;SFDocuments.FormEvent&quot;, poEvent)
 &apos;&apos;&apos;
+&apos;&apos;&apos;		Detailed user documentation:
+&apos;&apos;&apos;			https://help.libreoffice.org/latest/en-US/text/sbasic/shared/03/sf_formcontrol.html?DbPAR=BASIC
+&apos;&apos;&apos;
 &apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
 
 REM ================================================================== EXCEPTIONS
@@ -957,7 +960,7 @@ Const cstSubArgs = &quot;PropertyName, Value&quot;
 
 Check:
 	If SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
-		If Not SF_Utils._Validate(PropertyName, &quot;PropertyName&quot;, V_STRING, Properties()) Then GoTo Catch
+		If Not ScriptForge.SF_Utils._Validate(PropertyName, &quot;PropertyName&quot;, V_STRING, Properties()) Then GoTo Catch
 	End If
 
 Try:
@@ -1863,6 +1866,7 @@ Finally:
 	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
 	Exit Function
 Catch:
+	bSet = False
 	GoTo Finally
 CatchType:
 	If Len(_ParentForm._FormDocumentName) &gt; 0 Then sFormName = _ParentForm._FormDocumentName &amp; &quot;.&quot; Else sFormName = &quot;&quot;

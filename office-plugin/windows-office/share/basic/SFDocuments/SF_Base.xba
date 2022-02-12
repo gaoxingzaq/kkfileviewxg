@@ -43,6 +43,9 @@ Option Explicit
 &apos;&apos;&apos;			Set oDoc = CreateScriptService(&quot;SFDocuments.Base&quot;, &quot;MyFile.odb&quot;)
 &apos;&apos;&apos;			&apos; The substring &quot;SFDocuments.&quot; in the service name is optional
 &apos;&apos;&apos;
+&apos;&apos;&apos;		Detailed user documentation:
+&apos;&apos;&apos;			https://help.libreoffice.org/latest/en-US/text/sbasic/shared/03/sf_base.html?DbPAR=BASIC
+&apos;&apos;&apos;
 &apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
 
 REM ================================================================== EXCEPTIONS
@@ -133,6 +136,49 @@ Catch:
 End Function   &apos;   SFDocuments.SF_Base.CloseDocument
 
 REM -----------------------------------------------------------------------------
+Public Function CloseFormDocument(Optional ByVal FormDocument As Variant) As Boolean
+&apos;&apos;&apos;	Close the given form document
+&apos;&apos;&apos;	Nothing happens if the form document is not open
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		FormDocument: a valid document form name as a case-sensitive string
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		True if closure is successful
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;			oDoc.CloseFormDocument(&quot;Folder1/myFormDocument&quot;)
+
+Dim bClose As Boolean				&apos;	Return value
+Dim oMainForm As Object				&apos;	com.sun.star.comp.sdb.Content
+Dim vFormNames As Variant			&apos;	Array of all document form names present in the document
+
+Const cstThisSub = &quot;SFDocuments.Base.CloseFormDocument&quot;
+Const cstSubArgs = &quot;FormDocument&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	bClose = False
+
+Check:
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		&apos;	Build list of available FormDocuments recursively with _CollectFormDocuments
+		If IsNull(_FormDocuments) Then Set _FormDocuments = _Component.getFormDocuments()
+		vFormNames = Split(_CollectFormDocuments(_FormDocuments), cstToken)
+		If Not ScriptForge.SF_Utils._Validate(FormDocument, &quot;FormDocument&quot;, V_STRING, vFormNames) Then GoTo Finally
+	End If
+	If Not IsLoaded(FormDocument) Then GoTo Finally
+
+Try:
+	Set oMainForm = _FormDocuments.getByHierarchicalName(FormDocument)
+	bClose = oMainForm.close()
+
+Finally:
+	CloseFormDocument = bClose
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+End Function	&apos;	SFDocuments.SF_Base.CloseFormDocument
+
+REM -----------------------------------------------------------------------------
 Public Function FormDocuments() As Variant
 &apos;&apos;&apos;	Return the list of the FormDocuments contained in the Base document
 &apos;&apos;&apos;	Args:
@@ -191,7 +237,7 @@ Public Function Forms(Optional ByVal FormDocument As Variant _
 &apos;&apos;&apos;				Set myForm = oDoc.Forms(&quot;Folder1/myFormDocument&quot;, 0)
 
 Dim oForm As Object					&apos;	The new Form class instance
-Dim oFormDocument As Object				&apos;	com.sun.star.comp.sdb.Content
+Dim oFormDocument As Object			&apos;	com.sun.star.comp.sdb.Content
 Dim oXForm As Object				&apos;	com.sun.star.form.XForm
 Dim vFormDocuments As Variant		&apos;	Array of form documents
 Dim vFormNames As Variant			&apos;	Array of form names
@@ -401,10 +447,12 @@ Public Function Methods() As Variant
 					, &quot;GetDatabase&quot; _
 					, &quot;IsLoaded&quot; _
 					, &quot;OpenFormDocument&quot; _
+					, &quot;PrintOut&quot; _
 					, &quot;RunCommand&quot; _
 					, &quot;Save&quot; _
 					, &quot;SaveAs&quot; _
 					, &quot;SaveCopyAs&quot; _
+					, &quot;SetPrinter&quot; _
 					)
 
 End Function	&apos;	SFDocuments.SF_Base.Methods
@@ -467,6 +515,64 @@ Catch:
 End Function	&apos;	SFDocuments.SF_Base.OpenFormDocument
 
 REM -----------------------------------------------------------------------------
+Public Function PrintOut(Optional ByVal FormDocument As Variant _
+							, Optional ByVal Pages As Variant _
+							, Optional ByVal Copies As Variant _
+							) As Boolean
+&apos;&apos;&apos; Send the content of the given form document to the printer.
+&apos;&apos;&apos;	The printer might be defined previously by default, by the user or by the SetPrinter() method
+&apos;&apos;&apos;	The given form document must be open. It is activated by the method.
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		FormDocument: a valid document form name as a case-sensitive string
+&apos;&apos;&apos;		Pages: the pages to print as a string, like in the user interface. Example: &quot;1-4;10;15-18&quot;. Default = all pages
+&apos;&apos;&apos;		Copies: the number of copies
+&apos;&apos;&apos;	Exceptions:
+&apos;&apos;&apos;		FORMDEADERROR			The form is not open
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		True when successful
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		oDoc.PrintOut(&quot;myForm&quot;, &quot;1-4;10;15-18&quot;, Copies := 2)
+
+Dim bPrint As Boolean				&apos;	Return value
+Dim vFormNames As Variant			&apos;	Array of all document form names present in the document
+Dim oFormDocument As Object			&apos;	com.sun.star.comp.sdb.Content
+
+Const cstThisSub = &quot;SFDocuments.Base.PrintOut&quot;
+Const cstSubArgs = &quot;FormDocument, [Pages=&quot;&quot;&quot;&quot;], [Copies=1]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	bPrint = False
+
+Check:
+	If IsMissing(Pages) Or IsEmpty(Pages) Then Pages = &quot;&quot;
+	If IsMissing(Copies) Or IsEmpty(Copies) Then Copies = 1
+	
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		&apos;	Build list of available FormDocuments recursively with _CollectFormDocuments
+		If IsNull(_FormDocuments) Then Set _FormDocuments = _Component.getFormDocuments()
+		vFormNames = Split(_CollectFormDocuments(_FormDocuments), cstToken)
+		If Not ScriptForge.SF_Utils._Validate(FormDocument, &quot;FormDocument&quot;, V_STRING, vFormNames) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Pages, &quot;Pages&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Copies, &quot;Copies&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+	End If
+	If Not IsLoaded(FormDocument) Then GoTo CatchClosed
+
+Try:
+	Set oFormDocument = _FormDocuments.getByHierarchicalName(FormDocument)
+	bPrint = [_Super].PrintOut(Pages, Copies, oFormDocument.Component)
+
+Finally:
+	PrintOut = bPrint
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+CatchClosed:
+	ScriptForge.SF_Exception.RaiseFatal(FORMDEADERROR, FormDocument, _FileIdent())
+End Function   &apos;   SFDocuments.SF_Base.PrintOut
+
+REM -----------------------------------------------------------------------------
 Public Function Properties() As Variant
 &apos;&apos;&apos;	Return the list or properties of the Base class as an array
 
@@ -482,6 +588,65 @@ Public Function Properties() As Variant
 					)
 
 End Function	&apos;	SFDocuments.SF_Base.Properties
+
+REM -----------------------------------------------------------------------------
+Public Function SetPrinter(Optional ByVal FormDocument As Variant _
+							, Optional ByVal Printer As Variant _
+							, Optional ByVal Orientation As Variant _
+							, Optional ByVal PaperFormat As Variant _
+							) As Boolean
+&apos;&apos;&apos; Define the printer options for a form document. The form document must be open.
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		FormDocument: a valid document form name as a case-sensitive string
+&apos;&apos;&apos;		Printer: the name of the printer queue where to print to
+&apos;&apos;&apos;			When absent or space, the default printer is set
+&apos;&apos;&apos;		Orientation: either &quot;PORTRAIT&quot; or &quot;LANDSCAPE&quot;. Left unchanged when absent
+&apos;&apos;&apos;		PaperFormat: one of next values
+&apos;&apos;&apos;			&quot;A3&quot;, &quot;A4&quot;, &quot;A5&quot;, &quot;B4&quot;, &quot;B5&quot;, &quot;LETTER&quot;, &quot;LEGAL&quot;, &quot;TABLOID&quot;
+&apos;&apos;&apos;			Left unchanged when absent
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		True when successful
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		oDoc.SetPrinter(&quot;myForm&quot;, Orientation := &quot;PORTRAIT&quot;)
+
+Dim bPrinter As Boolean				&apos;	Return value
+Dim vFormDocuments As Variant		&apos;	Array of form documents
+Dim oFormDocument As Object			&apos;	com.sun.star.comp.sdb.Content
+
+Const cstThisSub = &quot;SFDocuments.Base.SetPrinter&quot;
+Const cstSubArgs = &quot;FormDocument, [Printer=&quot;&quot;&quot;&quot;], [Orientation=&quot;&quot;PORTRAIT&quot;&quot;|&quot;&quot;LANDSCAPE&quot;&quot;]&quot; _
+						&amp; &quot;, [PaperFormat=&quot;&quot;A3&quot;&quot;|&quot;&quot;A4&quot;&quot;|&quot;&quot;A5&quot;&quot;|&quot;&quot;B4&quot;&quot;|&quot;&quot;B5&quot;&quot;|&quot;&quot;LETTER&quot;&quot;|&quot;&quot;LEGAL&quot;&quot;|&quot;&quot;TABLOID&quot;&quot;&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	bPrinter = False
+
+Check:
+	If IsMissing(Printer) Or IsEmpty(Printer) Then Printer = &quot;&quot;
+	If IsMissing(Orientation) Or IsEmpty(Orientation) Then Orientation = &quot;&quot;
+	If IsMissing(PaperFormat) Or IsEmpty(PaperFormat) Then PaperFormat = &quot;&quot;
+	
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		&apos;	Build list of available FormDocuments recursively with _CollectFormDocuments
+		If IsNull(_FormDocuments) Then Set _FormDocuments = _Component.getFormDocuments()
+		vFormDocuments = Split(_CollectFormDocuments(_FormDocuments), cstToken)
+		If Not ScriptForge.SF_Utils._Validate(FormDocument, &quot;FormDocument&quot;, V_STRING, vFormDocuments) Then GoTo Finally
+	End If
+	If Not IsLoaded(FormDocument) Then GoTo CatchClosed
+
+Try:
+	Set oFormDocument = _FormDocuments.getByHierarchicalName(FormDocument)
+	bPrinter = [_Super].SetPrinter(Printer, Orientation, PaperFormat, oFormDocument.Component)
+
+Finally:
+	SetPrinter = bPrinter
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+CatchClosed:
+	ScriptForge.SF_Exception.RaiseFatal(FORMDEADERROR, FormDocument, _FileIdent())
+End Function   &apos;   SFDocuments.SF_Base.SetPrinter
 
 REM -----------------------------------------------------------------------------
 Public Function SetProperty(Optional ByVal PropertyName As Variant _

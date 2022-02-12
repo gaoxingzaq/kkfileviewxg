@@ -36,9 +36,10 @@
     <property name="can_focus">False</property>
     <property name="no_show_all">True</property>
     <property name="border_width">4</property>
+    <property name="constrain-to">none</property>
     <child>
       <!-- n-columns=1 n-rows=1 -->
-      <object class="GtkGrid">
+      <object class="GtkGrid" id="container">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
@@ -93,14 +94,13 @@
                     <child>
                       <object class="GtkToolbar" id="lefttoolbox">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can_focus">True</property>
                         <property name="toolbar_style">icons</property>
                         <property name="show_arrow">False</property>
                         <property name="icon_size">2</property>
                         <child>
                           <object class="GtkToolButton" id="left">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="tooltip_text" translatable="yes" context="floatingareastyle|left|tooltip_text">Rotate counterclockwise by 45 degrees.</property>
                             <property name="icon_name">svx/res/symphony/rotate_left.png</property>
                           </object>
@@ -118,14 +118,13 @@
                     <child>
                       <object class="GtkToolbar" id="righttoolbox">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can_focus">True</property>
                         <property name="toolbar_style">icons</property>
                         <property name="show_arrow">False</property>
                         <property name="icon_size">2</property>
                         <child>
                           <object class="GtkToolButton" id="right">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="tooltip_text" translatable="yes" context="floatingareastyle|right|tooltip_text">Rotate clockwise by 45 degrees.</property>
                             <property name="icon_name">svx/res/symphony/rotate_right.png</property>
                           </object>

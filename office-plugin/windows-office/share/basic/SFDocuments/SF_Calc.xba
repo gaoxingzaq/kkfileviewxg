@@ -71,6 +71,9 @@ Option Explicit
 &apos;&apos;&apos;					myDoc.Range(&quot;SheetX.D2:F6&quot;)
 &apos;&apos;&apos;											A range within the sheet SheetX in file associated with the myDoc Calc instance
 &apos;&apos;&apos;
+&apos;&apos;&apos;		Detailed user documentation:
+&apos;&apos;&apos;			https://help.libreoffice.org/latest/en-US/text/sbasic/shared/03/sf_calc.html?DbPAR=BASIC
+&apos;&apos;&apos;
 &apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
 
 REM ================================================================== EXCEPTIONS
@@ -81,6 +84,7 @@ Private Const CALCADDRESSERROR		=	&quot;CALCADDRESSERROR&quot;
 Private Const DUPLICATESHEETERROR	=	&quot;DUPLICATESHEETERROR&quot;
 Private Const OFFSETADDRESSERROR	=	&quot;OFFSETADDRESSERROR&quot;
 Private Const CALCFORMNOTFOUNDERROR	=	&quot;CALCFORMNOTFOUNDERROR&quot;
+Private Const DUPLICATECHARTERROR	=	&quot;DUPLICATECHARTERROR&quot;
 
 REM ============================================================= PRIVATE MEMBERS
 
@@ -107,6 +111,8 @@ Type _Address
 	XCellRange					As Object		&apos;	com.sun.star.table.XCellRange
 End Type
 
+Private _LastParsedAddress		As Object		&apos;	_Address type - parsed ranges are cached
+
 REM ============================================================ MODULE CONSTANTS
 
 Private Const cstSHEET			= 1
@@ -121,6 +127,10 @@ Private Const SERVICEREFERENCE	= &quot;SFDocuments.CalcReference&quot;
 
 Private Const ISCALCFORM		= 2						&apos;	Form is stored in a Calc document
 
+Private Const cstSPECIALCHARS	= &quot; `~!@#$%^&amp;()-_=+{}|;:,&lt;.&gt;&quot;&quot;&quot;
+			&apos;	Presence of a special character forces surrounding the sheet name with single quotes in absolute addresses
+
+
 REM ====================================================== CONSTRUCTOR/DESTRUCTOR
 
 REM -----------------------------------------------------------------------------
@@ -131,6 +141,7 @@ Private Sub Class_Initialize()
 	ObjectType = &quot;CALC&quot;
 	ServiceName = &quot;SFDocuments.Calc&quot;
 	Set _Component = Nothing
+	Set _LastParsedAddress = Nothing
 End Sub		&apos;	SFDocuments.SF_Calc Constructor
 
 REM -----------------------------------------------------------------------------
@@ -199,27 +210,48 @@ Catch:
 End Property	&apos;	SFDocuments.SF_Calc.CurrentSelection (let)
 
 REM -----------------------------------------------------------------------------
+Property Get FirstCell(Optional ByVal RangeName As Variant) As String
+&apos;&apos;&apos;	Returns the First used cell in a given range or sheet
+&apos;&apos;&apos;	When the argument is a sheet it will always return the &quot;sheet.$A$1&quot; cell
+	FirstCell = _PropertyGet(&quot;FirstCell&quot;, RangeName)
+End Property	&apos;	SFDocuments.SF_Calc.FirstCell
+
+REM -----------------------------------------------------------------------------
+Property Get FirstColumn(Optional ByVal RangeName As Variant) As Long
+&apos;&apos;&apos;	Returns the leftmost column in a given sheet or range
+&apos;&apos;&apos;	When the argument is a sheet it will always return 1
+	FirstColumn = _PropertyGet(&quot;FirstColumn&quot;, RangeName)
+End Property	&apos;	SFDocuments.SF_Calc.FirstColumn
+
+REM -----------------------------------------------------------------------------
+Property Get FirstRow(Optional ByVal RangeName As Variant) As Long
+&apos;&apos;&apos;	Returns the First used column in a given range
+&apos;&apos;&apos;	When the argument is a sheet it will always return 1
+	FirstRow = _PropertyGet(&quot;FirstRow&quot;, RangeName)
+End Property	&apos;	SFDocuments.SF_Calc.FirstRow
+
+REM -----------------------------------------------------------------------------
 Property Get Height(Optional ByVal RangeName As Variant) As Long
 &apos;&apos;&apos;	Returns the height in # of rows of the given range
 	Height = _PropertyGet(&quot;Height&quot;, RangeName)
 End Property	&apos;	SFDocuments.SF_Calc.Height
 
 REM -----------------------------------------------------------------------------
-Property Get LastCell(Optional ByVal SheetName As Variant) As String
-&apos;&apos;&apos;	Returns the last used cell in a given sheet
-	LastCell = _PropertyGet(&quot;LastCell&quot;, SheetName)
+Property Get LastCell(Optional ByVal RangeName As Variant) As String
+&apos;&apos;&apos;	Returns the last used cell in a given sheet or range
+	LastCell = _PropertyGet(&quot;LastCell&quot;, RangeName)
 End Property	&apos;	SFDocuments.SF_Calc.LastCell
 
 REM -----------------------------------------------------------------------------
-Property Get LastColumn(Optional ByVal SheetName As Variant) As Long
+Property Get LastColumn(Optional ByVal RangeName As Variant) As Long
 &apos;&apos;&apos;	Returns the last used column in a given sheet
-	LastColumn = _PropertyGet(&quot;LastColumn&quot;, SheetName)
+	LastColumn = _PropertyGet(&quot;LastColumn&quot;, RangeName)
 End Property	&apos;	SFDocuments.SF_Calc.LastColumn
 
 REM -----------------------------------------------------------------------------
-Property Get LastRow(Optional ByVal SheetName As Variant) As Long
+Property Get LastRow(Optional ByVal RangeName As Variant) As Long
 &apos;&apos;&apos;	Returns the last used column in a given sheet
-	LastRow = _PropertyGet(&quot;LastRow&quot;, SheetName)
+	LastRow = _PropertyGet(&quot;LastRow&quot;, RangeName)
 End Property	&apos;	SFDocuments.SF_Calc.LastRow
 
 REM -----------------------------------------------------------------------------
@@ -229,10 +261,23 @@ Property Get Range(Optional ByVal RangeName As Variant) As Variant
 End Property	&apos;	SFDocuments.SF_Calc.Range
 
 REM -----------------------------------------------------------------------------
+Property Get Region(Optional ByVal RangeName As Variant) As String
+&apos;&apos;&apos;	Returns the smallest area as a range string that contains the given range
+&apos;&apos;&apos;	and which is completely surrounded with empty cells
+	Region = _PropertyGet(&quot;Region&quot;, RangeName)
+End Property	&apos;	SFDocuments.SF_Calc.Region
+
+REM -----------------------------------------------------------------------------
 Property Get Sheet(Optional ByVal SheetName As Variant) As Variant
 &apos;&apos;&apos;	Returns a (internal) sheet object
 	Sheet = _PropertyGet(&quot;Sheet&quot;, SheetName)
 End Property	&apos;	SFDocuments.SF_Calc.Sheet
+
+REM -----------------------------------------------------------------------------
+Property Get SheetName(Optional ByVal RangeName As Variant) As String
+&apos;&apos;&apos;	Returns the sheet name part of a range
+	SheetName = _PropertyGet(&quot;SheetName&quot;, RangeName)
+End Property	&apos;	SFDocuments.SF_Calc.SheetName
 
 REM -----------------------------------------------------------------------------
 Property Get Sheets() As Variant
@@ -253,12 +298,95 @@ Property Get XCellRange(Optional ByVal RangeName As Variant) As Variant
 End Property	&apos;	SFDocuments.SF_Calc.XCellRange
 
 REM -----------------------------------------------------------------------------
+Property Get XSheetCellCursor(Optional ByVal RangeName As Variant) As Variant
+&apos;&apos;&apos;	Returns a UNO object of type com.sun.star.sheet.XSheetCellCursor
+&apos;&apos;	After having moved the cursor (gotoNext(), ...) the resulting range can be got
+&apos;&apos;&apos;	back as a string with the cursor.AbsoluteName UNO property.
+	XSheetCellCursor = _PropertyGet(&quot;XSheetCellCursor&quot;, RangeName)
+End Property	&apos;	SFDocuments.SF_Calc.XSheetCellCursor
+
+REM -----------------------------------------------------------------------------
 Property Get XSpreadsheet(Optional ByVal SheetName As Variant) As Variant
 &apos;&apos;&apos;	Returns a UNO object of type com.sun.star.sheet.XSpreadsheet
 	XSpreadsheet = _PropertyGet(&quot;XSpreadsheet&quot;, SheetName)
 End Property	&apos;	SFDocuments.SF_Calc.XSpreadsheet
 
 REM ===================================================================== METHODS
+
+REM -----------------------------------------------------------------------------
+Public Function A1Style(Optional ByVal Row1 As Variant _
+								, Optional ByVal Column1 As Variant _
+								, Optional ByVal Row2 As Variant _
+								, Optional ByVal Column2 As Variant _
+								, Optional ByVal SheetName As Variant _
+								) As String
+&apos;&apos;&apos;	Returns a range expressed in A1-style as defined by its coordinates
+&apos;&apos;&apos;	If only one pair of coordinates is given, the range will embrace only a single cell
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		Row1 : the row number of the first coordinate
+&apos;&apos;&apos;		Column1 : the column number of the first coordinates
+&apos;&apos;&apos;		Row2 : the row number of the second coordinate
+&apos;&apos;&apos;		Column2 : the column number of the second coordinates
+&apos;&apos;&apos;		SheetName: Default = the current sheet. If present, the sheet must exist.
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A range as a string
+&apos;&apos;&apos;	Exceptions:
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		range = oDoc.A1Style(5, 2, 10, 4, &quot;SheetX&quot;)		&apos;	&quot;&apos;$SheetX&apos;.$E$2:$J$4&quot;
+
+Dim sA1Style As String				&apos;	Return value
+Dim vSheetName As Variant			&apos;	Alias of SheetName - necessary see [Bug 145279]
+Dim lTemp As Long					&apos;	To switch 2 values
+Dim i As Long
+
+Const cstThisSub = &quot;SFDocuments.Calc.A1Style&quot;
+Const cstSubArgs = &quot;Row1, Column1, [Row2], [Column2], [SheetName]=&quot;&quot;&quot;&quot;&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	sA1Style = &quot;&quot;
+
+Check:
+	If IsMissing(Row2) Or IsEmpty(Row2) Then Row2 = 0
+	If IsMissing(Column2) Or IsEmpty(Column2) Then Column2 = 0
+	If IsMissing(SheetName) Or IsEmpty(SheetName) Then SheetName = &quot;~&quot;
+	vSheetName = SheetName
+
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Row1, &quot;Row1&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Column1, &quot;Column1&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Row2, &quot;Row2&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Column2, &quot;Column2&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+		If Not _ValidateSheet(vSheetName, &quot;SheetName&quot;, , True, True, , , True) Then GoTo Finally
+	End If
+
+	If Row1 &gt; MAXROWS Then Row1 = MAXROWS
+	If Row2 &gt; MAXROWS Then Row2 = MAXROWS
+	If Column1 &gt; MAXCOLS Then Column1 = MAXCOLS
+	If Column2 &gt; MAXCOLS Then Column2 = MAXCOLS
+
+	If Row2 &gt; 0 And Row2 &lt; Row1 Then
+		lTemp = Row2	:	Row2 = Row1	:	Row1 = lTemp
+	End If
+	If Column2 &gt; 0 And Column2 &lt; Column1 Then
+		lTemp = Column2	:	Column2 = Column1	:	Column1 = lTemp
+	End If
+
+Try:
+	&apos;	Surround the sheet name with single quotes when required by the presence of special characters
+	vSheetName = _QuoteSheetName(vSheetName)
+	&apos;	Define the new range string
+	sA1Style = &quot;$&quot; &amp; vSheetName &amp; &quot;.&quot; _
+					&amp; &quot;$&quot; &amp; _GetColumnName(Column1) &amp; &quot;$&quot; &amp; CLng(Row1) _
+					&amp; Iif(Row2 &gt; 0 And Column2 &gt; 0, &quot;:$&quot; &amp; _GetColumnName(Column2) &amp; &quot;$&quot; &amp; CLng(Row2), &quot;&quot;)
+
+Finally:
+	A1Style = sA1Style
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+End Function	&apos;	SF_Documents.SF_Calc.A1Style
 
 REM -----------------------------------------------------------------------------
 Public Function Activate(Optional ByVal SheetName As Variant) As Boolean
@@ -303,6 +431,101 @@ Finally:
 Catch:
 	GoTo Finally
 End Function    &apos;   SFDocuments.SF_Calc.Activate
+
+REM -----------------------------------------------------------------------------
+Public Function Charts(Optional ByVal SheetName As Variant _
+							, Optional ByVal ChartName As Variant _
+							) As Variant
+&apos;&apos;&apos; Return either the list of charts present in the given sheet or a chart object
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		SheetName: The name of an existing sheet
+&apos;&apos;&apos;		ChartName: The user-defined name of the targeted chart or the zero-length string
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		When ChartName = &quot;&quot;, return the list of the charts present in the sheet,
+&apos;&apos;&apos;		otherwise, return a new chart service instance
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Dim oChart As Object
+&apos;&apos;&apos;		Set oChart = oDoc.Charts(&quot;SheetX&quot;, &quot;myChart&quot;)
+
+Dim vCharts As Variant				&apos;	Return value when array of chart names
+Dim oChart As Object				&apos;	Return value when new chart instance
+Dim oSheet As Object				&apos;	Alias of SheetName as reference
+Dim oDrawPage As Object				&apos;	com.sun.star.drawing.XDrawPage
+Dim oNextShape As Object			&apos;	com.sun.star.drawing.XShape
+Dim sChartName As String			&apos;	Some chart name
+Dim lCount As Long					&apos;	Counter for charts among all drawing objects
+Dim i As Long
+Const cstChartShape = &quot;com.sun.star.drawing.OLE2Shape&quot;
+
+Const cstThisSub = &quot;SFDocuments.Calc.Charts&quot;
+Const cstSubArgs = &quot;SheetName, [ChartName=&quot;&quot;&quot;&quot;]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	vCharts = Array()
+
+Check:
+	If IsMissing(ChartName) Or IsEmpty(ChartName) Then ChartName = &quot;&quot;
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive(True) Then GoTo Finally
+		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(ChartName, &quot;ChartName&quot;, V_STRING) Then GoTo Finally
+	End If
+
+Try:
+	&apos;	Because the user can change it constantly, the list of valid charts has to be rebuilt at each time
+	&apos;	Explore charts starting from the draw page
+	Set oSheet = _Component.getSheets.getByName(SheetName)
+	Set oDrawPage = oSheet.getDrawPage()
+	vCharts = Array()
+	Set oChart = Nothing
+	lCount = -1
+	For i = 0 To oDrawPage.Count - 1
+		Set oNextShape = oDrawPage.getByIndex(i)
+		if oNextShape.supportsService(cstChartShape) Then		&apos;	Ignore other shapes
+			sChartName = oNextShape.Name										&apos;	User-defined name
+			If Len(sChartName) = 0 Then sChartName = oNextShape.PersistName		&apos;	Internal name
+			&apos;	Is chart found ?
+			If Len(ChartName) &gt; 0 Then
+				If ChartName = sChartName Then
+					Set oChart = New SF_Chart
+					With oChart
+						Set .[Me] = oChart
+						Set .[_Parent] = [Me]
+						._SheetName = SheetName
+						._DrawIndex = i
+						._ChartName = ChartName
+						._PersistentName = oNextShape.PersistName
+						Set ._Shape = oNextShape
+						Set ._Chart = oSheet.getCharts().getByName(._PersistentName)
+						Set ._ChartObject = ._Chart.EmbeddedObject
+						Set ._Diagram = ._ChartObject.Diagram
+					End With
+					Exit For
+				End If
+			End If
+			&apos;	Build stack of chart names
+			lCount = lCount + 1
+			If UBound(vCharts) &lt; 0 Then
+				vCharts = Array(sChartName)
+			Else
+				ReDim Preserve vCharts(0 To UBound(vCharts) + 1)
+				vCharts(lCount) = sChartName
+			End If
+		End If
+	Next i
+
+	&apos;	Raise error when chart not found
+	If Len(ChartName) &gt; 0 And IsNull(oChart) Then
+		If Not ScriptForge.SF_Utils._Validate(ChartName, &quot;ChartName&quot;, V_STRING, vCharts) Then GoTo Finally
+	End If
+	
+Finally:
+	If Len(ChartName) = 0 Then Charts = vCharts Else Set Charts = oChart
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+End Function    &apos;   SFDocuments.SF_Calc.Charts
 
 REM -----------------------------------------------------------------------------
 Public Sub ClearAll(Optional ByVal Range As Variant) As String
@@ -568,7 +791,7 @@ Try:
 	If Not FSO.FileExists(FileName) Then GoTo CatchNotExists
 	sFileName = FSO._ConvertToUrl(FileName)
 
-	&apos;	Insert a blank new sheet and import sheet from file va link setting and deletion
+	&apos;	Insert a blank new sheet and import sheet from file via link setting and deletion
 	If Not InsertSheet(Newname, BeforeSheet) Then GoTo Finally
 	Set oSheet = _Component.getSheets.getByName(NewName)
 	With oSheet
@@ -768,6 +991,83 @@ Finally:
 Catch:
 	GoTo Finally
 End Function    &apos;   SFDocuments.SF_Calc.CopyToRange
+
+REM -----------------------------------------------------------------------------
+Public Function CreateChart(Optional ByVal ChartName As Variant _
+							, Optional ByVal SheetName As Variant _
+							, Optional ByVal Range As Variant _
+							, Optional ColumnHeader As Variant _
+							, Optional RowHeader As Variant _
+							) As Variant
+&apos;&apos;&apos; Return a new chart instance initialized with default values
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		ChartName: The user-defined name of the new chart
+&apos;&apos;&apos;		SheetName: The name of an existing sheet
+&apos;&apos;&apos;		Range: the cell or the range as a string that should be drawn
+&apos;&apos;&apos;		ColumnHeader: when True, the topmost row of the range will be used to set labels for the category axis or the legend.
+&apos;&apos;&apos;			Default = False
+&apos;&apos;&apos;		RowHeader: when True, the leftmost column of the range will be used to set labels for the category axis or the legend.
+&apos;&apos;&apos;			Default = False
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A new chart service instance
+&apos;&apos;&apos;	Exceptions:
+&apos;&apos;&apos;		DUPLICATECHARTERROR		A chart with the same name exists already in the given sheet
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Dim oChart As Object
+&apos;&apos;&apos;		Set oChart = oDoc.CreateChart(&quot;myChart&quot;, &quot;SheetX&quot;, &quot;A1:C8&quot;, ColumnHeader := True)
+
+Dim oChart As Object				&apos;	Return value
+Dim vCharts As Variant				&apos;	List of pre-existing charts
+Dim oSheet As Object				&apos;	Alias of SheetName as reference
+Dim oRange As Object				&apos;	Alias of Range
+Dim oRectangle as new com.sun.star.awt.Rectangle	&apos;	Simple shape
+
+Const cstThisSub = &quot;SFDocuments.Calc.CreateChart&quot;
+Const cstSubArgs = &quot;ChartName, SheetName, Range, [ColumnHeader=False], [RowHeader=False]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	Set oChart = Nothing
+
+Check:
+	If IsMissing(RowHeader) Or IsEmpty(RowHeader) Then Rowheader = False
+	If IsMissing(ColumnHeader) Or IsEmpty(ColumnHeader) Then ColumnHeader = False
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive(True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(ChartName, &quot;ChartName&quot;, V_STRING) Then GoTo Finally
+		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(ColumnHeader, &quot;ColumnHeader&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(RowHeader, &quot;RowHeader&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
+	End If
+
+	vCharts = Charts(SheetName)
+	If ScriptForge.SF_Array.Contains(vCharts, ChartName, CaseSensitive := True) Then GoTo CatchDuplicate
+
+Try:
+	&apos;	The rectangular shape receives arbitrary values. User can Resize() it later
+	With oRectangle
+		.X = 0			:	.Y = 0
+		.Width = 8000	:	.Height = 6000
+	End With
+	&apos;	Initialize sheet and range
+	Set oSheet = _Component.getSheets.getByName(SheetName)
+	Set oRange = _ParseAddress(Range)
+	&apos;	Create the chart and get ihe corresponding chart instance
+	oSheet.getCharts.addNewByName(ChartName, oRectangle, Array(oRange.XCellRange.RangeAddress), ColumnHeader, RowHeader)
+	Set oChart = Charts(SheetName, ChartName)
+	oChart._Shape.Name = ChartName		&apos;	Both user-defined and internal names match ChartName
+	oChart._Diagram.Wall.FillColor = RGB(255, 255, 255)		&apos;	Align on background color set by the user interface by default
+	
+Finally:
+	Set CreateChart = oChart
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+CatchDuplicate:
+	ScriptForge.SF_Exception.RaiseFatal(DUPLICATECHARTERROR, &quot;ChartName&quot;, ChartName, &quot;SheetName&quot;, SheetName, &quot;Document&quot;, [_Super]._FileIdent())
+	GoTo Finally
+End Function    &apos;   SFDocuments.SF_Calc.CreateChart
 
 REM -----------------------------------------------------------------------------
 Public Function DAvg(Optional ByVal Range As Variant) As Double
@@ -1335,7 +1635,9 @@ Public Function Methods() As Variant
 &apos;&apos;&apos;	Return the list of public methods of the Calc service as an array
 
 	Methods = Array( _
-					&quot;Activate&quot; _
+					&quot;A1Style&quot; _
+					, &quot;Activate&quot; _
+					, &quot;Charts&quot; _
 					, &quot;ClearAll&quot; _
 					, &quot;ClearFormats&quot; _
 					, &quot;ClearValues&quot; _
@@ -1344,11 +1646,13 @@ Public Function Methods() As Variant
 					, &quot;CopySheetFromFile&quot; _
 					, &quot;CopyToCell&quot; _
 					, &quot;CopyToRange&quot; _
+					, &quot;CreateChart&quot; _
 					, &quot;DAvg&quot; _
 					, &quot;DCount&quot; _
 					, &quot;DMax&quot; _
 					, &quot;DMin&quot; _
 					, &quot;DSum&quot; _
+					, &quot;ExportAsPDF&quot; _
 					, &quot;GetColumnName&quot; _
 					, &quot;GetFormula&quot; _
 					, &quot;GetValue&quot; _
@@ -1358,6 +1662,9 @@ Public Function Methods() As Variant
 					, &quot;MoveRange&quot; _
 					, &quot;MoveSheet&quot; _
 					, &quot;Offset&quot; _
+					, &quot;OpenRangeSelector&quot; _
+					, &quot;Printf&quot; _
+					, &quot;PrintOut&quot; _
 					, &quot;RemoveSheet&quot; _
 					, &quot;RenameSheet&quot; _
 					, &quot;RunCommand&quot; _
@@ -1367,7 +1674,12 @@ Public Function Methods() As Variant
 					, &quot;SetArray&quot; _
 					, &quot;SetCellStyle&quot; _
 					, &quot;SetFormula&quot; _
+					, &quot;SetPrinter&quot; _
 					, &quot;SetValue&quot; _
+					, &quot;ShiftDown&quot; _
+					, &quot;ShiftLeft&quot; _
+					, &quot;ShiftRight&quot; _
+					, &quot;ShiftUp&quot; _
 					, &quot;SortRange&quot; _
 					)
 
@@ -1551,6 +1863,241 @@ Catch:
 End Function	&apos;	SF_Documents.SF_Calc.Offset
 
 REM -----------------------------------------------------------------------------
+Public Function OpenRangeSelector(Optional ByVal Title As Variant _
+								, Optional ByVal Selection As Variant _
+								, Optional ByVal SingleCell As Variant _
+								, Optional ByVal CloseAfterSelect As Variant _
+								) As String
+&apos;&apos;&apos;	Activates the Calc document, opens a non-modal dialog with a text box,
+&apos;&apos;&apos;	let the user make a selection in the current or another sheet and
+&apos;&apos;&apos;	returns the selected area as a string.
+&apos;&apos;&apos;	This method does not change the current selection.
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		Title: the title to display on the top of the dialog
+&apos;&apos;&apos;		Selection: a default preselection as a String. When absent, the first element of the
+&apos;&apos;&apos;			current selection is preselected.
+&apos;&apos;&apos;		SingleCell: When True, only a single cell may be selected. Default = False
+&apos;&apos;&apos;		CloseAfterSelect: When True (default-, the dialog is closed immediately after
+&apos;&apos;&apos;			the selection. When False, the user may change his/her mind and must close
+&apos;&apos;&apos;			the dialog manually.
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The selected range as a string, or the empty string when the user cancelled the request (close window button)
+&apos;&apos;&apos;	Exceptions:
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Dim sSelect As String, vValues As Variant
+&apos;&apos;&apos;		sSelect = oDoc.OpenRangeSelector(&quot;Select a range ...&quot;)
+&apos;&apos;&apos;		If sSelect = &quot;&quot; Then Exit Function
+&apos;&apos;&apos;		vValues = oDoc.GetValue(sSelect)
+
+Dim sSelector As String				&apos;	Return value
+Dim vPropertyValues As Variant		&apos;	Array of com.sun.star.beans.PropertyValue
+Dim oSelection As Object			&apos;	The current selection before opening the selector
+Dim oAddress As Object				&apos;	Preselected address as _Address
+
+Const cstThisSub = &quot;SFDocuments.Calc.OpenRangeSelector&quot;
+Const cstSubArgs = &quot;[Title=&quot;&quot;&quot;&quot;], [Selection=&quot;&quot;~&quot;&quot;], [SingleCell=False], [CloseAfterSelect=True]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	sSelector = &quot;&quot;
+
+Check:
+	If IsMissing(Title) Or IsEmpty(Title) Then Title = &quot;&quot;
+	If IsMissing(Selection) Or IsEmpty(Selection) Then Selection = &quot;~&quot;
+	If IsMissing(SingleCell) Or IsEmpty(SingleCell) Then SingleCell = False
+	If IsMissing(CloseAfterSelect) Or IsEmpty(CloseAfterSelect) Then CloseAfterSelect = True
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Title, &quot;Title&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Selection, &quot;Selection&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(SingleCell, &quot;SingleCell&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(CloseAfterSelect, &quot;CloseAfterSelect&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
+	End If
+
+Try:
+	&apos;	Save the current selections
+	Set oSelection = _Component.CurrentController.getSelection()
+
+	&apos;	Process preselection and select its containing sheet
+	Set oAddress = _ParseAddress(Selection)
+	Activate(oAddress.SheetName)
+
+	&apos;	Build arguments array and execute the dialog box
+	With ScriptForge.SF_Utils
+		vPropertyValues = Array( _
+				._MakePropertyValue(&quot;Title&quot;, Title) _
+				, ._MakePropertyValue(&quot;CloseOnMouseRelease&quot;, CloseAfterSelect) _
+				, ._MakePropertyValue(&quot;InitialValue&quot;, oAddress.XCellRange.AbsoluteName) _
+				, ._MakePropertyValue(&quot;SingleCellMode&quot;, SingleCell) _
+				)
+	End With
+	sSelector = SF_DocumentListener.RunRangeSelector(_Component, vPropertyValues)
+
+	&apos;	Restore the saved selections
+	_RestoreSelections(_Component, oSelection)
+
+Finally:
+	OpenRangeSelector = sSelector
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+End Function	&apos;	SF_Documents.SF_Calc.OpenRangeSelector
+
+REM -----------------------------------------------------------------------------
+Public Function Printf(Optional ByVal InputStr As Variant _
+								, Optional ByVal Range As Variant _
+								, Optional ByVal TokenCharacter As Variant _
+								) As String
+&apos;&apos;&apos;	Returns the input string after substitution of its tokens by
+&apos;&apos;&apos;	their values in the given range
+&apos;&apos;&apos;	This method is usually used in combination with SetFormula()
+&apos;&apos;&apos;	The accepted tokens are:
+&apos;&apos;&apos;		- %S	The sheet name containing the range, including single quotes when necessary
+&apos;&apos;&apos;		- %R1	The row number of the topleft part of the range
+&apos;&apos;&apos;		- %C1	The column letter of the topleft part of the range
+&apos;&apos;&apos;		- %R2	The row number of the bottomright part of the range
+&apos;&apos;&apos;		- %C2	The column letter of the bottomright part of the range
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		InputStr: usually a Calc formula or a part of a formula, but may be any string
+&apos;&apos;&apos;		Range: the range, as a string from which the values of the tokens are derived
+&apos;&apos;&apos;		TokenCharacter: the character identifying tokens. Default = &quot;%&quot;.
+&apos;&apos;&apos;			Double the TokenCharacter to not consider it as a token.
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The input string after substitution of the contained tokens
+&apos;&apos;&apos;	Exceptions:
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Assume we have in A1:E10 a matrix of numbers. To obtain the sum by row in F1:F10 ...
+&apos;&apos;&apos;			Dim range As String, formula As String
+&apos;&apos;&apos;				range = &quot;$A$1:$E$10&quot;)
+&apos;&apos;&apos;				formula = &quot;=SUM($%C1%R1:$%C2%R1)&quot;	&apos;	&quot;=SUM($A1:$E1)&quot;, note the relative references
+&apos;&apos;&apos;				oDoc.SetFormula(&quot;$F$1:$F$10&quot;, formula)
+&apos;&apos;&apos;					&apos;F1 will contain	=Sum($A1:$E1)
+&apos;&apos;&apos;					&apos;F2					=Sum($A2:$E2)
+&apos;&apos;&apos;					&apos;	...
+
+Dim sPrintf As String				&apos;	Return value
+Dim vSubstitute As Variants			&apos;	Array of strings representing the token values
+Dim oAddress As Object				&apos;	A range as an _Address object
+Dim sSheetName As String			&apos;	The %S token value
+Dim sC1 As String					&apos;	The %C1 token value
+Dim sR1 As String					&apos;	The %R1 token value
+Dim sC2 As String					&apos;	The %C2 token value
+Dim sR2 As String					&apos;	The %R2 token value
+Dim i As Long
+Const cstPseudoToken = &quot;@#@&quot;
+
+Const cstThisSub = &quot;SFDocuments.Calc.Printf&quot;
+Const cstSubArgs = &quot;InputStr, Range, TokenCharacter=&quot;&quot;%&quot;&quot;&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	sPrintf = &quot;&quot;
+
+Check:
+	If IsMissing(TokenCharacter) Or IsEmpty(TokenCharacter) Then TokenCharacter = &quot;%&quot;
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(InputStr, &quot;InputStr&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(TokenCharacter, &quot;TokenCharacter&quot;, V_STRING) Then GoTo Finally
+	End If
+
+Try:
+	&apos;	Define the token values
+	Set oAddress = _ParseAddress(Range)
+	With oAddress.XCellRange
+		sC1 = _GetColumnName(.RangeAddress.StartColumn + 1)
+		sR1 = CStr(.RangeAddress.StartRow + 1)
+		sC2 = _GetColumnName(.RangeAddress.EndColumn + 1)
+		sR2 = CStr(.RangeAddress.EndRow + 1)
+		sSheetName = _QuoteSheetName(oAddress.XSpreadsheet.Name)
+	End With
+
+	&apos;	Substitute tokens by their values
+	sPrintf = ScriptForge.SF_String.ReplaceStr(InputStr _
+					, Array(TokenCharacter &amp; TokenCharacter _
+							, TokenCharacter &amp; &quot;R1&quot; _
+							, TokenCharacter &amp; &quot;C1&quot; _
+							, TokenCharacter &amp; &quot;R2&quot; _
+							, TokenCharacter &amp; &quot;C2&quot; _
+							, TokenCharacter &amp; &quot;S&quot; _
+							, cstPseudoToken _
+							) _
+					, Array(cstPseudoToken _
+							, sR1 _
+							, sC1 _
+							, sR2 _
+							, sC2 _
+							, sSheetName _
+							, TokenCharacter _
+							) _
+					)
+
+Finally:
+	Printf = sPrintf
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+End Function	&apos;	SF_Documents.SF_Calc.Printf
+
+REM -----------------------------------------------------------------------------
+Public Function PrintOut(Optional ByVal SheetName As Variant _
+							, Optional ByVal Pages As Variant _
+							, Optional ByVal Copies As Variant _
+							) As Boolean
+&apos;&apos;&apos; Send the content of the given sheet to the printer.
+&apos;&apos;&apos;	The printer might be defined previously by default, by the user or by the SetPrinter() method
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		SheetName: the sheet to print. Default = the active sheet
+&apos;&apos;&apos;		Pages: the pages to print as a string, like in the user interface. Example: &quot;1-4;10;15-18&quot;. Default = all pages
+&apos;&apos;&apos;		Copies: the number of copies
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		True when successful
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		oDoc.PrintOut(&quot;SheetX&quot;, &quot;1-4;10;15-18&quot;, Copies := 2)
+
+Dim bPrint As Boolean				&apos;	Return value
+Dim oSheet As Object				&apos;	SheetName as a reference
+
+Const cstThisSub = &quot;SFDocuments.Calc.PrintOut&quot;
+Const cstSubArgs = &quot;[SheetName=&quot;&quot;~&quot;&quot;], [Pages=&quot;&quot;&quot;&quot;], [Copies=1]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	bPrint = False
+
+Check:
+	If IsMissing(SheetName) Or IsEmpty(SheetName) Then SheetName = &quot;&quot;
+	If IsMissing(Pages) Or IsEmpty(Pages) Then Pages = &quot;&quot;
+	If IsMissing(Copies) Or IsEmpty(Copies) Then Copies = 1
+	
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		If Not _ValidateSheet(SheetName, &quot;SheetName&quot;, , True, True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Pages, &quot;Pages&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Copies, &quot;Copies&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+	End If
+
+Try:
+	If SheetName = &quot;~&quot; Then SheetName = &quot;&quot;
+	&apos;	Make given sheet active
+	If Len(SheetName) &gt; 0 Then
+		With _Component
+			Set oSheet = .getSheets.getByName(SheetName)
+			Set .CurrentController.ActiveSheet = oSheet
+		End With
+	End If
+
+	bPrint = [_Super].PrintOut(Pages, Copies, _Component)
+
+Finally:
+	PrintOut = bPrint
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+End Function   &apos;   SFDocuments.SF_Calc.PrintOut
+
+REM -----------------------------------------------------------------------------
 Public Function Properties() As Variant
 &apos;&apos;&apos;	Return the list or properties of the Calc class as an array
 
@@ -1560,6 +2107,9 @@ Public Function Properties() As Variant
 					, &quot;Description&quot; _
 					, &quot;DocumentProperties&quot; _
 					, &quot;DocumentType&quot; _
+					, &quot;FirstCell&quot; _
+					, &quot;FirstColumn&quot; _
+					, &quot;FirstRow&quot; _
 					, &quot;Height&quot; _
 					, &quot;IsBase&quot; _
 					, &quot;IsCalc&quot; _
@@ -1573,13 +2123,16 @@ Public Function Properties() As Variant
 					, &quot;LastRow&quot; _
 					, &quot;Range&quot; _
 					, &quot;Readonly&quot; _
+					, &quot;Region&quot; _
 					, &quot;Sheet&quot; _
+					, &quot;SheetName&quot; _
 					, &quot;Sheets&quot; _
 					, &quot;Subject&quot; _
 					, &quot;Title&quot; _
 					, &quot;Width&quot; _
 					, &quot;XCellRange&quot; _
 					, &quot;XComponent&quot; _
+					, &quot;XSheetCellCursor&quot; _
 					, &quot;XSpreadsheet&quot; _
 					)
 
@@ -1609,7 +2162,7 @@ Check:
 	End If
 
 Try:
-	 _Component.getSheets.RemoveByName(SheetName)
+	_Component.getSheets.RemoveByName(SheetName)
 	bRemove = True
 
 Finally:
@@ -1790,7 +2343,7 @@ Public Function SetFormula(Optional ByVal TargetRange As Variant _
 &apos;&apos;&apos;		oDoc.SetFormula(&quot;A1:F1&quot;, Array(&quot;=A2&quot;, &quot;=B2&quot;, &quot;=C2+10&quot;))		&apos;	Horizontal vector, partially empty
 &apos;&apos;&apos;		oDoc.SetFormula(&quot;A1:D2&quot;, &quot;=E1&quot;)		&apos;	D2 contains the formula &quot;=H2&quot;
 
-Dim sSet As String					&apos;	Return value
+Dim sSet As String					&apos;	Return value.XSpreadsheet.Name)
 Dim oAddress As Object				&apos;	Alias of TargetRange
 Dim vDataArray As Variant			&apos;	DataArray compatible with .DataArray UNO property
 Const cstThisSub = &quot;SFDocuments.Calc.SetFormula&quot;
@@ -1898,7 +2451,7 @@ Public Function SetValue(Optional ByVal TargetRange As Variant _
 &apos;&apos;&apos;	Vectors are always expanded vertically, except if the range has a height of exactly 1 row
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		TargetRange : the range as a string that should receive a new value
-&apos;&apos;&apos;		Value: a scalar, a vector or an array with the new values for each cell of the range.
+&apos;&apos;&apos;		Value: a scalar, a vector or an array with the new values for each cell o.XSpreadsheet.Name)f the range.
 &apos;&apos;&apos;			The new values should be strings, numeric values or dates. Other types empty the corresponding cell
 &apos;&apos;&apos;	Returns:
 &apos;&apos;&apos;		A string representing the updated range
@@ -1944,6 +2497,330 @@ Finally:
 Catch:
 	GoTo Finally
 End Function	&apos;	SF_Documents.SF_Calc.SetValue
+
+REM -----------------------------------------------------------------------------
+Public Function ShiftDown(Optional ByVal Range As Variant _
+								, Optional ByVal WholeRow As Variant _
+								, Optional ByVal Rows As Variant _
+								) As String
+&apos;&apos;&apos;	Move a specified range and all cells below in the same columns downwards by inserting empty cells
+&apos;&apos;&apos;	The inserted cells can span whole rows or be limited to the width of the range
+&apos;&apos;&apos;	The height of the inserted area is provided by the Rows argument
+&apos;&apos;&apos;	Nothing happens if the range shift crosses one of the edges of the worksheet
+&apos;&apos;&apos;	The execution of the method has no effect on the current selection
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		Range: the range above which cells have to be inserted, as a string
+&apos;&apos;&apos;		WholeRow: when True (default = False), insert whole rows
+&apos;&apos;&apos;		Rows: the height of the area to insert. Default = the height of the Range argument
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A string representing the new location of the initial range
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		newrange = oDoc.ShiftDown(&quot;SheetX.A1:F10&quot;)						&apos;	&quot;$SheetX.$A$11:$F$20&quot;
+&apos;&apos;&apos;		newrange = oDoc.ShiftDown(&quot;SheetX.A1:F10&quot;, Rows := 3)			&apos;	&quot;$SheetX.$A$4:$F$13&quot;
+
+Dim sShift As String			&apos;	Return value
+Dim oSourceAddress As Object	&apos;	Alias of Range as _Address
+Dim lHeight As Long				&apos;	Range height
+Dim oShiftAddress As Object		&apos;	com.sun.star.table.CellRangeAddress - Range adjusted to the right width
+Dim lShiftMode As Long			&apos;	One of the com.sun.star.sheet.CellInsertMode enum values
+
+Const cstThisSub = &quot;SFDocuments.Calc.ShiftDown&quot;
+Const cstSubArgs = &quot;Range, [WholeRow=False], [Rows]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	sShift = &quot;&quot;
+
+Check:
+	If IsMissing(WholeRow) Or IsEmpty(WholeRow) Then WholeRow = False
+	If IsMissing(Rows) Or IsEmpty(Rows) Then Rows = 0
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive(True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(WholeRow, &quot;WholeRow&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Rows, &quot;Rows&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+	End If
+
+Try:
+	Set oSourceAddress = _ParseAddress(Range)
+
+	With oSourceAddress
+
+		&apos;	Manage the height of the area to shift
+		&apos;	The insertCells() method inserts a number of rows equal to the height of the cell range to shift
+		lHeight = .Height
+		If Rows &lt;= 0 Then Rows = lHeight
+		If _LastCell(.XSpreadsheet)(1) + Rows &gt; MAXROWS Then GoTo Catch
+		If Rows &lt;&gt; lHeight Then
+			Set oShiftAddress = _Offset(oSourceAddress, 0, 0, Rows, 0).XCellRange.RangeAddress
+		Else
+			Set oShiftAddress = .XCellRange.RangeAddress
+		End If
+
+		&apos;	Determine the shift mode
+		With com.sun.star.sheet.CellInsertMode
+			If WholeRow Then lShiftMode = .ROWS Else lShiftMode = .DOWN
+		End With
+
+		&apos;	Move the cells as requested. This modifies .XCellRange
+		.XSpreadsheet.insertCells(oShiftAddress, lShiftMode)
+
+		&apos;	Determine the receiving area
+		sShift = .XCellRange.AbsoluteName
+
+	End With
+
+Finally:
+	ShiftDown = sShift
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	&apos;	When error, return the original range
+	If Not IsNull(oSourceAddress) Then sShift = oSourceAddress.RangeName
+	GoTo Finally
+End Function    &apos;   SFDocuments.SF_Calc.ShiftDown
+
+REM -----------------------------------------------------------------------------
+Public Function ShiftLeft(Optional ByVal Range As Variant _
+								, Optional ByVal WholeColumn As Variant _
+								, Optional ByVal Columns As Variant _
+								) As String
+&apos;&apos;&apos;	Delete the leftmost columns of a specified range and move all cells at their right leftwards
+&apos;&apos;&apos;	The deleted cells can span whole columns or be limited to the height of the range
+&apos;&apos;&apos;	The width of the deleted area is provided by the Columns argument
+&apos;&apos;&apos;	The execution of the method has no effect on the current selection
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		Range: the range in which cells have to be erased, as a string
+&apos;&apos;&apos;		WholeColumn: when True (default = False), erase whole columns
+&apos;&apos;&apos;		Columns: the width of the area to delete.
+&apos;&apos;&apos;			Default = the width of the Range argument, it is also its maximum value
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A string representing the location of the remaining part of the initial range,
+&apos;&apos;&apos;		or the zero-length string if the whole range has been deleted
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		newrange = oDoc.ShiftLeft(&quot;SheetX.G1:L10&quot;)						&apos;	&quot;&quot;&quot;
+&apos;&apos;&apos;		newrange = oDoc.ShiftLeft(&quot;SheetX.G1:L10&quot;, Columns := 3)		&apos;	&quot;$SheetX.$G$1:$I$10&quot;
+
+Dim sShift As String			&apos;	Return value
+Dim oSourceAddress As Object	&apos;	Alias of Range as _Address
+Dim lWidth As Long				&apos;	Range width
+Dim oShiftAddress As Object		&apos;	com.sun.star.table.CellRangeAddress - Range adjusted to the right width
+Dim lShiftMode As Long			&apos;	One of the com.sun.star.sheet.CellDeleteMode enum values
+
+Const cstThisSub = &quot;SFDocuments.Calc.ShiftLeft&quot;
+Const cstSubArgs = &quot;Range, [WholeColumn=False], [Columns]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	sShift = &quot;&quot;
+
+Check:
+	If IsMissing(WholeColumn) Or IsEmpty(WholeColumn) Then WholeColumn = False
+	If IsMissing(Columns) Or IsEmpty(Columns) Then Columns = 0
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive(True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(WholeColumn, &quot;WholeColumn&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Columns, &quot;Columns&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+	End If
+
+Try:
+	Set oSourceAddress = _ParseAddress(Range)
+
+	With oSourceAddress
+
+		&apos;	Manage the width of the area to delete
+		&apos;	The removeRange() method erases a number of columns equal to the width of the cell range to delete
+		lWidth = .Width
+		If Columns &lt;= 0 Then Columns = lWidth
+		If Columns &lt; lWidth Then
+			Set oShiftAddress = _Offset(oSourceAddress, 0, 0, 0, Columns).XCellRange.RangeAddress
+		Else						&apos;	Columns is capped at the range width
+			Set oShiftAddress = .XCellRange.RangeAddress
+		End If
+
+		&apos;	Determine the Delete mode
+		With com.sun.star.sheet.CellDeleteMode
+			If WholeColumn Then lShiftMode = .COLUMNS Else lShiftMode = .LEFT
+		End With
+
+		&apos;	Move the cells as requested. This modifies .XCellRange
+		.XSpreadsheet.removeRange(oShiftAddress, lShiftMode)
+
+		&apos;	Determine the remaining area
+		If Columns &lt; lWidth Then sShift = .XCellRange.AbsoluteName
+
+	End With
+
+Finally:
+	ShiftLeft = sShift
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	&apos;	When error, return the original range
+	If Not IsNull(oSourceAddress) Then sShift = oSourceAddress.RangeName
+	GoTo Finally
+End Function    &apos;   SFDocuments.SF_Calc.ShiftLeft
+
+REM -----------------------------------------------------------------------------
+Public Function ShiftRight(Optional ByVal Range As Variant _
+								, Optional ByVal WholeColumn As Variant _
+								, Optional ByVal Columns As Variant _
+								) As String
+&apos;&apos;&apos;	Move a specified range and all next cells in the same rows to the right by inserting empty cells
+&apos;&apos;&apos;	The inserted cells can span whole columns or be limited to the height of the range
+&apos;&apos;&apos;	The width of the inserted area is provided by the Columns argument
+&apos;&apos;&apos;	Nothing happens if the range shift crosses one of the edges of the worksheet
+&apos;&apos;&apos;	The execution of the method has no effect on the current selection
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		Range: the range before which cells have to be inserted, as a string
+&apos;&apos;&apos;		WholeColumn: when True (default = False), insert whole columns
+&apos;&apos;&apos;		Columns: the width of the area to insert. Default = the width of the Range argument
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A string representing the new location of the initial range
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		newrange = oDoc.ShiftRight(&quot;SheetX.A1:F10&quot;)						&apos;	&quot;$SheetX.$G$1:$L$10&quot;
+&apos;&apos;&apos;		newrange = oDoc.ShiftRight(&quot;SheetX.A1:F10&quot;, Columns := 3)		&apos;	&quot;$SheetX.$D$1:$I$10&quot;
+
+Dim sShift As String			&apos;	Return value
+Dim oSourceAddress As Object	&apos;	Alias of Range as _Address
+Dim lWidth As Long				&apos;	Range width
+Dim oShiftAddress As Object		&apos;	com.sun.star.table.CellRangeAddress - Range adjusted to the right width
+Dim lShiftMode As Long			&apos;	One of the com.sun.star.sheet.CellInsertMode enum values
+
+Const cstThisSub = &quot;SFDocuments.Calc.ShiftRight&quot;
+Const cstSubArgs = &quot;Range, [WholeColumn=False], [Columns]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	sShift = &quot;&quot;
+
+Check:
+	If IsMissing(WholeColumn) Or IsEmpty(WholeColumn) Then WholeColumn = False
+	If IsMissing(Columns) Or IsEmpty(Columns) Then Columns = 0
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive(True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(WholeColumn, &quot;WholeColumn&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Columns, &quot;Columns&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+	End If
+
+Try:
+	Set oSourceAddress = _ParseAddress(Range)
+
+	With oSourceAddress
+
+		&apos;	Manage the width of the area to Shift
+		&apos;	The insertCells() method inserts a number of columns equal to the width of the cell range to Shift
+		lWidth = .Width
+		If Columns &lt;= 0 Then Columns = lWidth
+		If _LastCell(.XSpreadsheet)(0) + Columns &gt; MAXCOLS Then GoTo Catch
+		If Columns &lt;&gt; lWidth Then
+			Set oShiftAddress = _Offset(oSourceAddress, 0, 0, 0, Columns).XCellRange.RangeAddress
+		Else
+			Set oShiftAddress = .XCellRange.RangeAddress
+		End If
+
+		&apos;	Determine the Shift mode
+		With com.sun.star.sheet.CellInsertMode
+			If WholeColumn Then lShiftMode = .COLUMNS Else lShiftMode = .RIGHT
+		End With
+
+		&apos;	Move the cells as requested. This modifies .XCellRange
+		.XSpreadsheet.insertCells(oShiftAddress, lShiftMode)
+
+		&apos;	Determine the receiving area
+		sShift = .XCellRange.AbsoluteName
+
+	End With
+
+Finally:
+	ShiftRight = sShift
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	&apos;	When error, return the original range
+	If Not IsNull(oSourceAddress) Then sShift = oSourceAddress.RangeName
+	GoTo Finally
+End Function    &apos;   SFDocuments.SF_Calc.ShiftRight
+
+REM -----------------------------------------------------------------------------
+Public Function ShiftUp(Optional ByVal Range As Variant _
+								, Optional ByVal WholeRow As Variant _
+								, Optional ByVal Rows As Variant _
+								) As String
+&apos;&apos;&apos;	Delete the topmost rows of a specified range and move all cells below upwards
+&apos;&apos;&apos;	The deleted cells can span whole rows or be limited to the width of the range
+&apos;&apos;&apos;	The height of the deleted area is provided by the Rows argument
+&apos;&apos;&apos;	The execution of the method has no effect on the current selection
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		Range: the range in which cells have to be erased, as a string
+&apos;&apos;&apos;		WholeRow: when True (default = False), erase whole rows
+&apos;&apos;&apos;		Rows: the height of the area to delete.
+&apos;&apos;&apos;			Default = the height of the Range argument, it is also its maximum value
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A string representing the location of the remaining part of the initial range,
+&apos;&apos;&apos;		or the zero-length string if the whole range has been deleted
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		newrange = oDoc.ShiftUp(&quot;SheetX.G1:L10&quot;)				&apos;	&quot;&quot;
+&apos;&apos;&apos;		newrange = oDoc.ShiftUp(&quot;SheetX.G1:L10&quot;, Rows := 3)		&apos;	&quot;$SheetX.$G$1:$I$10&quot;
+
+Dim sShift As String			&apos;	Return value
+Dim oSourceAddress As Object	&apos;	Alias of Range as _Address
+Dim lHeight As Long				&apos;	Range height
+Dim oShiftAddress As Object		&apos;	com.sun.star.table.CellRangeAddress - Range adjusted to the right height
+Dim lShiftMode As Long			&apos;	One of the com.sun.star.sheet.CellDeleteMode enum values
+
+Const cstThisSub = &quot;SFDocuments.Calc.ShiftUp&quot;
+Const cstSubArgs = &quot;Range, [WholeRow=False], [Rows]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	sShift = &quot;&quot;
+
+Check:
+	If IsMissing(WholeRow) Or IsEmpty(WholeRow) Then WholeRow = False
+	If IsMissing(Rows) Or IsEmpty(Rows) Then Rows = 0
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive(True) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Range, &quot;Range&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(WholeRow, &quot;WholeRow&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Rows, &quot;Rows&quot;, ScriptForge.V_NUMERIC) Then GoTo Finally
+	End If
+
+Try:
+	Set oSourceAddress = _ParseAddress(Range)
+
+	With oSourceAddress
+
+		&apos;	Manage the height of the area to delete
+		&apos;	The removeRange() method erases a number of rows equal to the height of the cell range to delete
+		lHeight = .Height
+		If Rows &lt;= 0 Then Rows = lHeight
+		If Rows &lt; lHeight Then
+			Set oShiftAddress = _Offset(oSourceAddress, 0, 0, Rows, 0).XCellRange.RangeAddress
+		Else						&apos;	Rows is capped at the range height
+			Set oShiftAddress = .XCellRange.RangeAddress
+		End If
+
+		&apos;	Determine the Delete mode
+		With com.sun.star.sheet.CellDeleteMode
+			If WholeRow Then lShiftMode = .ROWS Else lShiftMode = .UP
+		End With
+
+		&apos;	Move the cells as requested. This modifies .XCellRange
+		.XSpreadsheet.removeRange(oShiftAddress, lShiftMode)
+
+		&apos;	Determine the remaining area
+		If Rows &lt; lHeight Then sShift = .XCellRange.AbsoluteName
+
+	End With
+
+Finally:
+	ShiftUp = sShift
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	&apos;	When error, return the original range
+	If Not IsNull(oSourceAddress) Then sShift = oSourceAddress.RangeName
+	GoTo Finally
+End Function    &apos;   SFDocuments.SF_Calc.ShiftUp
 
 REM -----------------------------------------------------------------------------
 Public Function SortRange(Optional ByVal Range As Variant _
@@ -2023,11 +2900,11 @@ Try:
 	&apos;	Initialize the sort descriptor
 	Set oRange = oRangeAddress.XCellRange
 	vSortDescriptor = oRange.createSortDescriptor
-	ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;IsSortColumns&quot;, SortColumns)
-	ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;ContainsHeader&quot;, ContainsHeader)
-	ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;BindFormatsToContent&quot;, True)
+	vSortDescriptor = ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;IsSortColumns&quot;, SortColumns)
+	vSortDescriptor = ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;ContainsHeader&quot;, ContainsHeader)
+	vSortDescriptor = ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;BindFormatsToContent&quot;, True)
 	If Len(DestinationCell) = 0 Then
-		ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;CopyOutputData&quot;, False)
+		vSortDescriptor = ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;CopyOutputData&quot;, False)
 	Else
 		Set oDestAddress = oDestRange.XCellRange.RangeAddress
 		Set oDestCell = New com.sun.star.table.CellAddress
@@ -2036,10 +2913,10 @@ Try:
 			oDestCell.Column = .StartColumn
 			oDestCell.Row = .StartRow
 		End With
-		ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;CopyOutputData&quot;, true)
-		ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;OutputPosition&quot;, oDestCell)
+		vSortDescriptor = ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;CopyOutputData&quot;, True)
+		vSortDescriptor = ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;OutputPosition&quot;, oDestCell)
 	End If
-	ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;IsUserListEnabled&quot;, False)
+	vSortDescriptor = ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;IsUserListEnabled&quot;, False)
 
 	&apos;	Define the sorting keys
 	vSortFields = Array()
@@ -2056,7 +2933,7 @@ Try:
 	Next i
 
 	&apos;	Associate the keys and the descriptor, and sort
-	ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;SortFields&quot;, vSortFields)
+	vSortDescriptor = ScriptForge.SF_Utils._SetPropertyValue(vSortDescriptor, &quot;SortFields&quot;, vSortFields)
 	oRange.sort(vSortDescriptor)
 
 	&apos;	Compute the changed area
@@ -2191,6 +3068,16 @@ Public Function CloseDocument(Optional ByVal SaveAsk As Variant) As Boolean
 End Function   &apos;   SFDocuments.SF_Calc.CloseDocument
 
 REM -----------------------------------------------------------------------------
+Public Function ExportAsPDF(Optional ByVal FileName As Variant _
+							, Optional ByVal Overwrite As Variant _
+							, Optional ByVal Pages As Variant _
+							, Optional ByVal Password As Variant _
+							, Optional ByVal Watermark As Variant _
+							) As Boolean
+	ExportAsPDF = [_Super].ExportAsPDF(FileName, Overwrite, Pages, Password, Watermark)
+End Function   &apos;   SFDocuments.SF_Calc.ExportAsPDF
+
+REM -----------------------------------------------------------------------------
 Public Sub RunCommand(Optional ByVal Command As Variant)
 	[_Super].RunCommand(Command)
 End Sub		  &apos;   SFDocuments.SF_Calc.RunCommand
@@ -2219,6 +3106,14 @@ Public Function SaveCopyAs(Optional ByVal FileName As Variant _
 							) As Boolean
 	SaveCopyAs = [_Super].SaveCopyAs(FileName, Overwrite, Password, FilterName, FilterOptions)
 End Function   &apos;   SFDocuments.SF_Calc.SaveCopyAs
+
+REM -----------------------------------------------------------------------------
+Public Function SetPrinter(Optional ByVal Printer As Variant _
+							, Optional ByVal Orientation As Variant _
+							, Optional ByVal PaperFormat As Variant _
+							) As Boolean
+	SetPrinter = [_Super].SetPrinter(Printer, Orientation, PaperFormat)
+End Function	&apos;   SFDocuments.SF_Calc.SetPrinter
 
 REM =========================================================== PRIVATE FUNCTIONS
 
@@ -2637,7 +3532,7 @@ Private Function _ParseAddress(ByVal psAddress As String) As Object
 &apos;&apos;&apos;	Exceptions:
 &apos;&apos;&apos;		CALCADDRESSERROR		&apos;	Address could not be parsed to a valid address
 
-Dim oAddress As _Address			&apos;	Return value
+Dim oAddress As Object				&apos;	Return value
 Dim lStart As Long					&apos;	Position of found regex
 Dim sSheet As String				&apos;	Sheet component
 Dim sRange As String				&apos;	Range component
@@ -2647,6 +3542,20 @@ Dim oRangeAddress As Object			&apos;	Alias for rangeaddress
 Dim vLastCell As Variant			&apos;	Result of _LastCell() method
 Dim oSelect As Object				&apos;	Current selection
 
+	&apos;	If psAddress has already been parsed, get the result back
+	If Not IsNull(_LastParsedAddress) Then
+		&apos;	Given argument must contain an explicit reference to a sheet
+		If (InStr(psAddress, &quot;~.&quot;) = 0 And InStr(psAddress, &quot;.&quot;) &gt; 0 And psAddress = _LastParsedAddress.RawAddress) _
+				Or psAddress = _LastParsedAddress.RangeName Then
+			Set _ParseAddress = _LastParsedAddress
+			Exit Function
+		Else
+			Set _LastParsedAddress = Nothing
+		End If
+	End If
+
+	&apos;	Reinitialize a new _Address object
+	Set oAddress = New _Address
 	With oAddress
 		sSheet = &quot;&quot;				:	sRange = &quot;&quot;
 		.SheetName = &quot;&quot;			:	.RangeName = &quot;&quot;
@@ -2726,7 +3635,7 @@ Dim oSelect As Object				&apos;	Current selection
 		If IsNull(.XCellRange) Then GoTo CatchAddress
 
 		Set oRangeAddress = .XCellRange.RangeAddress
-		.RangeName = _RangeToString(oRangeAddress)
+		.RangeName = .XCellRange.AbsoluteName
 		.Height = oRangeAddress.EndRow - oRangeAddress.StartRow + 1
 		.Width = oRangeAddress.EndColumn - oRangeAddress.StartColumn + 1
 
@@ -2734,6 +3643,9 @@ Dim oSelect As Object				&apos;	Current selection
 		Set .Component = _Component
 
 	End With
+
+	&apos;	Store last parsed address for reuse
+	Set _LastParsedAddress = oAddress
 
 Finally:
 	Set _ParseAddress = oAddress
@@ -2758,18 +3670,20 @@ Dim oProperties As Object			&apos;	Document or Custom properties
 Dim vLastCell As Variant			&apos;	Coordinates of last used cell in a sheet
 Dim oSelect As Object				&apos;	Current selection
 Dim vRanges As Variant				&apos;	List of selected ranges
+Dim oAddress As Object				&apos;	_Address type for range description
+Dim oCursor As Object				&apos;	com.sun.star.sheet.XSheetCellCursor
 Dim i As Long
 Dim cstThisSub As String
 Const cstSubArgs = &quot;&quot;
 
 	_PropertyGet = False
 
-	cstThisSub = &quot;SFDocuments.SF_Calc.get&quot; &amp; psProperty
+	cstThisSub = &quot;SFDocuments.Calc.get&quot; &amp; psProperty
 	ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs)
 	If Not _IsStillAlive() Then GoTo Finally
 
-	Select Case psProperty
-		Case &quot;CurrentSelection&quot;
+	Select Case UCase(psProperty)
+		Case UCase(&quot;CurrentSelection&quot;)
 			Set oSelect = _Component.CurrentController.getSelection()
 			If IsNull(oSelect) Then
 				_PropertyGet = Array()
@@ -2782,58 +3696,86 @@ Const cstSubArgs = &quot;&quot;
 			Else
 				_PropertyGet = oSelect.AbsoluteName
 			End If
-		Case &quot;Height&quot;
+		Case UCase(&quot;Height&quot;)
 			If IsMissing(pvArg) Or IsEmpty(pvArg) Then
 				_PropertyGet = 0
 			Else
 				If Not ScriptForge.SF_Utils._Validate(pvArg, &quot;Range&quot;, V_STRING) Then GoTo Finally
 				_PropertyGet = _ParseAddress(pvArg).Height
 			End If
-		Case &quot;LastCell&quot;, &quot;LastColumn&quot;, &quot;LastRow&quot;
+		Case UCase(&quot;FirstCell&quot;), UCase(&quot;FirstRow&quot;), UCase(&quot;FirstColumn&quot;) _
+				, UCase(&quot;LastCell&quot;), UCase(&quot;LastColumn&quot;), UCase(&quot;LastRow&quot;) _
+				, UCase(&quot;SheetName&quot;)
 			If IsMissing(pvArg) Or IsEmpty(pvArg) Then	&apos;	Avoid errors when instance is watched in Basic IDE
-				_PropertyGet = -1
+				If InStr(UCase(psProperty), &quot;CELL&quot;) &gt; 0 Then _PropertyGet = &quot;&quot; Else _PropertyGet = -1
 			Else
-				If Not _ValidateSheet(pvArg, &quot;SheetName&quot;, , True) Then GoTo Finally
-				vLastCell = _LastCell(_Component.getSheets.getByName(pvArg))
-				If psProperty = &quot;LastRow&quot; Then
-					_PropertyGet = vLastCell(1)
-				ElseIf psProperty = &quot;LastColumn&quot; Then
-					_PropertyGet = vLastCell(0)
-				Else
-					_PropertyGet = GetColumnName(vLastCell(0)) &amp; CStr(vLastCell(1))
-				End If
+				If Not ScriptForge.SF_Utils._Validate(pvArg, &quot;Range&quot;, V_STRING) Then GoTo Finally
+				Set oAddress = _ParseAddress(pvArg)
+				With oAddress.XCellRange
+					Select Case UCase(psProperty)
+						Case UCase(&quot;FirstCell&quot;)
+							_PropertyGet = A1Style(.RangeAddress.StartRow + 1, .RangeAddress.StartColumn + 1, , , oAddress.XSpreadsheet.Name)
+						Case UCase(&quot;FirstColumn&quot;)	:	_PropertyGet = CLng(.RangeAddress.StartColumn + 1)
+						Case UCase(&quot;FirstRow&quot;)		:	_PropertyGet = CLng(.RangeAddress.StartRow + 1)
+						Case UCase(&quot;LastCell&quot;)
+							_PropertyGet = A1Style(.RangeAddress.EndRow + 1, .RangeAddress.EndColumn + 1, , , oAddress.XSpreadsheet.Name)
+						Case UCase(&quot;LastColumn&quot;)	:	_PropertyGet = CLng(.RangeAddress.EndColumn + 1)
+						Case UCase(&quot;LastRow&quot;)		:	_PropertyGet = CLng(.RangeAddress.EndRow + 1)
+						Case UCase(&quot;SheetName&quot;)		:	_PropertyGet = oAddress.XSpreadsheet.Name
+					End Select
+				End With
 			End If
-		Case &quot;Range&quot;
+		Case UCase(&quot;Range&quot;)
 			If IsMissing(pvArg) Or IsEmpty(pvArg) Then
 				Set _PropertyGet = Nothing
 			Else
 				If Not ScriptForge.SF_Utils._Validate(pvArg, &quot;Range&quot;, V_STRING) Then GoTo Finally
 				Set _PropertyGet = _ParseAddress(pvArg)
 			End If
-		Case &quot;Sheet&quot;
+		Case UCase(&quot;Region&quot;)
+			If IsMissing(pvArg) Or IsEmpty(pvArg) Then
+				_PropertyGet = &quot;&quot;
+			Else
+				If Not ScriptForge.SF_Utils._Validate(pvArg, &quot;Range&quot;, V_STRING) Then GoTo Finally
+				Set oAddress = _ParseAddress(pvArg)
+				With oAddress
+					Set oCursor = .XSpreadsheet.createCursorByRange(.XCellRange)
+					oCursor.collapseToCurrentRegion()
+					_PropertyGet = oCursor.AbsoluteName
+				End With
+			End If
+		Case UCase(&quot;Sheet&quot;)
 			If IsMissing(pvArg) Or IsEmpty(pvArg) Then
 				Set _PropertyGet = Nothing
 			Else
 				If Not _ValidateSheet(pvArg, &quot;SheetName&quot;, , True) Then GoTo Finally
 				Set _PropertyGet = _ParseAddress(pvArg)
 			End If
-		Case &quot;Sheets&quot;
+		Case UCase(&quot;Sheets&quot;)
 			_PropertyGet = _Component.getSheets.getElementNames()
-		Case &quot;Width&quot;
+		Case UCase(&quot;Width&quot;)
 			If IsMissing(pvArg) Or IsEmpty(pvArg) Then
 				_PropertyGet = 0
 			Else
 				If Not ScriptForge.SF_Utils._Validate(pvArg, &quot;Range&quot;, V_STRING) Then GoTo Finally
 				_PropertyGet = _ParseAddress(pvArg).Width
 			End If
-		Case &quot;XCellRange&quot;
+		Case UCase(&quot;XCellRange&quot;)
 			If IsMissing(pvArg) Or IsEmpty(pvArg) Then
 				Set _PropertyGet = Nothing
 			Else
 				If Not ScriptForge.SF_Utils._Validate(pvArg, &quot;Range&quot;, V_STRING) Then GoTo Finally
 				Set _PropertyGet = _ParseAddress(pvArg).XCellRange
 			End If
-		Case &quot;XSpreadsheet&quot;
+		Case UCase(&quot;XSheetCellCursor&quot;)
+			If IsMissing(pvArg) Or IsEmpty(pvArg) Then
+				Set _PropertyGet = Nothing
+			Else
+				If Not ScriptForge.SF_Utils._Validate(pvArg, &quot;Range&quot;, V_STRING) Then GoTo Finally
+				Set oAddress = _ParseAddress(pvArg)
+				Set _PropertyGet = oAddress.XSpreadsheet.createCursorByRange(oAddress.XCellRange)
+			End If
+		Case UCase(&quot;XSpreadsheet&quot;)
 			If IsMissing(pvArg) Or IsEmpty(pvArg) Then
 				Set _PropertyGet = Nothing
 			Else
@@ -2850,15 +3792,37 @@ Finally:
 End Function	&apos;	SFDocuments.SF_Calc._PropertyGet
 
 REM -----------------------------------------------------------------------------
-Private Function _RangeToString(ByRef poAddress As Object) As String
-&apos;&apos;&apos;	Converts a range address to its A1 notation)
+Private Function _QuoteSheetName(ByVal psSheetName As String) As String
+&apos;&apos;&apos;	Return the given sheet name surrounded with single quotes
+&apos;&apos;&apos;	when required to insert the sheet name into a Calc formula
+&apos;&apos;&apos;	Enclosed single quotes are doubled
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		psSheetName: the name to quote
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		The quoted or unchanged sheet name
 
-	With poAddress
-		_RangeToString = _GetColumnName(.StartColumn + 1) &amp; CStr(.StartRow + 1) &amp; &quot;:&quot; _
-									&amp; _GetColumnName(.EndColumn + 1) &amp; CStr(.EndRow + 1)
-	End With
+Dim sSheetName As String			&apos;	Return value
+Dim i As Long
 
-End Function	&apos;	SFDocuments.SF_Calc._RangeToString
+Try:
+	&apos;	Surround the sheet name with single quotes when required by the presence of single quotes
+	If InStr(psSheetName, &quot;&apos;&quot;) &gt; 0 Then
+		sSheetName = &quot;&apos;&quot; &amp; Replace(psSheetName, &quot;&apos;&quot;, &quot;&apos;&apos;&quot;) &amp; &quot;&apos;&quot;
+	Else
+		&apos;	Surround the sheet name with single quotes when required by the presence of at least one of the special characters
+		sSheetName = psSheetName
+		For i = 1 To Len(cstSPECIALCHARS)
+			If InStr(sSheetName, Mid(cstSPECIALCHARS, i, 1)) &gt; 0 Then
+				sSheetName = &quot;&apos;&quot; &amp; sSheetName &amp; &quot;&apos;&quot;
+				Exit For
+			End If
+		Next i
+	End If
+
+Finally:
+	_QuoteSheetName = sSheetName
+	Exit Function
+End Function	&apos;	SFDocuments.SF_Calc._QuoteSheetName
 
 REM -----------------------------------------------------------------------------
 Private Function _Repr() As String
@@ -2912,6 +3876,7 @@ Private Function _ValidateSheet(Optional ByRef pvSheetName As Variant _
 									, Optional ByVal pvOptional as Variant _
 									, Optional ByVal pvNumeric As Variant _
 									, Optional ByVal pvReference As Variant _
+									, Optional ByVal pvResetSheet As Variant _
 									) As Boolean
 &apos;&apos;&apos;	Sheet designation validation function similar to the SF_Utils._ValidateXXX functions
 &apos;&apos;&apos;	Args:
@@ -2923,12 +3888,14 @@ Private Function _ValidateSheet(Optional ByRef pvSheetName As Variant _
 &apos;&apos;&apos;		pvNumeric: if True, the sheet position is accepted (default = False)
 &apos;&apos;&apos;		pvReference: if True, a sheet reference is acceptable (default = False)
 &apos;&apos;&apos;			pvNumeric and pvReference must not both be = True
+&apos;&apos;&apos;		pvResetSheet: if True, return in pvSheetName the correct (case-sensitive) sheet name (default = False)
 &apos;&apos;&apos;	Returns
 &apos;&apos;&apos;		True if valid. SheetName is reset to current value if = &quot;~&quot;
 &apos;&apos;&apos;	Exceptions
 &apos;&apos;&apos;		DUPLICATESHEETERROR		A sheet with the given name exists already
 
 Dim vSheets As Variant				&apos;	List of sheets
+Dim lSheet As Long					&apos;	Index in list of sheets
 Dim vTypes As Variant				&apos;	Array of accepted variable types
 Dim bValid As Boolean				&apos;	Return value
 
@@ -2938,6 +3905,7 @@ Check:
 	If IsMissing(pvOptional) Or IsEmpty(pvOptional) Then pvOptional = False
 	If IsMissing(pvNumeric) Or IsEmpty(pvNumeric) Then pvNumeric = False
 	If IsMissing(pvReference) Or IsEmpty(pvReference) Then pvReference = False
+	If IsMissing(pvResetSheet) Or IsEmpty(pvResetSheet) Then pvResetSheet = False
 
 	&apos;	Define the acceptable variable types
 	If pvNumeric Then
@@ -2961,6 +3929,10 @@ Try:
 				If ScriptForge.SF_Array.Contains(vSheets, pvSheetName) Then GoTo CatchDuplicate
 			Else
 				If Not ScriptForge.SF_Utils._Validate(pvSheetName, psArgName, V_STRING, vSheets) Then GoTo Finally
+				If pvResetSheet Then
+					lSheet = ScriptForge.SF_Array.IndexOf(vSheets, pvSheetName, CaseSensitive := False)
+					pvSheetName = vSheets(lSheet)
+				End If
 			End If
 		End If
 	End If

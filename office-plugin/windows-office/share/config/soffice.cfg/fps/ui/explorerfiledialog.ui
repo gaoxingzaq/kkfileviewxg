@@ -161,11 +161,10 @@
                             <child>
                               <object class="GtkToolbar" id="up_bar">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                                 <child>
                                   <object class="GtkMenuToolButton" id="up_btn">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="icon_name">res/fp010.png</property>
                                   </object>
@@ -508,6 +507,9 @@
                             <property name="has_default">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_underline">True</property>
+                            <style>
+                              <class name="suggested-action"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -891,6 +893,9 @@
     <child type="titlebar">
       <placeholder/>
     </child>
+    <action-widgets>
+      <action-widget response="-11">help</action-widget>
+    </action-widgets>
   </object>
   <object class="GtkMenu" id="up_menu">
     <property name="visible">True</property>
