@@ -107,6 +107,8 @@ public class ConfigRefreshComponent {
             String watermarkWidth = properties.getProperty("watermark.width", WatermarkConfigConstants.DEFAULT_WATERMARK_WIDTH);
             String watermarkHeight = properties.getProperty("watermark.height", WatermarkConfigConstants.DEFAULT_WATERMARK_HEIGHT);
             String watermarkAngle = properties.getProperty("watermark.angle", WatermarkConfigConstants.DEFAULT_WATERMARK_ANGLE);
+            String watermarkqy = properties.getProperty("watermark.qy", WatermarkConfigConstants.DEFAULT_WATERMARK_qy);
+            WatermarkConfigConstants.setwatermarkqyValue(watermarkqy);
             WatermarkConfigConstants.setWatermarkTxtValue(watermarkTxt);
             WatermarkConfigConstants.setWatermarkXSpaceValue(watermarkXSpace);
             WatermarkConfigConstants.setWatermarkYSpaceValue(watermarkYSpace);

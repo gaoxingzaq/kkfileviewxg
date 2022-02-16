@@ -29,6 +29,7 @@ public class WatermarkConfigConstants {
     public static String DEFAULT_WATERMARK_WIDTH = "240";
     public static String DEFAULT_WATERMARK_HEIGHT = "80";
     public static String DEFAULT_WATERMARK_ANGLE = "10";
+    public static String DEFAULT_WATERMARK_qy = "true";
 
     public static String getWatermarkTxt() {
         return WATERMARK_TXT;
@@ -41,6 +42,17 @@ public class WatermarkConfigConstants {
     @Value("${watermark.txt:}")
     public void setWatermarkTxt(String watermarkTxt) {
         setWatermarkTxtValue(watermarkTxt);
+    }
+
+    public static String getWatermarkqy() {
+        return DEFAULT_WATERMARK_qy;
+    }
+    public static void setwatermarkqyValue(String watermarkqy) {
+        DEFAULT_WATERMARK_qy = watermarkqy;
+    }
+    @Value("${watermark.qy:true}")
+    public void watermarkqy(String watermarkqy) {
+        setwatermarkqyValue(watermarkqy);
     }
 
     public static String getWatermarkXSpace() {

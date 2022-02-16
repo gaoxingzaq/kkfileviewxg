@@ -2,6 +2,7 @@ package cn.keking.web.filter;
 
 import cn.keking.config.ConfigConstants;
 import cn.keking.config.WatermarkConfigConstants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.*;
@@ -43,13 +44,19 @@ public class AttributeSetFilter implements Filter {
      * 设置水印属性
      * @param request request
      */
+
     private void setWatermarkAttribute(ServletRequest request) {
         String watermarkTxt = request.getParameter("watermarkTxt");
         if(watermarkTxt == null || "".equals(watermarkTxt)){
         }else {
             watermarkTxt= HtmlUtils.htmlEscape(watermarkTxt);
         }
-        request.setAttribute("watermarkTxt", watermarkTxt != null ? watermarkTxt : WatermarkConfigConstants.getWatermarkTxt());
+
+        if( WatermarkConfigConstants.getWatermarkqy().equalsIgnoreCase("true")){
+            request.setAttribute("watermarkTxt", watermarkTxt != null ? watermarkTxt : WatermarkConfigConstants.getWatermarkTxt());
+        }else {
+            request.setAttribute("watermarkTxt",  WatermarkConfigConstants.getWatermarkTxt());
+        }
         request.setAttribute("watermarkXSpace", WatermarkConfigConstants.getWatermarkXSpace());
         request.setAttribute("watermarkYSpace", WatermarkConfigConstants.getWatermarkYSpace());
         request.setAttribute("watermarkFont", WatermarkConfigConstants.getWatermarkFont());
