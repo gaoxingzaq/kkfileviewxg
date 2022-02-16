@@ -78,6 +78,15 @@ public class DownloadUtils {
                 if (isHttpUrl(url)) {
                     File realFile = new File(realPath);
                     FileUtils.copyURLToFile(url, realFile);
+                    int retryTimes =0;
+                    while (retryTimes <3){
+                        FileUtils.copyURLToFile(url, realFile);
+                       if (realFile.length() != 0){
+                          break;
+                        }
+                        realFile.delete();
+                        retryTimes++;
+                    }
                 } else if (isFtpUrl(url)) {
                     String ftpUsername = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_USERNAME);
                     String ftpPassword = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_PASSWORD);

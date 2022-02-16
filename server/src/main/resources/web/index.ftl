@@ -106,6 +106,13 @@
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年2月16日，v4.6.1版本发布:<br>  
+1、更新LibreOffice到7.3<br>
+2、更新更新CAD组件<br>
+3、恢复OFD到以前版本<br>	
+4、修复压缩包水印问题<br>	
+5、新增下载方法判断网络不稳定下载为0的时候 判断3次重新下载<br><br>		   
+	   
 2022年1月20日，v4.6版本发布:<br>  
 1、加入异步方法<br>
 2、修复水印方法的执行代码漏洞<br>
@@ -417,6 +424,11 @@
 
         $('#preview_by_url').submit(function() {
             var _url = $("#_url").val();
+			
+if(_url==""||_url==null||_url==undefined){
+ alert("地址为空弹出默认图片");
+    _url="http://n.sinaimg.cn/news/crawl/167/w1080h687/20210311/4044-kmeeius6951805.jpg";
+}
             var urlField = $(this).find('[name=url]');
             var b64Encoded = Base64.encode(_url);
             urlField.val(b64Encoded);

@@ -8,7 +8,7 @@ install_redhat() {
      yum groupinstall -y  "X Window System"
      rpm -Uvih *.rpm
      echo 'install desktop service ...'
-     rpm -Uvih desktop-integration/openoffice4.1.10-redhat-menus-4.1.10-9807.noarch.rpm
+     rpm -Uvih desktop-integration/openoffice4.1.11-redhat-menus-4.1.11-9808.noarch.rpm
      echo 'install finshed...'
    else
      echo 'download package error...'
@@ -21,7 +21,7 @@ install_ubuntu() {
  if [ $? -eq 0 ];then
      dpkg -i *.deb
      echo 'install desktop service ...'
-     dpkg -i desktop-integration/openoffice4.1.10-debian-menus_4.1.10-9807_all.deb
+     dpkg -i desktop-integration/openoffice4.1.11-debian-menus_4.1.11-9808_all.deb
      echo 'install finshed...'
   else
     echo 'download package error...'

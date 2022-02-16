@@ -50,8 +50,14 @@
 </div>
 <script>
  function deleteFile(fileName) {
- window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(fileName)));
+ window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(fileName))+"&watermarkTxt=${watermarkTxt}");
     }
+		  		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
 </script>
 </body>
 </html>
