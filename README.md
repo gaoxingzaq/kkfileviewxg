@@ -7,7 +7,8 @@
 1. 支持 txt, xml(渲染), md(渲染), java, php, py, js, css 等所有纯文本
 1. 支持 zip, rar, jar, tar, gzip 等压缩包
 1. 支持 jpg, jpeg, png, gif, tif, tiff,webp 等图片预览（翻转，缩放，镜像）
-1. 支持 eml,ofd,svg  OFD引用来源于 https://gitee.com/Donal/ofd.js 开源协议Apache-2.0
+1. 支持 eml,svg
+1. 支持 OFD 来源于 https://gitee.com/Donal/ofd.js 开源协议Apache-2.0
 1. 使用 spring-boot 开发，预览服务搭建部署非常简便
 1. rest 接口提供服务，跨语言、跨平台特性(java,php,python,go,php，....)都支持，应用接入简单方便
 1. 抽象预览服务接口，方便二次开发，非常方便添加其他类型文件预览支持
@@ -190,7 +191,7 @@ pdf预览模式预览效果如下
 7、新增右键F12等限制   
 
 2021年12月10日，v4.1.9.1版本发布:  
-1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv  基于开源@https://github.com/kovacsv/Online3DViewer可以商用  
+1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv  基于开源@https://github.com/kovacsv/Online3DViewer 可以商用  
 2、修改压缩包解压方法  感谢 @BoneBee  
 3、新增POI和开源OFFICE切换模式&officePreviewType=poi  &officePreviewType=office  
  
@@ -224,7 +225,7 @@ pdf预览模式预览效果如下
 6、进一步调整分页功能 还需要继续完善  
 
 > 2021年11月17日，v4.1.4版本发布 ：  
-1、新增xlsx输出为JS解析 (配置文件启用)  解析方法luckysheet 地址为:https://gitee.com/mengshukeji/Luckysheet开源协议MIT   
+1、新增xlsx输出为JS解析 (配置文件启用)  解析方法luckysheet 地址为:https://gitee.com/mengshukeji/Luckysheet 开源协议MIT   
 2、xlsx输出调用方法 &officePreviewType=xlsx (JS解析方法)  &officePreviewType=html (转换为HTML)  
  
 > 2021年11月17日，v4.1.3版本发布 ：    
