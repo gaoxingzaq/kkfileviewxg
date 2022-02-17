@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <title>${file.name}多媒体文件预览</title>
+    <link rel="stylesheet" href="plyr/plyr.css"/>
+    <script type="text/javascript" src="plyr/plyr.js"></script>
+    <#include "*/commonHeader.ftl">
+    <style>
+        body {
+            background-color: #404040;
+        }
+
+        .m {
+            width: 1024px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="m">
+    <video>
+        <source src="${mediaUrl}"/>
+    </video>
+</div>
+<script>
+    plyr.setup();
+  		 /*初始化水印*/
+ if (!!window.ActiveXObject || "ActiveXObject" in window)
+{
+}else{
+ initWaterMark();
+}
+</script>
+</body>
+</html>
