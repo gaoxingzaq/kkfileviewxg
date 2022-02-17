@@ -106,6 +106,9 @@
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年2月17日，v4.6.2版本发布:<br>  
+1、视频播放器更新 新增,m3u8,ts格式支持<br><br>	
+	   
 2022年2月16日，v4.6.1版本发布:<br>  
 1、更新LibreOffice到7.3<br>
 2、更新CAD组件<br>

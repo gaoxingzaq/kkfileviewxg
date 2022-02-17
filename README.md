@@ -3,10 +3,11 @@
 ### 项目特性
 
 1. 支持 office, pdf, cad 等办公文档
+1. 支持 dwg dxf等cad文件 CAD文件商用需要去购买aspose-cad
 1. 支持 txt, xml(渲染), md(渲染), java, php, py, js, css 等所有纯文本
 1. 支持 zip, rar, jar, tar, gzip 等压缩包
 1. 支持 jpg, jpeg, png, gif, tif, tiff,webp 等图片预览（翻转，缩放，镜像）
-1. 支持 eml,ofd,svg  OFD引用来源于 https://gitee.com/Donal/ofd.js 
+1. 支持 eml,ofd,svg  OFD引用来源于 https://gitee.com/Donal/ofd.js 开源协议Apache-2.0
 1. 使用 spring-boot 开发，预览服务搭建部署非常简便
 1. rest 接口提供服务，跨语言、跨平台特性(java,php,python,go,php，....)都支持，应用接入简单方便
 1. 抽象预览服务接口，方便二次开发，非常方便添加其他类型文件预览支持
@@ -105,6 +106,9 @@ pdf预览模式预览效果如下
 ![输入图片说明](https://gitee.com/uploads/images/2017/1213/100221_ea15202e_492218.png "屏幕截图.png")
 
 ### 历史更新记录 
+2022年2月17日，v4.6.2版本发布:  
+1、视频播放器更换为ckplaye 新增,m3u8,ts格式支持 ckplaye开源协议：MIT  
+
 2022年2月16日，v4.6.1版本发布:  
 1、更新LibreOffice到7.3  
 2、更新CAD组件  
@@ -186,7 +190,7 @@ pdf预览模式预览效果如下
 7、新增右键F12等限制   
 
 2021年12月10日，v4.1.9.1版本发布:  
-1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv  基于开源@https://github.com/kovacsv/Online3DViewer  
+1、新增N多格式 obj、3ds、stl、ply、off、3dm、fbx、dae、wrl、3mf、ifc、glb、o3dv  基于开源@https://github.com/kovacsv/Online3DViewer可以商用  
 2、修改压缩包解压方法  感谢 @BoneBee  
 3、新增POI和开源OFFICE切换模式&officePreviewType=poi  &officePreviewType=office  
  
@@ -220,8 +224,8 @@ pdf预览模式预览效果如下
 6、进一步调整分页功能 还需要继续完善  
 
 > 2021年11月17日，v4.1.4版本发布 ：  
-1、新增xlsx输出为JS解析 (配置文件启用)  解析方法luckysheet 地址为:https://gitee.com/mengshukeji/Luckysheet  
-2、xlsx输出调用方法 &officePreviewType=xlsx (JS解析方法)  &officePreviewType=html (转换为HTML) 
+1、新增xlsx输出为JS解析 (配置文件启用)  解析方法luckysheet 地址为:https://gitee.com/mengshukeji/Luckysheet开源协议MIT   
+2、xlsx输出调用方法 &officePreviewType=xlsx (JS解析方法)  &officePreviewType=html (转换为HTML)  
  
 > 2021年11月17日，v4.1.3版本发布 ：    
 1、修复4.1.2版本的PDF跨域文件URL被转义错误  
