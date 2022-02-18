@@ -106,6 +106,10 @@
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年2月18日，v4.6.3版本发布:<br>  
+1、日志加入记录IP功能 <br>
+2、IE浏览器PDF 修复无法隐藏打印和没有限制功能 <br><br>	
+	   
 2022年2月17日，v4.6.2版本发布:<br>  
 1、视频播放器更新 新增,m3u8,ts格式支持<br><br>	
 	   
