@@ -67,6 +67,19 @@ public class OnlinePreviewController {
     private String pdfpagee;
     @RequestMapping(value = "/onlinePrevieww")
     public String onlinePrevieww(String url, Model model, HttpServletRequest req) {
+        String ip = req.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = req.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = req.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = req.getRemoteAddr();
+        }
+        if (ip.contains(",")) {
+            ip = ip.split(",")[0];
+        }
         String fileUrl;
         try {
             if(base641.equalsIgnoreCase("true")){
@@ -91,7 +104,7 @@ public class OnlinePreviewController {
         if(wjl){
             fileUrl =  fileUrl.substring(0,fileUrl.lastIndexOf("&"));  //删除添加的文件流内容
         }
-        logger.info("预览文件url：{}，previewType：{}", fileUrl, fileAttribute.getType());
+        logger.info("预览文件url：{}，IP：{}，previewType：{}", fileUrl,ip, fileAttribute.getType());
         return filePreview.filePreviewHandle(fileUrl, model, fileAttribute);
     }
     @RequestMapping(value = "/onlinePreview")

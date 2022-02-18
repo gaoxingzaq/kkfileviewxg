@@ -1,22 +1,4 @@
 ﻿<!DOCTYPE html>
-<!--
-Copyright 2012 Mozilla Foundation
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Adobe CMap resources are covered by their own copyright and license:
-http://sourceforge.net/adobe/cmap/wiki/License/
--->
 <html dir="ltr" mozdisallowselectionprint moznomarginboxes>
   <head>
     <meta charset="utf-8">
@@ -29,9 +11,6 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 
     <script src="compatibility.js"></script>
 
-
-
-<!-- This snippet is used in production (included from viewer.html) -->
 <link rel="resource" type="application/l10n" href="locale/locale.properties"/>
 <script src="l10n.js"></script>
 <script src="../build/pdf.js"></script>
@@ -218,8 +197,24 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                       <option title="" value="1.25" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 125 }'>125%</option>
                       <option title="" value="1.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 150 }'>150%</option>
                       <option title="" value="2" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 200 }'>200%</option>
-                      <option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 300 }'>300%</option>
-                      <option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 400 }'>400%</option>
+                     <option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 300 }'>300%</option>
+                    <option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 400 }'>400%</option>
+					<option title="" value="5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 500 }'>500%</option>
+					<option title="" value="6" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 600 }'>600%</option>
+					<option title="" value="7" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 700 }'>700%</option>
+					<option title="" value="8" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 800 }'>800%</option>
+					<option title="" value="9" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 900 }'>900%</option>
+					<option title="" value="10" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 1000 }'>1000%</option>
+					<option title="" value="11" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 1500 }'>1500%</option>
+					<option title="" value="12" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 2000 }'>2000%</option>
+					<option title="" value="13" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 2500 }'>2500%</option>
+					<option title="" value="14" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 3000 }'>3000%</option>
+					<option title="" value="15" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 3500 }'>3500%</option>
+					<option title="" value="16" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 4000 }'>4000%</option>
+					<option title="" value="17" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 4500 }'>4500%</option>
+					<option title="" value="18" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 5000 }'>5000%</option>
+					<option title="" value="19" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 5500 }'>5500%</option>
+					<option title="" value="20" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 6000 }'>6000%</option>
                     </select>
                   </span>
                 </div>
@@ -411,16 +406,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
       <input type="button" value="Cancel" class="mozPrintCallback-cancel">
     </div>
   </div>
-  <script>
-    var DEFAULT_URL = './getPdfFile?url='+getQueryStringByName('pdf');
-    function getQueryStringByName(name){
-       var result = location.search.match(new RegExp("[\?\&]" + name+ "=([^\&]+)","i"));
-       if(result == null || result.length < 1){
-           return "";
-       }
-       return result[1];
-    }
-</script>
+  
 </div>
 
   </body>
