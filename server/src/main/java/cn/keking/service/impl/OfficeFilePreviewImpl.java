@@ -43,7 +43,6 @@ public class OfficeFilePreviewImpl implements FilePreview {
     }
     @Value("${office.officexh:1}")
     private String officexh;
-    private String xlsxzh;
     @Value("${pdfsize:10}")
     private int pdfsize;
     @Value("${pdfpagee:0}")
@@ -87,7 +86,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
         }
         boolean xlsx =  suffix.equalsIgnoreCase("xlsx");
 
-        if(officePreviewType.equalsIgnoreCase("xlsx") || xlsxzh.equalsIgnoreCase("true")){  //是否开启xlsx直接输出功能
+        if(officePreviewType.equalsIgnoreCase("xlsx") || ConfigConstants.getxlsxzh().equalsIgnoreCase("true")){  //是否开启xlsx直接输出功能
 
             if(officePreviewType.equalsIgnoreCase("html")){
 
