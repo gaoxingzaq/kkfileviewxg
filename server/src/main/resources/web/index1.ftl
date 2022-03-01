@@ -15,7 +15,11 @@
     <script type="text/javascript" src="bootstrap-table/bootstrap-table.min.js"></script>
  
 </head>
-
+<style>
+ td{
+white-space:pre-line;word-wrap: break-word;    word-break: break-all;
+}
+</style>
 <body>
 <div class="panel-group container" id="accordion">
     <h1>文件预览项目接入和测试界面</h1>

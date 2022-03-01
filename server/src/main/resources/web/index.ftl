@@ -16,7 +16,11 @@
  
     <script type="text/javascript" src="js/base64.min.js"></script>
 </head>
-
+		<style>
+ td{
+white-space:pre-line;word-wrap: break-word;    word-break: break-all;
+}
+</style>
 <body>
 <div class="panel-group container" id="accordion">
     <h1>文件预览项目接入和测试界面</h1>
@@ -108,7 +112,8 @@
        <div id="div" class="panel-body" style="display:none;">
 2022年2月18日，v4.6.4版本发布:<br>  
 1、视频广告可以在配置文件调整<br>
-2、OFD重新构建支持生成SVG、pdf<br><br>	
+2、OFD重新构建支持生成SVG、pdf<br>
+3、参数动态配置<br><br>	
 	   
 2022年2月18日，v4.6.3版本发布:<br>  
 1、日志加入记录IP功能 <br>
