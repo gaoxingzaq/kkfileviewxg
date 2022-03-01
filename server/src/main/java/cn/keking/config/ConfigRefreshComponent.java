@@ -12,7 +12,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 /**
  * @auther: chenjh
  * @time: 2019/4/10 16:16
