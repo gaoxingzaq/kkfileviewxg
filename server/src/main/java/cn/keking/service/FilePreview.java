@@ -32,6 +32,7 @@ public interface FilePreview {
     String Online3D_FILE_PAGE = "online3D";
     String Mht_FILE_PAGE = "mht";
     String Jiaz_FILE_PAGE = "jiazai";
+    String Ofdsvg_FILE_PAGE = "ofdsvg";
 
     String filePreviewHandle(String url, Model model, FileAttribute fileAttribute);
 }

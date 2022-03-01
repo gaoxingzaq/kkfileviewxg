@@ -31,8 +31,6 @@ public class PdfFilePreviewImpl implements FilePreview {
         this.fileHandlerService = fileHandlerService;
         this.otherFilePreview = otherFilePreview;
     }
-    @Value("${pdffy:false}")
-    private String pdffy;
     @Value("${pdfpagee:0}")
     private String pdfpagee;
     @Override
@@ -127,7 +125,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                     }
                 } else {
                     pdfName= FileHandlerService.zhuanyii(pdfName);
-                    if( pdffy.equalsIgnoreCase("false")){
+                    if( ConfigConstants.getpdffy().equalsIgnoreCase("false")){
 
                     }else {
                         pdfName= FileHandlerService.zhuanyii(pdfName); //文件名转义
@@ -143,7 +141,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                     model.addAttribute("pdfUrl",fileTree);
                     return PDF_FILE_PREVIEW_PAGE;
                 }
-                if( pdffy.equalsIgnoreCase("false")){  //查询是否开启分页模式
+                if( ConfigConstants.getpdffy().equalsIgnoreCase("false")){  //查询是否开启分页模式
                     if(!bendi){  //不是本地直接输出
                         model.addAttribute("pdfUrl",url);
                         return PDF_FILE_PREVIEW_PAGE;

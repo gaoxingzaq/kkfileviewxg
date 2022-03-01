@@ -43,13 +43,6 @@ public class OfficeFilePreviewImpl implements FilePreview {
     }
     @Value("${office.officexh:1}")
     private String officexh;
-    @Value("${PPTXTP:1}")
-    private int pptx;
-    @Value("${pdffy:false}")
-    private String pdffy;
-    @Value("${officedel:true}")
-    private String officedel;
-    @Value("${xlsxzh:true}")
     private String xlsxzh;
     @Value("${pdfsize:10}")
     private int pdfsize;
@@ -133,7 +126,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他，尝试其他文件");
                         }
                     }else if(ppt){
-
+                        int pptx = Integer.parseInt(ConfigConstants.getPPTXTP());
                         if(POIPptToHtml.pptToHtml(filePath, ptxName,outFilePath, pptx)){
                         }else {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他，尝试其他文件");
@@ -181,7 +174,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
                          model.addAttribute("textData", Base64.encodeBase64String(fileData.getBytes()));
                          return TXT_FILE_PREVIEW_PAGE;
                      }else {
-                         if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                         if( ConfigConstants.getofficedel().equalsIgnoreCase("false")){  //是否保留OFFICE源文件
                              KkFileUtils.deleteFileByPath(filePath);
                          }
                          return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
@@ -193,7 +186,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
                  }
              }
          }
-            if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+            if( ConfigConstants.getofficedel().equalsIgnoreCase("false")){  //是否保留OFFICE源文件
                 KkFileUtils.deleteFileByPath(filePath);
             }
             File file = new File(FILE_DIR + pdfName);   //判断文件是否存在
@@ -209,7 +202,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
             return getPreviewType(model, fileAttribute, officePreviewType, baseUrl, pdfName, outFilePath, fileHandlerService, OFFICE_PREVIEW_TYPE_IMAGE, otherFilePreview);
         }
 
-        if(isHtml || pdffy.equalsIgnoreCase("false")){  //是否开启PDF分割功能
+        if(isHtml || ConfigConstants.getpdffy().equalsIgnoreCase("false")){  //是否开启PDF分割功能
 
         }else {
 

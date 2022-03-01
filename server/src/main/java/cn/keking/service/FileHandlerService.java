@@ -326,24 +326,20 @@ public class FileHandlerService {
      * baseUrl 基础访问地址
      * 图片访问集合
      */
-    @Value("${pdfjpg:144}")  //转换图片清晰度
-    private int pdfjpg;
-    @Value("${pdffy:false}")
-    private String pdffy;
+
     @Value("${pdfpagee:0}")
     private String pdfpagee;
-    @Value("${yashuo:false}")
-    private String yashuo;
     public List<String> pdf2jpg(String pdfFilePath, String pdfName, String baseUrl, FileAttribute fileAttribute) {
         String gengxin=fileAttribute.getgengxin();
         List<String> imageUrls = new ArrayList<>();
+        int pdfjpg= Integer.parseInt(ConfigConstants.getpdfjpg());
         Integer imageCount;
         String imageFileSuffix = ".jpg";
         String pdfFolder = pdfName.substring(0, pdfName.length() - 4);
         if(StringUtil.isNotBlank(gengxin) && "ok".equalsIgnoreCase(gengxin)) {  //去缓存更新
             imageCount = Integer.valueOf("0");
         }else {
-            if(pdffy.equalsIgnoreCase("false") ||pdfpagee.equalsIgnoreCase("0") ){    //是否开启分片功能
+            if(ConfigConstants.getpdffy().equalsIgnoreCase("false") ||pdfpagee.equalsIgnoreCase("0") ){    //是否开启分片功能
                 imageCount = this.getConvertedPdfImage(pdfFilePath);
             }else {
                 imageCount = this.getConvertedPdfImage(FILE_DIR+"ls"+pdfName);
@@ -351,7 +347,7 @@ public class FileHandlerService {
         }
        // System.out.println(pdfFilePath);
         String urlPrefix;
-        if(pdffy.equalsIgnoreCase("false")){    //是否开启分片功能
+        if(ConfigConstants.getpdffy().equalsIgnoreCase("false")){    //是否开启分片功能
             urlPrefix = baseUrl + pdfFolder;   //不改变路径
         }else {
             if(pdfpagee.equalsIgnoreCase("0") || pdfpage(pdfName)<=1){
@@ -392,7 +388,7 @@ public class FileHandlerService {
             for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
                 imageFilePath = folder + File.separator + pageIndex + imageFileSuffix;
                 BufferedImage image = pdfRenderer.renderImageWithDPI(pageIndex, pdfjpg, ImageType.RGB);
-                if(yashuo.equalsIgnoreCase("true")) {
+                if(ConfigConstants.getyashuo().equalsIgnoreCase("true")) {
                     Thumbnails.of(image).scale(1.0).outputQuality(0.5).toFile(new File(imageFilePath));   //压缩图片
                 }else {
                     ImageIOUtil.writeImage(image, imageFilePath, pdfjpg);

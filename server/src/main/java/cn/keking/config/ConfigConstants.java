@@ -36,9 +36,19 @@ public class ConfigConstants {
     private static CopyOnWriteArraySet<String> trustHostSet;
     private static String pdfDownloadDisable;
     private static String pdfXianzhi;
+    private static String mediagg;
     private static String pdfyeman;
     private static Boolean fileUploadDisable;
     private static String tifPreviewType;
+    private static String ofdPreviewType;
+    private static String xlsxzh;
+    private static String officedel;
+    private static String PPTXTP;
+    private static String pdfjpg;
+    private static String yashuo;
+    private static String localpreview;
+    private static String previewindex;
+    private static String pdffy;
 
     public static final String DEFAULT_CACHE_ENABLED = "true";
     public static final String DEFAULT_TXT_TYPE = "txt,xml,json,properties,md,gitignore,log,m,bas,prg";
@@ -52,8 +62,19 @@ public class ConfigConstants {
     public static final String DEFAULT_FILE_DIR_VALUE = "default";
     public static final String DEFAULT_TRUST_HOST = "default";
     public static final String DEFAULT_PDF_DOWNLOAD_DISABLE = "true";
+    public static final String DEFAULT_pdfXianzhi_DISABLE = "true";
+    public static final String DEFAULT_mediagg_DISABLE = "高雄修改";
     public static final String DEFAULT_FILE_UPLOAD_DISABLE = "false";
     public static final String DEFAULT_TIF_PREVIEW_TYPE = "tif";
+    public static final String DEFAULT_OFD_PREVIEW_TYPE = "ofd";
+    public static final String DEFAULT_xlsxzh_PREVIEW_TYPE = "false";
+    public static final String DEFAULT_officedel_PREVIEW_TYPE = "false";
+    public static final String DEFAULT_PPTXTP_PREVIEW_TYPE = "2";
+    public static final String DEFAULT_pdfjpg_PREVIEW_TYPE = "100";
+    public static final String DEFAULT_yashuo_PREVIEW_TYPE = "false";
+    public static final String DEFAULT_localpreview_PREVIEW_TYPE = "true";
+    public static final String DEFAULT_previewindex_PREVIEW_TYPE = "true";
+    public static final String DEFAULT_pdffy_PREVIEW_TYPE = "false";
 
 
     public static Boolean isCacheEnabled() {
@@ -256,6 +277,17 @@ public class ConfigConstants {
         ConfigConstants.pdfXianzhi = pdfXianzhi;
     }
 
+    public static String getmediagg() {
+        return mediagg;
+    }
+    @Value("${gg.media:高雄修改版本}")
+    public void setmediagg(String mediagg) {
+        setmediaggValue(mediagg);
+    }
+    public static void setmediaggValue(String mediagg) {
+        ConfigConstants.mediagg = mediagg;
+    }
+
     public static String getOfficePreviewSwitchDisabled() {
         return officePreviewSwitchDisabled;
     }
@@ -295,4 +327,124 @@ public class ConfigConstants {
     public static void setTifPreviewTypeValue(String tifPreviewType) {
         ConfigConstants.tifPreviewType = tifPreviewType;
     }
+
+    public static String getOfdPreviewType() {
+        return ofdPreviewType;
+    }
+
+    @Value("${OFD.preview.type:ofd}")
+    public void setOfdPreviewType(String ofdPreviewType) {
+        setOfdPreviewTypeValue(ofdPreviewType);
+    }
+
+    public static void setOfdPreviewTypeValue(String ofdPreviewType) {
+        ConfigConstants.ofdPreviewType = ofdPreviewType;
+    }
+
+    public static String getxlsxzh() {
+        return xlsxzh;
+    }
+
+    @Value("${xlsxzh:false}")
+    public void setxlsxzh(String xlsxzh) {
+        setxlsxzhValue(xlsxzh);
+    }
+
+    public static void setxlsxzhValue(String xlsxzh) {
+        ConfigConstants.xlsxzh = xlsxzh;
+    }
+
+    public static String getofficedel() {
+        return officedel;
+    }
+
+    @Value("${officedel:false}")
+    public void setofficedel(String officedel) {
+        setofficedelValue(officedel);
+    }
+
+    public static void setofficedelValue(String officedel) {
+        ConfigConstants.officedel = officedel;
+    }
+
+
+    public static String getpdffy() {
+        return pdffy;
+    }
+
+    @Value("${pdffy:false}")
+    public void setpdffy(String pdffy) {
+        setofficedelValue(pdffy);
+    }
+
+    public static void setpdffyValue(String pdffy) {
+        ConfigConstants.pdffy = pdffy;
+    }
+
+
+    public static String getyashuo() {
+        return yashuo;
+    }
+
+    @Value("${yashuo:false}")
+    public void setyashuo(String yashuo) {
+        setyashuoValue(yashuo);
+    }
+
+    public static void setyashuoValue(String yashuo) {
+        ConfigConstants.yashuo = yashuo;
+    }
+
+
+    public static String getpdfjpg() {
+        return pdfjpg;
+    }
+
+    @Value("${pdfjpg:false}")
+    public void setpdfjpg(String pdfjpg) {
+        setpdfjpgValue(pdfjpg);
+    }
+
+    public static void setpdfjpgValue(String pdfjpg) {
+        ConfigConstants.pdfjpg = pdfjpg;
+    }
+
+
+    public static String getPPTXTP() {
+        return PPTXTP;
+    }
+
+    @Value("${PPTXTP:2}")
+    public void setPPTXTP(String PPTXTP) {
+        setPPTXTPValue(PPTXTP);
+    }
+    public static void setPPTXTPValue(String PPTXTP) {
+        ConfigConstants.PPTXTP = PPTXTP;
+    }
+
+    public static String getlocalpreview() {
+        return localpreview;
+    }
+
+    @Value("${local.preview.dir:true}")
+    public void setlocalpreview(String localpreview) {
+        setlocalpreviewValue(localpreview);
+    }
+    public static void setlocalpreviewValue(String localpreview) {
+        ConfigConstants.localpreview = localpreview;
+    }
+
+    public static String getpreviewindex() {
+        return previewindex;
+    }
+
+    @Value("${local.preview.index:true}")
+    public void setpreviewindex(String previewindex) {
+        setpreviewindexValue(previewindex);
+    }
+
+    public static void setpreviewindexValue(String previewindex) {
+        ConfigConstants.previewindex = previewindex;
+    }
+
 }

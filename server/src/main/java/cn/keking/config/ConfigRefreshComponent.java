@@ -48,8 +48,19 @@ public class ConfigRefreshComponent {
                 String baseUrl;
                 String trustHost;
                 String pdfDownloadDisable;
+                String pdfXianzhi;
+                String mediagg;
                 boolean fileUploadDisable;
                 String tifPreviewType;
+                String ofdPreviewType;
+                String xlsxzh;
+                String officedel;
+                String PPTXTP;
+                String pdfjpg;
+                String yashuo;
+                String localpreview;
+                String previewindex;
+                String pdffy;
 
                 while (true) {
                     FileReader fileReader = new FileReader(configFilePath);
@@ -69,8 +80,19 @@ public class ConfigRefreshComponent {
                     baseUrl = properties.getProperty("base.url", ConfigConstants.DEFAULT_BASE_URL);
                     trustHost = properties.getProperty("trust.host", ConfigConstants.DEFAULT_TRUST_HOST);
                     pdfDownloadDisable = properties.getProperty("pdf.download.disable", ConfigConstants.DEFAULT_PDF_DOWNLOAD_DISABLE);
+                    pdfXianzhi = properties.getProperty("pdf.xianzhi", ConfigConstants.DEFAULT_pdfXianzhi_DISABLE);
+                    mediagg = properties.getProperty("gg.media", ConfigConstants.DEFAULT_mediagg_DISABLE);
                     fileUploadDisable = Boolean.parseBoolean(properties.getProperty("file.upload.disable", ConfigConstants.DEFAULT_FILE_UPLOAD_DISABLE));
                     tifPreviewType = properties.getProperty("tif.preview.type", ConfigConstants.DEFAULT_TIF_PREVIEW_TYPE);
+                    ofdPreviewType = properties.getProperty("OFD.preview.type", ConfigConstants.DEFAULT_OFD_PREVIEW_TYPE);
+                    xlsxzh = properties.getProperty("xlsxzh", ConfigConstants.DEFAULT_xlsxzh_PREVIEW_TYPE);
+                    officedel = properties.getProperty("officedel", ConfigConstants.DEFAULT_officedel_PREVIEW_TYPE);
+                    PPTXTP = properties.getProperty("PPTXTP", ConfigConstants.DEFAULT_PPTXTP_PREVIEW_TYPE);
+                    pdfjpg = properties.getProperty("pdfjpg", ConfigConstants.DEFAULT_pdfjpg_PREVIEW_TYPE);
+                    yashuo = properties.getProperty("yashuo", ConfigConstants.DEFAULT_yashuo_PREVIEW_TYPE);
+                    localpreview = properties.getProperty("local.preview.dir", ConfigConstants.DEFAULT_localpreview_PREVIEW_TYPE);
+                    previewindex = properties.getProperty("local.preview.index ", ConfigConstants.DEFAULT_previewindex_PREVIEW_TYPE);
+                    pdffy = properties.getProperty("pdffy", ConfigConstants.DEFAULT_pdffy_PREVIEW_TYPE);
 
                     ConfigConstants.setCacheEnabledValueValue(cacheEnabled);
                     ConfigConstants.setSimTextValue(textArray);
@@ -83,8 +105,19 @@ public class ConfigRefreshComponent {
                     ConfigConstants.setTrustHostValue(trustHost);
                     ConfigConstants.setOfficePreviewSwitchDisabledValue(officePreviewSwitchDisabled);
                     ConfigConstants.setPdfDownloadDisableValue(pdfDownloadDisable);
+                    ConfigConstants.setpdfXianzhiValue(pdfXianzhi);
+                    ConfigConstants.setmediaggValue(mediagg);
                     ConfigConstants.setFileUploadDisableValue(fileUploadDisable);
                     ConfigConstants.setTifPreviewTypeValue(tifPreviewType);
+                    ConfigConstants.setOfdPreviewTypeValue(ofdPreviewType);
+                    ConfigConstants.setxlsxzhValue(xlsxzh);
+                    ConfigConstants.setofficedelValue(officedel);
+                    ConfigConstants.setPPTXTPValue(PPTXTP);
+                    ConfigConstants.setpdfjpgValue(pdfjpg);
+                    ConfigConstants.setyashuoValue(yashuo);
+                    ConfigConstants.setlocalpreviewValue(localpreview);
+                    ConfigConstants.setpreviewindexValue(previewindex);
+                    ConfigConstants.setpdffyValue(pdffy);
 
                     setWatermarkConfig(properties);
                     bufferedReader.close();

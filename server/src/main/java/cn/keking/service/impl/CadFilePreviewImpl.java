@@ -37,8 +37,6 @@ public class CadFilePreviewImpl implements FilePreview {
         this.fileHandlerService = fileHandlerService;
         this.otherFilePreview = otherFilePreview;
     }
-    @Value("${officedel:true}")
-    private String officedel;
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         // 预览Type，参数传了就取参数的，没传取系统默认
@@ -83,7 +81,7 @@ public class CadFilePreviewImpl implements FilePreview {
                         convertResult = fileHandlerService.cadToPdf(filePath, outFilePath);
                     }
 
-                    if( officedel.equalsIgnoreCase("false")){  //是否保留OFFICE源文件
+                    if( ConfigConstants.getofficedel().equalsIgnoreCase("false")){  //是否保留OFFICE源文件
                         KkFileUtils.deleteFileByPath(filePath);
                     }
                     if (!convertResult) {

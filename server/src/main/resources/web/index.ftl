@@ -106,6 +106,10 @@
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年2月18日，v4.6.4版本发布:<br>  
+1、视频广告可以在配置文件调整<br>
+2、OFD重新构建支持生成SVG、pdf<br><br>	
+	   
 2022年2月18日，v4.6.3版本发布:<br>  
 1、日志加入记录IP功能 <br>
 2、IE浏览器PDF 修复无法隐藏打印和没有限制功能 <br><br>	

@@ -88,6 +88,6 @@
 }
 		</script>
 	
-		<div class="adpause">知名广告:<br />万能转换器,请认准高雄修改版</div>
+		<div class="adpause">${mediagg}</div>
 	</body>
 </html>
