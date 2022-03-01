@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author yudian-it
  * @date 2017/12/27
  */
+
 @Controller
 public class IndexController {
     @Value("${url.base64:true}")
