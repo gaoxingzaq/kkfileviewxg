@@ -91,7 +91,7 @@ public class ConfigRefreshComponent {
                     pdfjpg = properties.getProperty("pdfjpg", ConfigConstants.DEFAULT_pdfjpg_PREVIEW_TYPE);
                     yashuo = properties.getProperty("yashuo", ConfigConstants.DEFAULT_yashuo_PREVIEW_TYPE);
                     localpreview = properties.getProperty("local.preview.dir", ConfigConstants.DEFAULT_localpreview_PREVIEW_TYPE);
-                    previewindex = properties.getProperty("local.preview.index ", ConfigConstants.DEFAULT_previewindex_PREVIEW_TYPE);
+                    previewindex = properties.getProperty("local.preview.index", ConfigConstants.DEFAULT_previewindex_PREVIEW_TYPE);
                     pdffy = properties.getProperty("pdffy", ConfigConstants.DEFAULT_pdffy_PREVIEW_TYPE);
 
                     ConfigConstants.setCacheEnabledValueValue(cacheEnabled);
