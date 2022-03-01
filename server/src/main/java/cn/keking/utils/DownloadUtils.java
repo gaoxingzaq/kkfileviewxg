@@ -29,11 +29,6 @@ public class DownloadUtils {
     private static final String URL_PARAM_FTP_USERNAME = "ftp.username";
     private static final String URL_PARAM_FTP_PASSWORD = "ftp.password";
     private static final String URL_PARAM_FTP_CONTROL_ENCODING = "ftp.control.encoding";
-    private static  String preview;
-    @Value("${local.preview.dir:true}")
-    public void setpdfhtmlqy(String pdfhtmlqy){
-        preview = pdfhtmlqy;
-    }
     /**
      * @param fileAttribute fileAttribute
      * @param fileName      文件名
@@ -56,7 +51,7 @@ public class DownloadUtils {
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {
             URL url = WebUtils.normalizedURL(urlStr);
-            if(!preview.equalsIgnoreCase("false") && !urlStr.toLowerCase().startsWith("ftp")) {
+            if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false") && !urlStr.toLowerCase().startsWith("ftp")) {
                 HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();
                 urlcon.setConnectTimeout(30000);
                 urlcon.setReadTimeout(30000);
