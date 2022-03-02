@@ -112,7 +112,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
        <div id="div" class="panel-body" style="display:none;">
 2022年3月2日，v4.6.5版本发布:<br>  
 1、参数动态配置<br>
-2、新增dps和et两张格式转换<br>
+2、新增dps和et两种格式转换<br>
 3、base64或者直接URL自动识别<br><br>
 	   
 2022年2月18日，v4.6.4版本发布:<br>  
