@@ -66,11 +66,11 @@ public class OfficeFilePreviewImpl implements FilePreview {
             officexh=String.valueOf(1);
         }
         boolean isHtml;
-        boolean doc = suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("dot") || suffix.equalsIgnoreCase("docm") || suffix.equalsIgnoreCase("vsd")  || suffix.equalsIgnoreCase("wmf") || suffix.equalsIgnoreCase("emf");
-        boolean xls = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm")  ;
+        boolean doc = suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("dot") || suffix.equalsIgnoreCase("docm") || suffix.equalsIgnoreCase("vsd")  || suffix.equalsIgnoreCase("wmf") || suffix.equalsIgnoreCase("emf")|| suffix.equalsIgnoreCase("dps") ;
+        boolean xls = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm")  || suffix.equalsIgnoreCase("et")  ;
         boolean ppt = suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx");
         if (officexh.equals("1")) {
-             isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm") || suffix.equalsIgnoreCase("csv") ;
+             isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm") || suffix.equalsIgnoreCase("csv") || suffix.equalsIgnoreCase("et") ;
         }else {
              isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx")  || suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx");
         }
