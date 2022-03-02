@@ -110,10 +110,14 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年3月2日，v4.6.5版本发布:<br>  
+1、参数动态配置<br>
+2、base64或者直接URL自动识别<br><br>
+	   
 2022年2月18日，v4.6.4版本发布:<br>  
 1、视频广告可以在配置文件调整<br>
-2、OFD重新构建支持生成SVG、pdf<br>
-3、参数动态配置<br><br>	
+2、OFD重新构建支持生成SVG、pdf<br><br>
+	
 	   
 2022年2月18日，v4.6.3版本发布:<br>  
 1、日志加入记录IP功能 <br>

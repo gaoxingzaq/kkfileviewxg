@@ -1,9 +1,8 @@
 package cn.keking.web.filter;
 
 import cn.keking.config.ConfigConstants;
-import org.apache.commons.codec.binary.Base64;
+import cn.keking.web.controller.IndexController;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
@@ -23,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 public class TrustHostFilter implements Filter {
 
     private String notTrustHost;
-    public static String base65;
+
     @Override
     public void init(FilterConfig filterConfig) {
         ClassPathResource classPathResource = new ClassPathResource("web/notTrustHost.html");
@@ -36,16 +35,11 @@ public class TrustHostFilter implements Filter {
         }
     }
 
-    @Value("${url.base64:true}")
-    public void setSystemId(String systemId) {
-        base65=systemId;
-    }
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String url = getSourceUrl(request);
         if(url != null){
-            if(base65.equalsIgnoreCase("true")){
+            if(IndexController.isBase64(url)){
                 url = new String(Base64Utils.decodeFromString(url), StandardCharsets.UTF_8);
             }else {
                 url = url;

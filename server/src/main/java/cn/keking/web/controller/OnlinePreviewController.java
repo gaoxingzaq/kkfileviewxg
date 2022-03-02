@@ -59,8 +59,6 @@ public class OnlinePreviewController {
         this.cacheService = cacheService;
         this.otherFilePreview = otherFilePreview;
     }
-    @Value("${url.base64:true}")
-    private String base641;
     @Value("${pdfpagee:0}")
     private String pdfpagee;
     @RequestMapping(value = "/onlinePrevieww")
@@ -80,7 +78,7 @@ public class OnlinePreviewController {
         }
         String fileUrl;
         try {
-            if(base641.equalsIgnoreCase("true")){
+            if(IndexController.isBase64(url)){
                 fileUrl = new String(Base64.decodeBase64(url), StandardCharsets.UTF_8);
             }else {
                 fileUrl = url;
@@ -118,7 +116,7 @@ public class OnlinePreviewController {
     public String picturesPreview(String urls, Model model, HttpServletRequest req) throws UnsupportedEncodingException {
         String fileUrls;
         try {
-            if(base641.equalsIgnoreCase("true")){
+            if(IndexController.isBase64(urls)){
                 fileUrls = new String(Base64.decodeBase64(urls));
             }else {
                 fileUrls = urls;
