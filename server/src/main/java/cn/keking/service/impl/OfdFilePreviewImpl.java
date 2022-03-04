@@ -204,16 +204,7 @@ public class OfdFilePreviewImpl implements FilePreview {
     }
 
     public static boolean convertPdf(String filename, String dirPath) {
-        FontLoader.getInstance()
-                .addAliasMapping(null, "小标宋体", "方正小标宋简体", "方正小标宋简体")
-                .addAliasMapping(null, "KaiTi_GB2312", "楷体", "楷体")
 
-                .addSimilarFontReplaceRegexMapping(null, ".*Kai.*", null, "楷体")
-                .addSimilarFontReplaceRegexMapping(null, ".*SimSun.*", null, "SimSun")
-                .addSimilarFontReplaceRegexMapping(null, ".*Song.*", null, "宋体")
-                .addSimilarFontReplaceRegexMapping(null, ".*MinionPro.*", null, "SimSun");
-
-        FontLoader.setSimilarFontReplace(true);
         try {
             ConvertHelper.toPdf(Paths.get(filename), Paths.get(dirPath));
         } catch (GeneralConvertException e) {

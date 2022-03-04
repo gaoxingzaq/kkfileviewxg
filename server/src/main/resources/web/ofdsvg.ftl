@@ -14,8 +14,6 @@
             height: 100%;
         }
         .img-area {
-		 max-width: 100%;
-      
          text-align: center;
         }
 img {
