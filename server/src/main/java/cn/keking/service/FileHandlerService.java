@@ -471,9 +471,10 @@ public class FileHandlerService {
             type = FileType.typeFromUrl(url);
             suffix = WebUtils.suffixFromUrl(url);
         }
-		 if(UrlEncoderUtilss.hasUrlEncoded(fileName)){  //判断文件名是否转义
+		 if(UrlEncoderUtilss.hasUrlEncoded(fileName) && UrlEncoderUtilss.hasUrlEncoded(suffix)){  //判断文件名是否转义
         try {
             fileName = URLDecoder.decode(fileName, "UTF-8");
+            suffix = URLDecoder.decode(suffix, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

@@ -110,6 +110,12 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年3月18日，v4.6.6版本发布:<br>  
+1、更新OFD组件<br>
+2、修复水印不满屏问题<br>
+3、名称识别加入转义功能<br><br>	
+
+   
 2022年3月2日，v4.6.5版本发布:<br>  
 1、参数动态配置<br>
 2、新增dps和et两种格式转换<br>

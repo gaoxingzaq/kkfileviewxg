@@ -5,6 +5,7 @@ import io.mola.galimatias.GalimatiasParseException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,6 +95,11 @@ public class WebUtils {
         // 所以先从？处将url截断，然后运用url.lastIndexOf("/")获取文件名
        // String noQueryUrl = url.substring(0, url.contains("?") ? url.indexOf("?") : url.length());
         String noQueryUrl = url;
+        try {
+            noQueryUrl = URLDecoder.decode(noQueryUrl, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return noQueryUrl.substring(noQueryUrl.lastIndexOf("/") + 1);
     }
 
@@ -107,6 +113,11 @@ public class WebUtils {
     public static String suffixFromUrl(String url) {
        // String nonPramStr = url.substring(0, url.contains("?") ? url.indexOf("?") : url.length());
         String nonPramStr = url;
+        try {
+            nonPramStr = URLDecoder.decode(nonPramStr, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         String fileName = nonPramStr.substring(nonPramStr.lastIndexOf("/") + 1);
         return KkFileUtils.suffixFromFileName(fileName);
     }
