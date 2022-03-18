@@ -46,7 +46,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             <div>
                 新增多图片同时预览功能，接口如下：
                 <pre style="background-color: #2f332a;color: #cccccc">
-                    var fileUrl =url1+"|"+"url2";//多文件使用“|”字符隔开
+                    var fileUrl =url1+","+"url2";//多图使用“,”字符隔开
                     window.open('http://127.0.0.1:8012/picturesPreview?urls='+encodeURIComponent(Base64.encode(fileUrl)));
                 </pre>
             </div>
@@ -113,7 +113,8 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
 2022年3月18日，v4.6.6版本发布:<br>  
 1、更新OFD组件<br>
 2、修复水印不满屏问题<br>
-3、名称识别加入转义功能<br><br>	
+3、修复多图预览功能用,分割<br>
+4、名称识别加入转义功能<br><br>	
 
    
 2022年3月2日，v4.6.5版本发布:<br>  

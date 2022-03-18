@@ -32,7 +32,13 @@ public class PictureFilePreviewImpl implements FilePreview {
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String officePreviewType = fileAttribute.getOfficePreviewType();
         List<String> imgUrls = new ArrayList<>();
-        imgUrls.add(url);
+        String s = url;
+        String[] as = s.split(",");
+        for (int i = 0; i < as.length; i++) {
+            url = as[i];
+            imgUrls.add(as[i]);
+            //  System.out.println(as[i]);
+        }
         String fileKey = fileAttribute.getFileKey();
         List<String> zipImgUrls = fileHandlerService.getImgCache(fileKey);
         if (!CollectionUtils.isEmpty(zipImgUrls)) {
