@@ -33,7 +33,7 @@ public class PictureFilePreviewImpl implements FilePreview {
         String officePreviewType = fileAttribute.getOfficePreviewType();
         List<String> imgUrls = new ArrayList<>();
         String s = url;
-        String[] as = s.split(",");
+        String[] as = s.split("\\|");
         for (int i = 0; i < as.length; i++) {
             url = as[i];
             imgUrls.add(as[i]);
