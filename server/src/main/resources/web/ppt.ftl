@@ -80,16 +80,7 @@
     }
 
 </style>
-    <!-- BOOTSTRAP STYLE end -->
-    <script type="text/javascript">
-      var windowWidth = document.documentElement.clientWidth;
-      var searchStr = window.location.search.substr(1);
-      if ((windowWidth < 768 || (/micromessenger/.test(navigator.userAgent.toLowerCase()))) && (!searchStr || searchStr.indexOf('type=') < 0)) {
-          var redirectUrl = window.location.pathname + '?type=mobile' + (!!searchStr ? ('&' + searchStr) : '');
-          window.location.replace(redirectUrl);
-      }
-    </script>
-
+ 
     <style type="text/css">
       .thumbnail{
         /*

@@ -265,12 +265,12 @@ public class FileHandlerService {
      */
     public static String zhuanyii(String fuhao) {
         fuhao = fuhao.replace("%","%25");
-        fuhao = fuhao.replace("+","%2B");
-        fuhao = fuhao.replace(" ","%20");
-        fuhao = fuhao.replace("?","%3F");
+    //    fuhao = fuhao.replace("+","%2B");
+     //   fuhao = fuhao.replace(" ","%20");
+     //   fuhao = fuhao.replace("?","%3F");
         fuhao = fuhao.replace("#","%23");
-        fuhao = fuhao.replace("&","%26");
-        fuhao = fuhao.replace("=","%3D");
+    //    fuhao = fuhao.replace("&","%26");
+    //    fuhao = fuhao.replace("=","%3D");
         return fuhao;
     }
 
@@ -377,9 +377,7 @@ public class FileHandlerService {
             doc = PDDocument.load(pdfFile);
             int pageCount = doc.getNumberOfPages();
             PDFRenderer pdfRenderer = new PDFRenderer(doc);
-            int index = pdfFilePath.lastIndexOf(".");
-            String folder = pdfFilePath.substring(0, index);
-                   folder = folder.replaceFirst("demo/","");
+            String folder = FILE_DIR + urlPrefix;
             File path = new File(folder);
             if (!path.exists() && !path.mkdirs()) {
                 logger.error("创建转换文件【{}】目录失败，请检查目录权限！", folder);
