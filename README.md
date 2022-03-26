@@ -2,7 +2,7 @@
 此项目为文件文档在线预览项目解决方案，对标业内付费产品有【[永中office](http://dcs.yozosoft.com/)】【[office365](http://www.officeweb365.com/)】【[idocv](https://www.idocv.com/)】等，在取得公司高层同意后以Apache协议开源出来反哺社区，在此特别感谢@唐老大的支持以及@端木详笑的贡献。该项目使用流行的spring boot搭建，易上手和部署，基本支持主流办公文档的在线预览，如doc,docx,Excel,pdf,txt,zip,rar,vsd,rtf,docm图片等等
 ### 项目特性
 
-1. 支持 office, pdf, cad 等办公文档
+1. 支持 office, pdf, cad,ofd,等办公文档
 1. 支持 dwg dxf等cad文件 CAD文件商用需要去购买aspose-cad
 1. 支持 txt, xml(渲染), md(渲染), java, php, py, js, css 等所有纯文本
 1. 支持 zip, rar, jar, tar, gzip 等压缩包
@@ -28,7 +28,7 @@
 
 ### 联系我们，加入组织
 > 我们会用心回答解决大家在项目使用中的问题，也请大家在提问前至少 Google 或 baidu 过，珍爱生命远离无效的交流沟通
-QQ群号：~~484680571(已满)~~  3群433403637
+QQ群:816703453
 
 ### 文档预览效果
 #### 1. 文本预览
@@ -99,7 +99,7 @@ pdf预览模式预览效果如下
 - redis (可选，默认不用)
 - OpenOffice 或者 LibreOffice( Windows 下已内置，Linux 脚本启动模式会自动安装，Mac OS 下需要手动安装)
 
-1. 第一步：pull 项目 https://github.com/kekingcn/file-online-preview.git
+1. 第一步：pull 项目 https://gitee.com/gaoxingzaq/file-online-preview-master
 
 3. 第二步：运行 ServerMain 的 main 方法，服务启动后，访问 http://localhost:8012/
 会看到如下界面，代表服务启动成功
