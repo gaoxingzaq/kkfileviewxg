@@ -110,6 +110,12 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年3月31日，v4.6.7版本发布:<br>  
+1、修复PDF转换图片 特殊符号问题<br>  
+2、按上传时间排序文件<br>  
+3、POI生成的PPT文件加入JS特效<br>  
+4、精简了PPT模板的文件<br><br>  	
+	   
 2022年3月18日，v4.6.6版本发布:<br>  
 1、更新OFD组件<br>
 2、修复水印不满屏问题<br>

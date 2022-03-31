@@ -3,27 +3,14 @@
 	"code": 1,
 	"name": "${file.name}预览",
 	"totalSize": 0,
-	"curPage": 1,
-	"totalPage": 1,
-	"pageSize": 10,
-	"titles": null,
 	"data": [
 <#assign index = 0>
 <#list imgurls as img>
 <#if index != 0>,</#if>{
-		"uuid": null,
 		"title": null,
-		"content": null,
-		"text": null,
 		"url": "${baseUrl}${img}",
-		"destFile": null,
-		"viewCount": 0,
-		"downloadCount": 0,
-		"ctime": null,
 		"thumbUrl": "${baseUrl}${img}",
-		"largeUrl": null,
-		"ratio": 0.5625,
-		"note": null
+		"ratio": 0.5625
 	}<#assign index = index + 1>
 </#list>],
 	"desc": "Success"
@@ -166,9 +153,6 @@
     if (!!name) {
         params.name = name;
     }
-	//window.alert(params);
-    var authMap = '{}';
-    var baseUrl = '${baseUrl}';
 </script>
 <!-- 客户自定义JS -->
 <script src="pptx/jquery.mobile-events.min.js"></script>

@@ -10,7 +10,6 @@ var slideThumbUrls = new Array();
 var curSlide = 1;
 var totalSize = 1;	// PPT当前获取到的总页数
 var slideCount = 1;	// PPT文件总页数
-var size = (!!$.url().param('size') ? $.url().param('size') : 0);
 function jiazaiaa() {
 	
 	// async method:
@@ -18,7 +17,6 @@ function jiazaiaa() {
 		var data = JSON.parse(data);
 		var code = data.code;
 		if (1 == code) {
-			uuid = data.uuid;
 			pages = data.data;
 			totalSize = pages.length;
 			// slideCount = data.totalSize;
@@ -84,32 +82,14 @@ function jiazaiaa() {
 };
 
 jiazaiaa();
-var remainContentInterval;
-function checkRemainContent () {
-	clearInterval(remainContentInterval);
-	if (slideCount == totalSize) {
-		return;
-	}
-
-}
-
 function resetContent() {
-	remainContentInterval = setInterval(checkRemainContent, 8000);
+
 
 	// clear all content
 	$('.row-fluid .span2').empty();
 	$('.select-page-selector').empty();
 	$('.select-page-selector-sync').empty();
 	$('.slide-img-container img').remove();
-
-	// 限制预览页数开始
-	var viewCheck = authMap.view;
-	if (!!viewCheck && (viewCheck > 1) && (pages.length > viewCheck)) {
-		$('.navbar').after('<div class="alert alert-info" style="text-align: center; color: red;">试读结束，支付后阅读全文！</div>');
-		totalSize = viewCheck;
-		clearInterval(remainContentInterval);
-	}
-	// 限制预览页数结束
 
 	// pages
 	for (i = 0; i < totalSize; i++) {
@@ -121,10 +101,6 @@ function resetContent() {
 		$('.select-page-selector-sync').append('<option>' + (i + 1) + '</option>');
 	}
 
-	// 未转换完成提示信息
-	if (totalSize < slideCount) {
-		$('.row-fluid .span2').prepend('<div style="color: red;">转换中(' + Math.floor((totalSize / slideCount) * 100) + '%)，请稍候……</div>');
-	}
 
 	$('.slide-img-container').append('<img src="' + slideUrls[curSlide - 1] + '" class="img-polaroid" style="height: 100%;">');
 	var thumbnailWidth = $('.thumbnail:first').width();

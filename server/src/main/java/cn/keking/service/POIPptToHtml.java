@@ -56,6 +56,17 @@ public class POIPptToHtml {
         Dimension pgsize = ppt.getPageSize();
         System.out.println(pgsize.width + "--" + pgsize.height);
         StringBuffer sb = new StringBuffer();
+        sb.append("<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"utf-8\" />\n" +
+                "    <title>ppt图片预览</title>\n" +
+                "  <script src=\"js/jquery-3.0.0.min.js\" type=\"text/javascript\"></script>\n" +
+                "    <script src=\"js/lazyload.js\"></script>\n" +
+                " <link rel=\"stylesheet\" href=\"css/pptx.css\"/>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<div class=\"container\">");
         for (int i = 0; i < ppt.getSlides().size(); i++) {
             try {
                 // 防止中文乱码
@@ -81,9 +92,10 @@ public class POIPptToHtml {
                 String imageDir = FILE_DIR + "/" + pptFileName + "/";
                 FileUtils.createDir(imageDir);// create image dir
                 String imagePath = imageDir + pptFileName + "-" + (i + 1) + ".png";
-                sb.append("<br>");
                 String imagePathh = imagePath.replace(FILE_DIR, "");
-                sb.append("<img src=" + "\"" + imagePathh + "\"" + "/>");
+                sb.append("<div class=\"img-area\">");
+                sb.append(" <img class=\"my-photo\" alt=\"loading\"  data-src=\""+ imagePathh + "\" src=\"images/loading.gif\">");
+                sb.append("</div>");
                 FileOutputStream out = new FileOutputStream(imagePath);
                 javax.imageio.ImageIO.write(img, "png", out);
                 out.close();
@@ -91,6 +103,11 @@ public class POIPptToHtml {
                 System.out.println("第" + i + "张ppt转换出错");
             }
         }
+        sb.append("<script>\n" +
+                "\t checkImgs();\n" +
+                "    window.onscroll = throttle(checkImgs);\n" +
+                "\n" +
+                "</script>");
         System.out.println("转换成功");
         htmlStr = sb.toString();
         return htmlStr;
@@ -104,6 +121,17 @@ public class POIPptToHtml {
             FileUtils.createDir(targetDir);// create html dir
             Dimension pgsize = ppt.getPageSize();
             StringBuffer sb = new StringBuffer();
+            sb.append("<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"utf-8\" />\n" +
+                    "    <title>ppt图片预览</title>\n" +
+                    "  <script src=\"js/jquery-3.0.0.min.js\" type=\"text/javascript\"></script>\n" +
+                    "    <script src=\"js/lazyload.js\"></script>\n" +
+                    " <link rel=\"stylesheet\" href=\"css/pptx.css\"/>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "<div class=\"container\">");
             for (int i = 0; i < ppt.getSlides().size(); i++) {
                 // 防止中文乱码
                 for (HSLFShape shape : ppt.getSlides().get(i).getShapes()) {
@@ -127,13 +155,19 @@ public class POIPptToHtml {
                 String imageDir = targetDir + "/" + pptFileName + "/";
                 FileUtils.createDir(imageDir);// create image dir
                 String imagePath = imageDir + pptFileName + "-" + (i + 1) + ".png";
-                sb.append("<br>");
                 String imagePathh = imagePath.replace(FILE_DIR, "");
-                sb.append("<img src=" + "\"" + imagePathh + "\"" + "/>");
+                sb.append("<div class=\"img-area\">");
+                sb.append(" <img class=\"my-photo\" alt=\"loading\"  data-src=\""+ imagePathh + "\" src=\"images/loading.gif\">");
+                sb.append("</div>");
                 FileOutputStream out = new FileOutputStream(imagePath);
                 javax.imageio.ImageIO.write(img, "png", out);
                 out.close();
             }
+            sb.append("<script>\n" +
+                    "\t checkImgs();\n" +
+                    "    window.onscroll = throttle(checkImgs);\n" +
+                    "\n" +
+                    "</script>");
             htmlStr = sb.toString();
         } catch (Exception e) {
 

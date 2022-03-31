@@ -106,16 +106,46 @@ public class FileController {
         return new ObjectMapper().writeValueAsString(ReturnResponse.success());
     }
 
+    /**
+     * 时间排序方法
+     */
+    public static List<File> getFileSort(String path) {
+        List<File> list = getFiles(path, new ArrayList<>());
+        if (list != null && list.size() > 0) {
+            Collections.sort(list, (file, newFile) -> {
+                if (file.lastModified() < newFile.lastModified()) {
+                    return 1;
+                } else if (file.lastModified() == newFile.lastModified()) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            });
+        }
+        return list;
+    }
+    public static List<File> getFiles(String realpath, List<File> files) {
+        File realFile = new File(realpath);
+        if (realFile.isDirectory()) {
+            File[] subfiles = realFile.listFiles();
+            for (File file : subfiles) {
+                if (file.isDirectory()) {
+                    getFiles(file.getAbsolutePath(), files);
+                } else {
+                    files.add(file);
+                }
+            }
+        }
+        return files;
+    }
     @RequestMapping(value = "listFiles", method = RequestMethod.GET)
     public String getFiles() throws JsonProcessingException {
         List<Map<String, String>> list = new ArrayList<>();
-        File file = new File(fileDir + demoPath);
-        if (file.exists()) {
-            Arrays.stream(Objects.requireNonNull(file.listFiles())).forEach(file1 -> {
-                Map<String, String> fileName = new HashMap<>();
-                fileName.put("fileName", demoDir + "/" + file1.getName());
-                list.add(fileName);
-            });
+        List<File> listl = getFileSort(fileDir + demoPath);
+        for (File file : listl) {
+            Map<String, String> fileName = new HashMap<>();
+            fileName.put("fileName", demoDir + "/" + file.getName());
+            list.add(fileName);
         }
         return new ObjectMapper().writeValueAsString(list);
     }
