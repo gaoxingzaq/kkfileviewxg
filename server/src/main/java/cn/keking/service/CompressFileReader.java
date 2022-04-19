@@ -50,6 +50,7 @@ public class CompressFileReader {
                         try {
                             String str = getUtf8String(item.getPath());
                             String  str1 = str.substring(0, str.lastIndexOf(File.separator)+ 1);
+                            str1 = str1.replace("\\", "/"); //Linux 下路径错误
                             File file = new File(outPutPath + File.separator + str1);
                             if (!file.exists()) {
                                 file.mkdirs();
