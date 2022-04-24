@@ -1,4 +1,8 @@
+chcp 65001
 @echo off
+title 文件预览服务
+taskkill /f /im soffice.bin
+taskkill /f /im soffice.exe
 set "KKFILEVIEW_BIN_FOLDER=%cd%"
 cd "%KKFILEVIEW_BIN_FOLDER%"
 echo Using KKFILEVIEW_BIN_FOLDER %KKFILEVIEW_BIN_FOLDER%
