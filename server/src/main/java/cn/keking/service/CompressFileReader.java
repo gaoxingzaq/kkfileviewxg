@@ -49,7 +49,7 @@ public class CompressFileReader {
                     result = item.extractSlow(data -> {
                         try {
                             String str = getUtf8String(item.getPath());
-                             str = str.replace("\\", "/"); //Linux 下路径错误
+                            str = str.replace("\\", File.separator); //Linux 下路径错误
                             String  str1 = str.substring(0, str.lastIndexOf(File.separator)+ 1);
                             File file = new File(outPutPath + File.separator + str1);
                             if (!file.exists()) {
