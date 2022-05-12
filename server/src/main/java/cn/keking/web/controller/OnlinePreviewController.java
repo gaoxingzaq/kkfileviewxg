@@ -105,8 +105,10 @@ public class OnlinePreviewController {
     }
     @RequestMapping(value = "/onlinePreview")
     public String onlinePreview(HttpServletRequest request, Model model) throws IOException{
-        String baseUrl = BaseUrlFilter.getBaseUrl();
         String query = request.getQueryString();
+        if(query == null){
+            return otherFilePreview.notSupportedFile(model, "url异常或者不正确：" + query);
+        }
         String urlPath = query.replaceFirst("url=","");
         model.addAttribute("pdfUrl",urlPath);
         return Jiaz_FILE_PAGE;
