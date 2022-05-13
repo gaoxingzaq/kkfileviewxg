@@ -87,6 +87,10 @@ public class OnlinePreviewController {
             String errorMsg = String.format(BASE64_DECODE_ERROR_MSG, "url");
             return otherFilePreview.notSupportedFile(model, errorMsg);
         }
+        if (fileUrl == null ){
+            logger.info("URL异常", fileUrl);
+            return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
+        }
         FileAttribute fileAttribute = fileHandlerService.getFileAttribute(fileUrl, req);
         model.addAttribute("file", fileAttribute);
         FilePreview filePreview = previewFactory.get(fileAttribute);

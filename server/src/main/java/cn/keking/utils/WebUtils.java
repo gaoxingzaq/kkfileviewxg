@@ -73,6 +73,9 @@ public class WebUtils {
     private static String truncateUrlPage(String strURL) {
         String strAllParam = null;
         strURL = strURL.trim();
+        if (strURL == null ){
+            return strAllParam;
+        }
         String[] arrSplit = strURL.split("[?]");
         if (strURL.length() > 1) {
             if (arrSplit.length > 1) {
