@@ -32,10 +32,10 @@
 <div class="container">
     <img src="images/sorry.jpg" />
     <span>
-    该文件类型(${file.suffix?html})系统暂时不支持在线预览，<b>说明</b>：      
+    该文件类型(${fileType})系统暂时不支持在线预览，<b>说明</b>：      
     
         <p style="color: red;">${msg}</p>
-        有任何疑问，请加&nbsp;<a href="https://jq.qq.com/?_wv=1027&k=5c0UAtu">官方QQ:3群：433403637</a>&nbsp;咨询
+        有任何疑问，请加&nbsp;<a href="https://jq.qq.com/?_wv=1027&k=5c0UAtu">修改版QQ群：816703453</a>&nbsp;咨询
     </span>
 </div>
 </body>
