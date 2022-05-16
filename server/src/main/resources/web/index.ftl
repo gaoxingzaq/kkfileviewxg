@@ -110,10 +110,10 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
-2022年5月5日，v4.6.8版本发布:<br>  
-1、修复linux下DXF转换PDF错误问题<br>  
-2、更新一下组件<br>  
+2022年5月5日，v4.6.8版本发布:<br>   
+1、更新了一些组件<br>  
 2、修复LINUX解压路径错误问题<br>  
+3、修复URL异常 报错<br>
 4、精简了PPT模板的文件<br><br>  
 	   
 2022年3月31日，v4.6.7版本发布:<br>  
