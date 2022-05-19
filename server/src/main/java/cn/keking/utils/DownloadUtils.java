@@ -57,17 +57,27 @@ public class DownloadUtils {
                 urlcon.setReadTimeout(30000);
                 urlcon.setInstanceFollowRedirects(false);
                 //  System.out.println("返回码: " + urlcon.getResponseCode());
-                if(urlcon.getResponseCode() ==404){
-                    System.out.println("地址错误");
-                    xiazai.setCode(1);
-                    xiazai.setContent(null);
-                    return xiazai;
-                }
+                try {
+                    if(urlcon.getResponseCode() ==404){
+                        System.out.println("地址错误");
+                        xiazai.setCode(1);
+                        xiazai.setContent(null);
+                        return xiazai;
+                    }
 
-                if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
-                    url =new URL(urlcon.getHeaderField("Location"));
+                    if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
+                        url =new URL(urlcon.getHeaderField("Location"));
+                    }
+                    urlcon.disconnect();
+                } catch (IOException e) {
+                    if (e.getMessage().contains("connect")) {
+                        System.out.println("地址错误");
+                        xiazai.setCode(1);
+                        xiazai.setContent(null);
+                        urlcon.disconnect();
+                        return xiazai;
+                    }
                 }
-                urlcon.disconnect();
             }
             if (!fileAttribute.getSkipDownLoad()) {
                 if (isHttpUrl(url)) {
