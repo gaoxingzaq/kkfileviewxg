@@ -78,7 +78,7 @@
     </style>
     
     <!--[if lt IE 9]>
-      <script src="static/bootstrap/js/html5shiv.min.js"></script>
+      <script src="js/html5shiv.min.js"></script>
     <![endif]-->
 
   </head>
@@ -144,7 +144,7 @@
     <!-- JavaSript
     ================================================== -->
     
-<script src="pptx/jquery-3.5.1.min.js"></script>
+<script src="js/jquery-3.0.0.min.js"></script>
 <script src="pptx/idocv/idocv_common.min.js"></script>
 
 <script>
