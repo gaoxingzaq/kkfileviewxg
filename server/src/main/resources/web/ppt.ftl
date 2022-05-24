@@ -137,7 +137,8 @@
         </div>
       </div>
     </div>
-    
+
+
     <div class="progress progress-striped active bottom-paging-progress">
       <div class="bar" style="width: 0%;"></div>
     </div>
