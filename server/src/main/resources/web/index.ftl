@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
-    <title>kkFileView演示首页</title>
+    <title>kkFileView高雄修改版演示首页</title>
     <link rel="stylesheet" href="css/viewer.min.css"/>
     <link rel="stylesheet" href="css/loading.css"/>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
@@ -38,7 +38,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
                 如果你的项目需要接入文件预览项目，达到对docx、excel、ppt、jpg等文件的预览效果，那么通过在你的项目中加入下面的代码就可以
                 成功实现：
                 <pre style="background-color: #2f332a;color: #cccccc">
-	 &lt;script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-base64@3.6.0/base64.min.js">&lt;/script> 
+	 &lt;script type="text/javascript" src="${baseUrl}">&lt;/script> 
                     var url = 'http://127.0.0.1:8080/file/test.txt'; //要预览文件的访问地址
                     window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(Base64.encode(url)));
                 </pre>
@@ -110,6 +110,10 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年5月25日，v4.6.9版本发布:<br>   
+1、新增stp,bim<br>
+2、更新JQ版本到3.6<br><br>  
+	   
 2022年5月5日，v4.6.8版本发布:<br>   
 1、更新了一些组件<br>  
 2、修复LINUX解压路径错误问题<br>  
