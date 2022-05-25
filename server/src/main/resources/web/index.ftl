@@ -38,7 +38,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
                 如果你的项目需要接入文件预览项目，达到对docx、excel、ppt、jpg等文件的预览效果，那么通过在你的项目中加入下面的代码就可以
                 成功实现：
                 <pre style="background-color: #2f332a;color: #cccccc">
-	 &lt;script type="text/javascript" src="${baseUrl}">&lt;/script> 
+	 &lt;script type="text/javascript" src="${baseUrl}js/base64.min.js">&lt;/script> 
                     var url = 'http://127.0.0.1:8080/file/test.txt'; //要预览文件的访问地址
                     window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(Base64.encode(url)));
                 </pre>
