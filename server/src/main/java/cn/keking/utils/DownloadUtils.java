@@ -58,7 +58,7 @@ public class DownloadUtils {
                 urlcon.setInstanceFollowRedirects(false);
                 //  System.out.println("返回码: " + urlcon.getResponseCode());
                 try {
-                    if(urlcon.getResponseCode() ==404){
+                    if(urlcon.getResponseCode() ==404 ||urlcon.getResponseCode() ==403 ){
                         System.out.println("地址错误");
                         xiazai.setCode(1);
                         xiazai.setContent(null);
