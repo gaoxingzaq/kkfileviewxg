@@ -51,7 +51,7 @@ public class DownloadUtils {
         String realPath = DownloadUtils.getRelFilePath(fileName, fileAttribute);
         try {
             URL url = WebUtils.normalizedURL(urlStr);
-            if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false") && !urlStr.toLowerCase().startsWith("ftp")) {
+            if(!urlStr.toLowerCase().startsWith("file") && !urlStr.toLowerCase().startsWith("ftp")) {
                 HttpURLConnection urlcon=(HttpURLConnection)url.openConnection();
                 urlcon.setConnectTimeout(30000);
                 urlcon.setReadTimeout(30000);
