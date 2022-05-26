@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -175,14 +176,23 @@ public class OnlinePreviewController {
         }
         String urlPath = query.replaceFirst("urlPath=","");
                urlPath = urlPath.replaceFirst("&disabledownload=true","");
+        HttpURLConnection urlcon;
         if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || !urlPath.toLowerCase().startsWith("http")) {
             logger.info("读取跨域文件异常", urlPath);
         }else {
             logger.info("读取跨域文件url：{}", urlPath);
             try {
                 URL url = WebUtils.normalizedURL(urlPath);
-                byte[] bytes = NetUtil.downloadBytes(url.toString());
-                IOUtils.write(bytes, response.getOutputStream());
+                urlcon=(HttpURLConnection)url.openConnection();
+                urlcon.setConnectTimeout(30000);
+                urlcon.setReadTimeout(30000);
+                urlcon.setInstanceFollowRedirects(false);
+                if(urlcon.getResponseCode() ==404 ||urlcon.getResponseCode() ==403 ){
+                    logger.error("读取跨域文件异常，url：{}", urlPath);
+                }else {
+                    byte[] bytes = NetUtil.downloadBytes(url.toString());
+                    IOUtils.write(bytes, response.getOutputStream());
+                }
             } catch (IOException | GalimatiasParseException e) {
                 logger.error("读取跨域文件异常，url：{}", urlPath, e);
             }
