@@ -110,6 +110,13 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年5月25日，v4.7版本发布:<br>   
+1、修复文本预览错误<br>
+2、修复下载异常<br> 
+3、修复OfficePluginManager中KillProcess出现杀掉进程失败，导致二次启动失败的bug<br> 
+5、更新bootstrap组件<br> 
+6、修复跨域异常<br><br>  
+	   
 2022年5月25日，v4.6.9版本发布:<br>   
 1、新增stp,bim<br>
 2、更新JQ版本到3.6<br><br>  

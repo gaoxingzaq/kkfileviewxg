@@ -108,6 +108,13 @@ pdf预览模式预览效果如下
 ![输入图片说明](https://gitee.com/uploads/images/2017/1213/100221_ea15202e_492218.png "屏幕截图.png")
 
 ### 历史更新记录  
+2022年5月25日，v4.7版本发布:    
+1、修复文本预览错误   
+2、修复下载异常   
+3、修复OfficePluginManager中KillProcess出现杀掉进程失败，导致二次启动失败的bug   
+5、更新bootstrap组件   
+6、修复跨域异常   
+
 2022年5月25日，v4.6.9版本发布:    
 1、新增stp,bim   
 2、更新JQ版本到3.6   
