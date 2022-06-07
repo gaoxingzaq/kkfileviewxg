@@ -58,7 +58,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
         String regEx = "[`#%:;.\"\\\\]"; //针对特殊符号
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String imagesss = FILE_DIR + fileName;
-        if(officePreviewType.equalsIgnoreCase("poi")){  //判断需要用什么转换器
+        if(officePreviewType.equalsIgnoreCase("poi") ||officexh.equals("2")){  //判断需要用什么转换器
             officexh= String.valueOf(2);
         }else if (officePreviewType.equalsIgnoreCase("office")){
             officexh= String.valueOf(1);
