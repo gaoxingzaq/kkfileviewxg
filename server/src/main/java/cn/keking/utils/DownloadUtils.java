@@ -70,7 +70,7 @@ public class DownloadUtils {
                     }
                     urlcon.disconnect();
                 } catch (IOException e) {
-                    if (e.getMessage().contains("connect")) {
+                    if (e.getMessage().contains("connect") ||e.getMessage().contains("refused")) {
                         System.out.println("地址错误");
                         xiazai.setCode(1);
                         xiazai.setContent(null);
