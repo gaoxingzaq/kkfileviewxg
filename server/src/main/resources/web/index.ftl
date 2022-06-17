@@ -40,14 +40,14 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
                 <pre style="background-color: #2f332a;color: #cccccc">
 	 &lt;script type="text/javascript" src="${baseUrl}js/base64.min.js">&lt;/script> 
                     var url = 'http://127.0.0.1:8080/file/test.txt'; //要预览文件的访问地址
-                    window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(Base64.encode(url)));
+                    window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(url)));
                 </pre>
             </div>
             <div>
                 新增多图片同时预览功能，接口如下：
                 <pre style="background-color: #2f332a;color: #cccccc">
                     var fileUrl =url1+"|"+"url2";//多图使用“|”字符隔开
-                    window.open('http://127.0.0.1:8012/picturesPreview?urls='+encodeURIComponent(Base64.encode(fileUrl)));
+                    window.open('${baseUrl}picturesPreview?urls='+encodeURIComponent(Base64.encode(fileUrl)));
                 </pre>
             </div>
 			<div>
@@ -55,7 +55,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
                 <pre style="background-color: #2f332a;color: #cccccc">
                  var originUrl = 'http://127.0.0.1:8080/filedownload?fileId=1'; //要预览文件的访问地址
                  var previewUrl = originUrl + '&fullfilename=/test.txt'   //这里必须加反斜杠
-                 window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(Base64.encode(previewUrl)));
+                 window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(previewUrl)));
                 </pre>
             </div>
         </div>

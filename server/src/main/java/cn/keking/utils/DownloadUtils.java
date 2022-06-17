@@ -8,11 +8,13 @@ import io.mola.galimatias.GalimatiasParseException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.UUID;
 
 import static cn.keking.utils.KkFileUtils.isFtpUrl;
@@ -67,16 +69,24 @@ public class DownloadUtils {
 
                     if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
                         url =new URL(urlcon.getHeaderField("Location"));
+                        urlcon=(HttpURLConnection)url.openConnection();
+                        urlcon.setConnectTimeout(30000);
+                        urlcon.setReadTimeout(30000);
+                        urlcon.setInstanceFollowRedirects(false);
+                        if(urlcon.getResponseCode() ==404 ||urlcon.getResponseCode() ==403 ||urlcon.getResponseCode() ==500 ){
+                            System.out.println("地址错误");
+                            xiazai.setCode(1);
+                            xiazai.setContent(null);
+                            return xiazai;
+                        }
                     }
                     urlcon.disconnect();
                 } catch (IOException e) {
-                    if (e.getMessage().contains("connect") ||e.getMessage().contains("refused")) {
-                        System.out.println("地址错误");
-                        xiazai.setCode(1);
-                        xiazai.setContent(null);
-                        urlcon.disconnect();
-                        return xiazai;
-                    }
+                    System.out.println("地址错误");
+                    xiazai.setCode(1);
+                    xiazai.setContent(null);
+                    urlcon.disconnect();
+                    return xiazai;
                 }
             }
             if (!fileAttribute.getSkipDownLoad()) {

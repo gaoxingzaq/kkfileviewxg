@@ -8,7 +8,6 @@ import cn.keking.service.FilePreviewFactory;
 import cn.keking.service.cache.CacheService;
 import cn.keking.service.impl.OtherFilePreviewImpl;
 import cn.keking.utils.WebUtils;
-import cn.keking.web.filter.BaseUrlFilter;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
@@ -38,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static cn.keking.service.FilePreview.Jiaz_FILE_PAGE;
-import static cn.keking.service.FilePreview.PICTURE_FILE_PREVIEW_PAGE;
+import static cn.keking.service.FilePreview.PPICTURE_FILE_PREVIEW_PAGE;
 
 /**
  * @author yudian-it
@@ -121,6 +120,20 @@ public class OnlinePreviewController {
 
     @RequestMapping(value = "/picturesPreview")
     public String picturesPreview(String urls, Model model, HttpServletRequest req) throws UnsupportedEncodingException {
+        String ip = req.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = req.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = req.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = req.getRemoteAddr();
+        }
+        if (ip.contains(",")) {
+            ip = ip.split(",")[0];
+        }
+
         String fileUrls;
         try {
             if(IndexController.isBase64(urls)){
@@ -133,6 +146,7 @@ public class OnlinePreviewController {
             String errorMsg = String.format(BASE64_DECODE_ERROR_MSG, "urls");
             return otherFilePreview.notSupportedFile(model, errorMsg);
         }
+
         if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false")) {
             if (fileUrls == null || fileUrls.toLowerCase().startsWith("file:") || fileUrls.toLowerCase().startsWith("file%3")) {
                 logger.info("URL异常", fileUrls);
@@ -143,12 +157,11 @@ public class OnlinePreviewController {
         if(wjl){
             fileUrls =  fileUrls.substring(0,fileUrls.lastIndexOf("&"));  //删除添加的文件流内容
         }
-        logger.info("预览文件url：{}，urls：{}", fileUrls, urls);
+        logger.info("预览文件url：{}，ip：{}", fileUrls,ip);
         // 抽取文件并返回文件列表
         String[] images = fileUrls.split("\\|");
         List<String> imgUrls = Arrays.asList(images);
         model.addAttribute("imgUrls", imgUrls);
-
         String currentUrl = req.getParameter("currentUrl");
         if (StringUtils.hasText(currentUrl)) {
             String decodedCurrentUrl = new String(Base64.decodeBase64(currentUrl));
@@ -156,7 +169,7 @@ public class OnlinePreviewController {
         } else {
             model.addAttribute("currentUrl", imgUrls.get(0));
         }
-        return PICTURE_FILE_PREVIEW_PAGE;
+        return PPICTURE_FILE_PREVIEW_PAGE;
     }
 
     /**
@@ -166,35 +179,52 @@ public class OnlinePreviewController {
      * @param response response
      */
     @RequestMapping(value = "/getCorsFile", method = RequestMethod.GET)
-    public void getCorsFile( HttpServletRequest request, Model model, HttpServletResponse response) {
+    public void getCorsFile( HttpServletRequest request, HttpServletResponse response) {
         String query = request.getQueryString();
-               query = query.replace("%20", " ");
+        query = query.replace("%20", " ");
         try {
             query = URLDecoder.decode(query, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         String urlPath = query.replaceFirst("urlPath=","");
-               urlPath = urlPath.replaceFirst("&disabledownload=true","");
+        urlPath = urlPath.replaceFirst("&disabledownload=true","");
         HttpURLConnection urlcon;
         if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || !urlPath.toLowerCase().startsWith("http")) {
             logger.info("读取跨域文件异常", urlPath);
         }else {
             logger.info("读取跨域文件url：{}", urlPath);
             try {
+                String suffix = urlPath.substring(urlPath.lastIndexOf("."));
                 URL url = WebUtils.normalizedURL(urlPath);
                 urlcon=(HttpURLConnection)url.openConnection();
                 urlcon.setConnectTimeout(30000);
                 urlcon.setReadTimeout(30000);
                 urlcon.setInstanceFollowRedirects(false);
-                if(urlcon.getResponseCode() ==404 ||urlcon.getResponseCode() ==403 ){
+                //  System.out.println(urlcon.getResponseCode());
+                if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
+                    url =new URL(urlcon.getHeaderField("Location"));
+                    urlcon=(HttpURLConnection)url.openConnection();
+                    urlcon.setConnectTimeout(30000);
+                    urlcon.setReadTimeout(30000);
+                    urlcon.setInstanceFollowRedirects(false);
+                    //  System.out.println(urlcon.getResponseCode());
+                }
+                if(urlcon.getResponseCode() ==404 ||urlcon.getResponseCode() ==403 ||urlcon.getResponseCode() ==500 ){
                     logger.error("读取跨域文件异常，url：{}", urlPath);
                 }else {
                     byte[] bytes = NetUtil.downloadBytes(url.toString());
+                    if (suffix.equalsIgnoreCase(".svg")){
+                        response.setContentType("image/svg+xml");
+                    }
                     IOUtils.write(bytes, response.getOutputStream());
                 }
             } catch (IOException | GalimatiasParseException e) {
-                logger.error("读取跨域文件异常，url：{}", urlPath, e);
+                if (e.getMessage().contains("connect")||e.getMessage().contains("refused")) {
+                    logger.error("读取跨域文件异常，url：{}", urlPath, e);
+                }else {
+                    logger.error("读取跨域文件异常，url：{}", urlPath, e);
+                }
             }
         }
     }
