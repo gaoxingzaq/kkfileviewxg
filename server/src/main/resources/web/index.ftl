@@ -110,6 +110,10 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年6月17日，v4.7.1版本发布:<br>   
+1、修复多图模式接口文件名报错问<br>
+2、对一些报错内容优化<br><br>  
+
 2022年5月25日，v4.7版本发布:<br>   
 1、修复文本预览错误<br>
 2、修复下载异常<br> 
