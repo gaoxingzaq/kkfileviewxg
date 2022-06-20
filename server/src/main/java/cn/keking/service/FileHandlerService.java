@@ -365,10 +365,10 @@ public class FileHandlerService {
             }
         }
         urlPrefix = urlPrefix.replaceFirst(baseUrl,"");
-        urlPrefix= zhuanyii(urlPrefix);  //图片名称转义
+        String urlPrefixx= zhuanyii(urlPrefix);  //图片名称转义
         if (imageCount != null && imageCount > 0) {
             for (int i = 0; i < imageCount; i++) {
-                imageUrls.add(urlPrefix + "/" + i + imageFileSuffix);
+                imageUrls.add(urlPrefixx + "/" + i + imageFileSuffix);
             }
             return imageUrls;
         }
@@ -392,7 +392,7 @@ public class FileHandlerService {
                 }else {
                     ImageIOUtil.writeImage(image, imageFilePath, pdfjpg);
                 }
-                imageUrls.add(urlPrefix + "/" + pageIndex + imageFileSuffix);
+                imageUrls.add(urlPrefixx + "/" + pageIndex + imageFileSuffix);
             }
             doc.close();
             this.addConvertedPdfImage(pdfFilePath, pageCount);
