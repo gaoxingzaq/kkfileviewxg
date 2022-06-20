@@ -110,11 +110,14 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年6月20日，v4.7.2版本发布:<br>   
+1、新增 ods, ots, tsv, odp, otp, sxi, ott,vsdx格式支持<br>
+2、修复URL %符号错误<br>
+3、修复删除文件 有特殊符号错误问题<br><br>
+
 2022年6月17日，v4.7.1版本发布:<br>   
 1、修复多图模式接口文件名报错问<br>
-2、新增 ods, ots, tsv, odp, otp, sxi, ott,vsdx格式支持<br>
-3、修复URL %符号错误<br>
-4、对一些报错内容优化<br><br>  
+2、对一些报错内容优化<br><br>  
 
 2022年5月25日，v4.7版本发布:<br>   
 1、修复文本预览错误<br>
@@ -475,8 +478,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
         }).on('pre-body.bs.table', function (e, data) {
             // 每个data添加一列用来操作
             $(data).each(function (index, item) {
-                item.action = "<a class='btn btn-default' target='_blank' href='${baseUrl}onlinePreview?url=" + encodeURIComponent(Base64.encode('${baseUrl}' + item.fileName)) + "'>预览</a>" +
-                    "<a class='btn btn-default' href='javascript:void(0);' onclick='deleteFile(\"" + item.fileName + "\")'>删除</a>";
+                item.action = "<a class='btn btn-default' target='_blank' href='${baseUrl}onlinePreview?url=" + encodeURIComponent(Base64.encode('${baseUrl}' + item.fileName)) + "'>预览</a>" + "<a class='btn btn-default' href='javascript:void(0);' onclick='deleteFile(\"" + encodeURIComponent(item.fileName)+ "\")'>删除</a>";
             });
             return data;
         }).on('post-body.bs.table', function (e, data) {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -95,6 +96,11 @@ public class FileController {
 
     @RequestMapping(value = "deleteFile", method = RequestMethod.GET)
     public String deleteFile(String fileName) throws JsonProcessingException {
+        try {
+            fileName = URLDecoder.decode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         if (fileName.contains("/")) {
             fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
         }
