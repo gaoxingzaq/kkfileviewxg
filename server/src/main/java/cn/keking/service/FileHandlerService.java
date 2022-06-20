@@ -33,6 +33,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +52,8 @@ public class FileHandlerService {
     private final String fileDir = ConfigConstants.getFileDir();
     private final CacheService cacheService;
     private static final String FILE_DIR = ConfigConstants.getFileDir();
+    @Value("${server.tomcat.uri-encoding:UTF-8}")
+    private String uriEncoding;
     public FileHandlerService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
@@ -364,11 +367,15 @@ public class FileHandlerService {
                 }
             }
         }
-        urlPrefix = urlPrefix.replaceFirst(baseUrl,"");
-        String urlPrefixx= zhuanyii(urlPrefix);  //图片名称转义
+        try {
+            urlPrefix = baseUrl + URLEncoder.encode(pdfFolder, uriEncoding).replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            logger.error("UnsupportedEncodingException", e);
+            urlPrefix = baseUrl + pdfFolder;
+        }
         if (imageCount != null && imageCount > 0) {
             for (int i = 0; i < imageCount; i++) {
-                imageUrls.add(urlPrefixx + "/" + i + imageFileSuffix);
+                imageUrls.add(urlPrefix + "/" + i + imageFileSuffix);
             }
             return imageUrls;
         }
@@ -378,7 +385,8 @@ public class FileHandlerService {
             doc = PDDocument.load(pdfFile);
             int pageCount = doc.getNumberOfPages();
             PDFRenderer pdfRenderer = new PDFRenderer(doc);
-            String folder = FILE_DIR + urlPrefix;
+            int index = pdfFilePath.lastIndexOf(".");
+            String folder = pdfFilePath.substring(0, index);
             File path = new File(folder);
             if (!path.exists() && !path.mkdirs()) {
                 logger.error("创建转换文件【{}】目录失败，请检查目录权限！", folder);
@@ -392,7 +400,7 @@ public class FileHandlerService {
                 }else {
                     ImageIOUtil.writeImage(image, imageFilePath, pdfjpg);
                 }
-                imageUrls.add(urlPrefixx + "/" + pageIndex + imageFileSuffix);
+                imageUrls.add(urlPrefix + "/" + pageIndex + imageFileSuffix);
             }
             doc.close();
             this.addConvertedPdfImage(pdfFilePath, pageCount);
