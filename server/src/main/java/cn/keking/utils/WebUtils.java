@@ -1,5 +1,6 @@
 package cn.keking.utils;
 
+import cn.keking.service.FileHandlerService;
 import io.mola.galimatias.GalimatiasParseException;
 
 import java.io.UnsupportedEncodingException;
@@ -99,6 +100,7 @@ public class WebUtils {
        // String noQueryUrl = url.substring(0, url.contains("?") ? url.indexOf("?") : url.length());
         String noQueryUrl = url;
         try {
+            noQueryUrl= FileHandlerService.zhuanyii(noQueryUrl);
             noQueryUrl = URLDecoder.decode(noQueryUrl, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -117,6 +119,7 @@ public class WebUtils {
        // String nonPramStr = url.substring(0, url.contains("?") ? url.indexOf("?") : url.length());
         String nonPramStr = url;
         try {
+            nonPramStr= FileHandlerService.zhuanyii(nonPramStr);
             nonPramStr = URLDecoder.decode(nonPramStr, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
