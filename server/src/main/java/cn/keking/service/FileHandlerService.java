@@ -51,9 +51,9 @@ public class FileHandlerService {
     private static final String DEFAULT_CONVERTER_CHARSET = System.getProperty("sun.jnu.encoding");
     private final String fileDir = ConfigConstants.getFileDir();
     private final CacheService cacheService;
-    private static final String FILE_DIR = ConfigConstants.getFileDir();
     @Value("${server.tomcat.uri-encoding:UTF-8}")
     private String uriEncoding;
+    private static final String FILE_DIR = ConfigConstants.getFileDir();
     public FileHandlerService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
@@ -349,7 +349,12 @@ public class FileHandlerService {
                 imageCount = this.getConvertedPdfImage(FILE_DIR+"ls"+pdfName);
             }
         }
-       // System.out.println(pdfFilePath);
+        try {
+            pdfFolder = URLEncoder.encode(pdfFolder, uriEncoding).replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            logger.error("UnsupportedEncodingException", e);
+            pdfFolder = pdfName.substring(0, pdfName.length() - 4);
+        }
         String urlPrefix;
         if(ConfigConstants.getpdffy().equalsIgnoreCase("false")){    //是否开启分片功能
             urlPrefix = baseUrl + pdfFolder;   //不改变路径
@@ -367,15 +372,11 @@ public class FileHandlerService {
                 }
             }
         }
-        try {
-            urlPrefix = baseUrl + URLEncoder.encode(pdfFolder, uriEncoding).replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException e) {
-            logger.error("UnsupportedEncodingException", e);
-            urlPrefix = baseUrl + pdfFolder;
-        }
+        urlPrefix = urlPrefix.replaceFirst(baseUrl,"");
+        String urlPrefixx= zhuanyii(urlPrefix);  //图片名称转义
         if (imageCount != null && imageCount > 0) {
             for (int i = 0; i < imageCount; i++) {
-                imageUrls.add(urlPrefix + "/" + i + imageFileSuffix);
+                imageUrls.add(urlPrefixx + "/" + i + imageFileSuffix);
             }
             return imageUrls;
         }
@@ -385,8 +386,7 @@ public class FileHandlerService {
             doc = PDDocument.load(pdfFile);
             int pageCount = doc.getNumberOfPages();
             PDFRenderer pdfRenderer = new PDFRenderer(doc);
-            int index = pdfFilePath.lastIndexOf(".");
-            String folder = pdfFilePath.substring(0, index);
+            String folder = FILE_DIR + urlPrefix;
             File path = new File(folder);
             if (!path.exists() && !path.mkdirs()) {
                 logger.error("创建转换文件【{}】目录失败，请检查目录权限！", folder);
@@ -400,7 +400,7 @@ public class FileHandlerService {
                 }else {
                     ImageIOUtil.writeImage(image, imageFilePath, pdfjpg);
                 }
-                imageUrls.add(urlPrefix + "/" + pageIndex + imageFileSuffix);
+                imageUrls.add(urlPrefixx + "/" + pageIndex + imageFileSuffix);
             }
             doc.close();
             this.addConvertedPdfImage(pdfFilePath, pageCount);
