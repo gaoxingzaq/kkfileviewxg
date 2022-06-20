@@ -66,11 +66,11 @@ public class OfficeFilePreviewImpl implements FilePreview {
             officexh=String.valueOf(1);
         }
         boolean isHtml;
-        boolean doc = suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("dot") || suffix.equalsIgnoreCase("docm") || suffix.equalsIgnoreCase("vsd")  || suffix.equalsIgnoreCase("wmf") || suffix.equalsIgnoreCase("emf")|| suffix.equalsIgnoreCase("dps") ;
-        boolean xls = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm")  || suffix.equalsIgnoreCase("et")  ;
-        boolean ppt = suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx");
+        boolean doc = suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("dot") || suffix.equalsIgnoreCase("docm") || suffix.equalsIgnoreCase("vsd")  || suffix.equalsIgnoreCase("wmf") || suffix.equalsIgnoreCase("emf")|| suffix.equalsIgnoreCase("dps") || suffix.equalsIgnoreCase("vsdx") || suffix.equalsIgnoreCase("ott");
+        boolean xls = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm")  || suffix.equalsIgnoreCase("et") || suffix.equalsIgnoreCase("ods")|| suffix.equalsIgnoreCase("ots")|| suffix.equalsIgnoreCase("tsv");
+        boolean ppt = suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx") || suffix.equalsIgnoreCase("dps") || suffix.equalsIgnoreCase("odp") || suffix.equalsIgnoreCase("otp") || suffix.equalsIgnoreCase("sxi") ;
         if (officexh.equals("1")) {
-             isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm") || suffix.equalsIgnoreCase("csv") || suffix.equalsIgnoreCase("et") ;
+             isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx") || suffix.equalsIgnoreCase("xlsm") || suffix.equalsIgnoreCase("csv") || suffix.equalsIgnoreCase("et")|| suffix.equalsIgnoreCase("ods")|| suffix.equalsIgnoreCase("ots")|| suffix.equalsIgnoreCase("tsv");
         }else {
              isHtml = suffix.equalsIgnoreCase("xls") || suffix.equalsIgnoreCase("xlsx")  || suffix.equalsIgnoreCase("doc") || suffix.equalsIgnoreCase("docx") || suffix.equalsIgnoreCase("wps") || suffix.equalsIgnoreCase("ppt") || suffix.equalsIgnoreCase("pptx");
         }
