@@ -88,7 +88,7 @@ public class OnlinePreviewController {
             return otherFilePreview.notSupportedFile(model, errorMsg);
         }
         if (fileUrl == null ){
-            logger.info("URL异常", fileUrl);
+            logger.info("URL异常：{}", fileUrl);
             return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
         }
         FileAttribute fileAttribute = fileHandlerService.getFileAttribute(fileUrl, req);
@@ -96,7 +96,7 @@ public class OnlinePreviewController {
         FilePreview filePreview = previewFactory.get(fileAttribute);
         if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false")) {
             if (fileUrl.toLowerCase().startsWith("file:") || fileUrl.toLowerCase().startsWith("file%3")) {
-                logger.info("URL异常", fileUrl);
+                logger.info("URL异常：{}", fileUrl);
                 return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
             }
         }
@@ -149,7 +149,7 @@ public class OnlinePreviewController {
 
         if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false")) {
             if (fileUrls == null || fileUrls.toLowerCase().startsWith("file:") || fileUrls.toLowerCase().startsWith("file%3")) {
-                logger.info("URL异常", fileUrls);
+                logger.info("URL异常：{}", fileUrls);
                 return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrls);
             }
         }
@@ -191,7 +191,7 @@ public class OnlinePreviewController {
         urlPath = urlPath.replaceFirst("&disabledownload=true","");
         HttpURLConnection urlcon;
         if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || !urlPath.toLowerCase().startsWith("http")) {
-            logger.info("读取跨域文件异常", urlPath);
+            logger.info("读取跨域文件异常：{}", urlPath);
         }else {
             logger.info("读取跨域文件url：{}", urlPath);
             try {
@@ -251,7 +251,7 @@ public class OnlinePreviewController {
         if(pdfname.equalsIgnoreCase(".pdf")){ //判断是否PDF文件
         // 读取pdf文档
        if(urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3")){
-            logger.info("文件地址异常", urlPath);
+            logger.info("文件地址异常：{}", urlPath);
         }else if(!urlPath.toLowerCase().startsWith("http")){
            urlPath ="file:///"+  FILE_DIR + urlPath;
        }
@@ -279,7 +279,7 @@ public class OnlinePreviewController {
         }
         reader.close();
         }else {
-            logger.info("文件异常", urlPath);
+            logger.info("文件异常：{}", urlPath);
         }
     }
     /**
