@@ -25,8 +25,8 @@ RUN cd /tmp && \
     tar -zxf /tmp/server-jre-8u251-linux-x64.tar.gz && mv /tmp/jdk1.8.0_251 /usr/local/ && \
     #	安装 libreoffice_7.1.4
     apt-get install -y libxinerama1 libcairo2 libcups2 libx11-xcb1 && \
-    wget https://kkfileview.keking.cn/LibreOffice_7.1.4_Linux_x86-64_rpm.tar.gz -cO LibreOffice_7_rpm.tar.gz -cO libreoffice_deb.tar.gz && \
-    tar -zxf /tmp/libreoffice_deb.tar.gz && cd /tmp/LibreOffice_7.1.4.2_Linux_x86-64_deb/DEBS && \
+    wget https://kkfileview.keking.cn/LibreOffice_7.1.4_Linux_x86-64_deb.tar.gz -cO libreoffice_deb.tar.gz &&\
+    tar -zxf /tmp/libreoffice_deb.tar.gz && cd /tmp/LibreOffice_7.1.4.2_Linux_x86-64_deb/DEBS &&\
     dpkg -i *.deb && \
     rm -rf /tmp/* && rm -rf /var/lib/apt/lists/* && \
     apt-get autoremove && \
