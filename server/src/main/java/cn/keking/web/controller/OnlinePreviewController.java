@@ -95,7 +95,7 @@ public class OnlinePreviewController {
         model.addAttribute("file", fileAttribute);
         FilePreview filePreview = previewFactory.get(fileAttribute);
         if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false")) {
-            if (fileUrl == null || fileUrl.toLowerCase().startsWith("file:") || fileUrl.toLowerCase().startsWith("file%3")) {
+            if (fileUrl.toLowerCase().startsWith("file:") || fileUrl.toLowerCase().startsWith("file%3")) {
                 logger.info("URL异常", fileUrl);
                 return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
             }

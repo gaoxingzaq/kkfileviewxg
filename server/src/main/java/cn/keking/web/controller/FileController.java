@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 
 import org.springframework.web.util.HtmlUtils;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  *
  * @author yudian-it
@@ -95,7 +97,20 @@ public class FileController {
     }
 
     @RequestMapping(value = "deleteFile", method = RequestMethod.GET)
-    public String deleteFile(String fileName) throws JsonProcessingException {
+    public String deleteFile(String fileName, HttpServletRequest request) throws JsonProcessingException {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip.contains(",")) {
+            ip = ip.split(",")[0];
+        }
         try {
             fileName = URLDecoder.decode(fileName, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -105,9 +120,9 @@ public class FileController {
             fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
         }
         File file = new File(fileDir + demoPath + fileName);
-        logger.info("删除文件：{}", file.getAbsolutePath());
+        logger.info("删除文件：{}，IP：{}", file.getAbsolutePath(),ip);
         if (file.exists() && !file.delete()) {
-           logger.error("删除文件【{}】失败，请检查目录权限！",file.getPath());
+           logger.error("删除文件【{}】失败，请检查目录权限！，IP：{}",file.getPath(),ip);
         }
         return new ObjectMapper().writeValueAsString(ReturnResponse.success());
     }
