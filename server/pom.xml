@@ -251,9 +251,9 @@
          <dependency>
             <groupId>com.aspose</groupId>
             <artifactId>aspose-cad</artifactId>
-            <version>22.2</version>
+            <version>22.3</version>
             <scope>system</scope>
-             <systemPath>${basedir}/lib/aspose-cad-22.2.jar</systemPath>
+             <systemPath>${basedir}/lib/aspose-cad-22.3.jar</systemPath>
         </dependency>
 		 <!-- 邮件转换 -->
 		<dependency>

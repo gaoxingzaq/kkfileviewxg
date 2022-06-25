@@ -188,7 +188,8 @@ public class OnlinePreviewController {
             e.printStackTrace();
         }
         String urlPath = query.replaceFirst("urlPath=","");
-        urlPath = urlPath.replaceFirst("&disabledownload=true","");
+        urlPath = urlPath.replaceFirst("&disabledownload="+ConfigConstants.getPdfDownloadDisable(),"");
+        urlPath = urlPath.replace("?pdfXianzhi="+ConfigConstants.getpdfXianzhi(),"");
         HttpURLConnection urlcon;
         if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || !urlPath.toLowerCase().startsWith("http")) {
             logger.info("读取跨域文件异常：{}", urlPath);
