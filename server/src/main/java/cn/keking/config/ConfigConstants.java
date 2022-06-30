@@ -36,6 +36,7 @@ public class ConfigConstants {
     private static CopyOnWriteArraySet<String> trustHostSet;
     private static String pdfDownloadDisable;
     private static String pdfXianzhi;
+    private static String BeiAn;
     private static String mediagg;
     private static String pdfyeman;
     private static Boolean fileUploadDisable;
@@ -63,6 +64,7 @@ public class ConfigConstants {
     public static final String DEFAULT_TRUST_HOST = "default";
     public static final String DEFAULT_PDF_DOWNLOAD_DISABLE = "true";
     public static final String DEFAULT_pdfXianzhi_DISABLE = "true";
+    public static final String DEFAULT_BeiAn_DISABLE = "无";
     public static final String DEFAULT_mediagg_DISABLE = "高雄修改";
     public static final String DEFAULT_FILE_UPLOAD_DISABLE = "false";
     public static final String DEFAULT_TIF_PREVIEW_TYPE = "tif";
@@ -264,6 +266,17 @@ public class ConfigConstants {
     }
     public static void setPdfDownloadDisableValue(String pdfDownloadDisable) {
         ConfigConstants.pdfDownloadDisable = pdfDownloadDisable;
+    }
+
+    public static String getBeiAn() {
+        return BeiAn;
+    }
+    @Value("${BeiAn:无}")
+    public void setBeiAn(String BeiAn) {
+        setBeiAnValue(BeiAn);
+    }
+    public static void setBeiAnValue(String BeiAn) {
+        ConfigConstants.BeiAn = BeiAn;
     }
 
     public static String getpdfXianzhi() {

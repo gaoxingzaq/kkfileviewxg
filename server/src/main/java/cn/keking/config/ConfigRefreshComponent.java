@@ -49,6 +49,7 @@ public class ConfigRefreshComponent {
                 String trustHost;
                 String pdfDownloadDisable;
                 String pdfXianzhi;
+                String BeiAn;
                 String mediagg;
                 boolean fileUploadDisable;
                 String tifPreviewType;
@@ -81,6 +82,7 @@ public class ConfigRefreshComponent {
                     trustHost = properties.getProperty("trust.host", ConfigConstants.DEFAULT_TRUST_HOST);
                     pdfDownloadDisable = properties.getProperty("pdf.download.disable", ConfigConstants.DEFAULT_PDF_DOWNLOAD_DISABLE);
                     pdfXianzhi = properties.getProperty("pdf.xianzhi", ConfigConstants.DEFAULT_pdfXianzhi_DISABLE);
+                    BeiAn = properties.getProperty("BeiAn", ConfigConstants.DEFAULT_BeiAn_DISABLE);
                     mediagg = properties.getProperty("gg.media", ConfigConstants.DEFAULT_mediagg_DISABLE);
                     fileUploadDisable = Boolean.parseBoolean(properties.getProperty("file.upload.disable", ConfigConstants.DEFAULT_FILE_UPLOAD_DISABLE));
                     tifPreviewType = properties.getProperty("tif.preview.type", ConfigConstants.DEFAULT_TIF_PREVIEW_TYPE);
@@ -106,6 +108,7 @@ public class ConfigRefreshComponent {
                     ConfigConstants.setOfficePreviewSwitchDisabledValue(officePreviewSwitchDisabled);
                     ConfigConstants.setPdfDownloadDisableValue(pdfDownloadDisable);
                     ConfigConstants.setpdfXianzhiValue(pdfXianzhi);
+                    ConfigConstants.setBeiAnValue(BeiAn);
                     ConfigConstants.setmediaggValue(mediagg);
                     ConfigConstants.setFileUploadDisableValue(fileUploadDisable);
                     ConfigConstants.setTifPreviewTypeValue(tifPreviewType);

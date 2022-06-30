@@ -444,6 +444,11 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
                 2.高雄修改版本开源:<a href="https://gitee.com/gaoxingzaq/file-online-preview-master" target="_blank">https://gitee.com/gaoxingzaq/file-online-preview-master</a><br>
     </div>
     </div>
+     <div style="display: grid; place-items: center;">
+    <div>
+       <a target="_blank"  href="https://beian.miit.gov.cn/" >${BeiAn}</a>
+    </div>
+</div>
 </div>
 <script>
     function deleteFile(fileName) {
