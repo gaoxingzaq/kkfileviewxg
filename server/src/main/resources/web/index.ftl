@@ -110,6 +110,18 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+
+2022年7月4日，v4.7.4版本发布:<br>  
+1、更新logback组件为 1.2.11<br>  
+2、图片接口加入对特殊符号转义 (XSS)<br><br>  
+       
+2022年7月1日，v4.7.3版本发布:<br>   
+1、对OFD生成的文件 字体报错修复<br>
+2、添加备案信息<br>
+3、更新CAD组件<br>
+4、其他功能修复<br><br>
+
+
 2022年6月20日，v4.7.2版本发布:<br>   
 1、新增 ods, ots, tsv, odp, otp, sxi, ott,vsdx格式支持<br>
 2、修复URL %符号错误<br>
