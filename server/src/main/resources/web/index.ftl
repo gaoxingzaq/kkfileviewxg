@@ -116,7 +116,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
 2、图片接口加入对特殊符号转义 (XSS)<br><br>  
        
 2022年7月1日，v4.7.3版本发布:<br>   
-1、对OFD生成的文件 字体报错修复<br>
+1、OFD转换组件更新到1.18<br>
 2、添加备案信息<br>
 3、更新CAD组件<br>
 4、其他功能修复<br><br>
