@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 创建文件转换器
@@ -71,6 +70,7 @@ public class OfficePluginManager {
             logger.warn("检测到有正在运行的office进程，已自动结束该进程");
         }
         try {
+            Thread.sleep(5 * 1000);
             DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
             configuration.setOfficeHome(officeHome);
             String []portsString = serverPorts.split(",");
@@ -87,7 +87,11 @@ public class OfficePluginManager {
             officeManager.start();
         } catch (Exception e) {
             logger.error("启动office组件失败，请检查office组件是否可用");
-            throw e;
+            try {
+                throw e;
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
         }
     }
 

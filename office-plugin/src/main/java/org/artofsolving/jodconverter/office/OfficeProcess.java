@@ -83,7 +83,7 @@ class OfficeProcess {
         if (PlatformUtils.isWindows()) {
             addBasisAndUrePaths(processBuilder);
         }
-        logger.info(String.format("starting process with acceptString '%s' and profileDir '%s'", unoUrl, instanceProfileDir));
+        logger.info(String.format("启动转换线程 '%s' and profileDir '%s'", unoUrl, instanceProfileDir));
         process = processBuilder.start();
         pid = processManager.findPid(processQuery);
         if (pid == PID_NOT_FOUND) {
