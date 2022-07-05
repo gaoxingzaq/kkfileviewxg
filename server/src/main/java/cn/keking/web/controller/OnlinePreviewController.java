@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -158,8 +159,9 @@ public class OnlinePreviewController {
             fileUrls =  fileUrls.substring(0,fileUrls.lastIndexOf("&"));  //删除添加的文件流内容
         }
         logger.info("预览文件url：{}，ip：{}", fileUrls,ip);
-        fileUrls= fileUrls.replace("<","%3C");
-        fileUrls= fileUrls.replace(">","%3E");
+       // fileUrls= fileUrls.replace("<","%3C");
+       // fileUrls= fileUrls.replace(">","%3E");
+        fileUrls= HtmlUtils.htmlEscape(fileUrls);
         // 抽取文件并返回文件列表
         String[] images = fileUrls.split("\\|");
         List<String> imgUrls = Arrays.asList(images);
