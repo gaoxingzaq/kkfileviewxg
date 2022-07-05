@@ -268,13 +268,13 @@ public class FileHandlerService {
      */
     public static String zhuanyii(String fuhao) {
         fuhao = fuhao.replace("%","%25");
-      //  fuhao = fuhao.replace("%","%25");
-    //    fuhao = fuhao.replace("+","%2B");
-     //   fuhao = fuhao.replace(" ","%20");
-     //   fuhao = fuhao.replace("?","%3F");
-      fuhao = fuhao.replace("#","%23");
-      fuhao = fuhao.replace("&","%26");
-    //    fuhao = fuhao.replace("=","%3D");
+        //  fuhao = fuhao.replace("%","%25");
+        //    fuhao = fuhao.replace("+","%2B");
+        //   fuhao = fuhao.replace(" ","%20");
+        //   fuhao = fuhao.replace("?","%3F");
+        fuhao = fuhao.replace("#","%23");
+        fuhao = fuhao.replace("&","%26");
+        //    fuhao = fuhao.replace("=","%3D");
         return fuhao;
     }
 
@@ -472,14 +472,14 @@ public class FileHandlerService {
             type = FileType.typeFromUrl(url);
             suffix = WebUtils.suffixFromUrl(url);
         }
-		 if(UrlEncoderUtilss.hasUrlEncoded(fileName) && UrlEncoderUtilss.hasUrlEncoded(suffix)){  //判断文件名是否转义
-        try {
-            fileName = URLDecoder.decode(fileName, "UTF-8");
-            suffix = URLDecoder.decode(suffix, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if(UrlEncoderUtilss.hasUrlEncoded(fileName) && UrlEncoderUtilss.hasUrlEncoded(suffix)){  //判断文件名是否转义
+            try {
+                fileName = URLDecoder.decode(fileName, "UTF-8");
+                suffix = URLDecoder.decode(suffix, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
-      }
         attribute.setType(type);
         attribute.setName(fileName);
         attribute.setSuffix(suffix);
