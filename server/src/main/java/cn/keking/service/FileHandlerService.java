@@ -349,12 +349,6 @@ public class FileHandlerService {
                 imageCount = this.getConvertedPdfImage(FILE_DIR+"ls"+pdfName);
             }
         }
-        try {
-            pdfFolder = URLEncoder.encode(pdfFolder, uriEncoding).replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException e) {
-            logger.error("UnsupportedEncodingException", e);
-            pdfFolder = pdfName.substring(0, pdfName.length() - 4);
-        }
         String urlPrefix;
         if(ConfigConstants.getpdffy().equalsIgnoreCase("false")){    //是否开启分片功能
             urlPrefix = baseUrl + pdfFolder;   //不改变路径
