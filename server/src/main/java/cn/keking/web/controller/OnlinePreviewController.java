@@ -63,7 +63,7 @@ public class OnlinePreviewController {
     @Value("${pdfpagee:0}")
     private String pdfpagee;
     @RequestMapping(value = "/onlinePrevieww")
-    public String onlinePrevieww(String url, Model model, HttpServletRequest req) {
+    public String onlinePrevieww(String url,String highlightAll, Model model, HttpServletRequest req) {
         String ip = req.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = req.getHeader("Proxy-Client-IP");
@@ -93,6 +93,11 @@ public class OnlinePreviewController {
             return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
         }
         FileAttribute fileAttribute = fileHandlerService.getFileAttribute(fileUrl, req);
+        if (highlightAll == null ){
+            highlightAll = "null";
+        }
+        highlightAll= HtmlUtils.htmlEscape(highlightAll);
+        model.addAttribute("highlightAll", highlightAll);
         model.addAttribute("file", fileAttribute);
         FilePreview filePreview = previewFactory.get(fileAttribute);
         if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false")) {

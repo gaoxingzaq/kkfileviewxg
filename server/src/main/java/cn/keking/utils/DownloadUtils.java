@@ -43,6 +43,7 @@ public class DownloadUtils {
             e.printStackTrace();
         }
         String urlStr = fileAttribute.getUrl().replaceAll("\\+", "%20");
+       // urlStr= FileHandlerService.zhuanyii(urlStr);
         String  urlStrr = urlStr.toLowerCase();  //转换为小写对比
         boolean wjl = FileHandlerService.kuayu("&fullfilename=", urlStrr);  //判断是否启用文件流
         if(wjl){

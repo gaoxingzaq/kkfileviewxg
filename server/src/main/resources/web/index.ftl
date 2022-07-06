@@ -73,6 +73,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             <form action="${baseUrl}onlinePreview" target="_blank" id="preview_by_url" style="display: inline-block">
                 <input type="hidden" name="url"/>
 				<label><input type="checkbox"  name="genxin" value="ok" />更新</label> 
+                 <input type="text" id="highlightAll" name="highlightAll" placeholder="高亮显示" style="width:60px;"> 
 				<input type="text" id="watermarkTxt" name="watermarkTxt" placeholder="插入水印" style="width:80px;"> 
                 <input type="submit" value="预览">
             </form>
@@ -110,6 +111,10 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年7月6日，v4.7.5版本发布:<br>  
+1、更新PDF.JS版本 新增批注功能,新增高亮显示调用参数&highlightAll=<br>  
+2、升级spring-boot为2.71版本<br>  
+3、针对OFFICE启动组件修整<br><br>
 
 2022年7月4日，v4.7.4版本发布:<br>  
 1、更新logback组件为 1.2.11<br>  
