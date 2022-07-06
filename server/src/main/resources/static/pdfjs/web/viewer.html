@@ -234,9 +234,7 @@
                 <span id="numPages" class="toolbarLabel"></span>
               </div>
               <div id="toolbarViewerRight">
-			   <button id="images"  onclick="changePreviewType('image')"  title="切换到JPG模式" tabindex="31" data-l10n-id="jpg">
-                  <span data-l10n-id="jpg">jpg</span>
-                </button>
+			 
                 <button id="presentationMode" class="toolbarButton hiddenLargeView" title="Switch to Presentation Mode" tabindex="31" data-l10n-id="presentation_mode">
                   <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
                 </button>
@@ -450,38 +448,5 @@
 
     <input type="file" id="fileInput" class="hidden">
   </body>
-     <script type="text/javascript" src="js/base64.min.js"></script>
-  <script>
-function getQueryVariable(variable,query)
-{
-       var vars = query.split("?");
-	   //  console.log(vars);
-       for (var i=0;i<vars.length;i++) {
-               var pair = vars[i].split("=");
-               if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
-}
-    function changePreviewType(previewType) {
-        var url = window.location.href;
-		var index = url.split('.pdf')[0];  
-		    index = index.split('=')[1]; 
-            index = index+'.pdf'; 
-			index = decodeURIComponent(index); 
-			var indd = index.indexOf("getCorsFile?urlPath=");
-            var inddd = index.indexOf("loadPDFByPage?urlPath=");
-			if(indd != -1 || inddd != -1 ){
-			index = decodeURIComponent(index); 
-			//index = decodeURIComponent(index); 
-			 index = getQueryVariable("urlPath",index) 
-			};
-			//console.log(index);
-			index = encodeURIComponent(Base64.encode(index));
-          url = "/onlinePreview?url="+index + "&officePreviewType="+previewType;
-		 // console.log(url);
-		top.location.href=url;
-      //window.location.href = url;
-    }
-
-</script>
+ 
 </html>
