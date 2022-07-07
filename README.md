@@ -8,7 +8,8 @@
 1. 支持 zip, rar, jar, tar, gzip 等压缩包
 1. 支持 jpg, jpeg, png, gif, tif, tiff,webp 等图片预览（翻转，缩放，镜像）
 1. 支持 eml,svg
-1. 支持 OFD 来源于 https://gitee.com/Donal/ofd.js  开源协议Apache-2.0
+1. 支持 OFD 来源于 https://gitee.com/Donal/ofd.js  (浏览器版本 目前收费了免费 有水印和时间限制) 开源协议Apache-2.0
+1. 支持 OFD 来源于 https://gitee.com/cnofd/ofdview (浏览器版本) 开源协议Apache-2.0
 1. 支持 OFD 转换 来源于 https://gitee.com/ofdrw/ofdrw  开源协议Apache-2.0
 1. 使用 spring-boot 开发，预览服务搭建部署非常简便
 1. rest 接口提供服务，跨语言、跨平台特性(java,php,python,go,php，....)都支持，应用接入简单方便
@@ -109,7 +110,8 @@ pdf预览模式预览效果如下
 
 ### 历史更新记录  
 2022年7月7日，v4.7.6版本发布:    
-1、全面支持压缩包 WORD文件加密文件的浏览  &filePassword=    感谢&gitee yl-yue用户
+1、全面支持压缩包 WORD文件加密文件的浏览  &filePassword=    感谢&gitee yl-yue用户   
+1、更新OFD.js解析组件   
 
 2022年7月6日，v4.7.5版本发布:    
 1、更新PDF.JS版本 新增批注功能,新增高亮显示调用参数&highlightAll=   
