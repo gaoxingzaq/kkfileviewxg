@@ -73,6 +73,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             <form action="${baseUrl}onlinePreview" target="_blank" id="preview_by_url" style="display: inline-block">
                 <input type="hidden" name="url"/>
 				<label><input type="checkbox"  name="genxin" value="ok" />更新</label> 
+                <input type="text" id="filePassword" name="filePassword" placeholder="密码" style="width:50px;"> 
                  <input type="text" id="highlightAll" name="highlightAll" placeholder="高亮显示" style="width:60px;"> 
 				<input type="text" id="watermarkTxt" name="watermarkTxt" placeholder="插入水印" style="width:80px;"> 
                 <input type="submit" value="预览">
@@ -112,7 +113,8 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
         </div>
        <div id="div" class="panel-body" style="display:none;">
 2022年7月7日，v4.7.6版本发布:<br>  
-1、全面支持压缩包 WORD文件加密文件的浏览  感谢&gitee yl-yue用户<br><br>
+1、全面支持压缩包 WORD文件加密文件的浏览 参数&filePassword=  感谢&gitee yl-yue用户<br><br>
+
 
 
 
