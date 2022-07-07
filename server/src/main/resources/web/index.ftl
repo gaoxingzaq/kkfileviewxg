@@ -111,6 +111,11 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年7月7日，v4.7.6版本发布:<br>  
+1、全面支持压缩包 WORD文件加密文件的浏览  感谢&gitee yl-yue用户<br><br>
+
+
+
 2022年7月6日，v4.7.5版本发布:<br>  
 1、更新PDF.JS版本 新增批注功能,新增高亮显示调用参数&highlightAll=<br>  
 2、升级spring-boot为2.71版本<br>  
