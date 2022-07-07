@@ -1,6 +1,7 @@
 package cn.keking.model;
 
 import cn.keking.config.ConfigConstants;
+import org.artofsolving.jodconverter.model.FileProperties;
 
 /**
  * Created by kl on 2018/1/17.
@@ -13,12 +14,25 @@ public class FileAttribute {
     private String name;
     private String url;
     private String fileKey;
+    private String filePassword;
     private String officePreviewType = ConfigConstants.getOfficePreviewType();
     private String gengxin;
     private String tifPreviewType;
     private Boolean skipDownLoad = false;
 
     public FileAttribute() {
+    }
+    public FileProperties toFileProperties() {
+        FileProperties fileProperties = new FileProperties();
+        fileProperties.setFilePassword(filePassword);
+        return fileProperties;
+    }
+    public String getFilePassword() {
+        return filePassword;
+    }
+
+    public void setFilePassword(String filePassword) {
+        this.filePassword = filePassword;
     }
 
     public FileAttribute(FileType type, String suffix, String name, String url) {

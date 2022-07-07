@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.keking</groupId>
         <artifactId>filepreview</artifactId>
-        <version>4.7.5</version>
+        <version>4.7.6</version>
     </parent>
 
     <artifactId>office-plugin</artifactId>
@@ -26,19 +26,9 @@
             <version>2.7</version>
         </dependency>
         <dependency>
-            <groupId>org.openoffice</groupId>
-            <artifactId>juh</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openoffice</groupId>
-            <artifactId>ridl</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openoffice</groupId>
-            <artifactId>unoil</artifactId>
-            <version>3.2.1</version>
+            <groupId>org.libreoffice</groupId>
+            <artifactId>libreoffice</artifactId>
+            <version>7.1.4</version>
         </dependency>
         <dependency>
             <!-- for the command line tool -->

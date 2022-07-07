@@ -32,6 +32,7 @@ public interface FilePreview {
     String NOT_SUPPORTED_FILE_PAGE = "fileNotSupported";
     String Online3D_FILE_PAGE = "online3D";
     String Mht_FILE_PAGE = "mht";
+    String Jimi_FILE_PAGE = "jiami";
     String Jiaz_FILE_PAGE = "jiazai";
     String Ofdsvg_FILE_PAGE = "ofdsvg";
 

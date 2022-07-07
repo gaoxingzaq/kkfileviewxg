@@ -6,8 +6,8 @@ import cn.keking.model.ReturnResponse;
 import cn.keking.service.*;
 import cn.keking.utils.DownloadUtils;
 import cn.keking.utils.KkFileUtils;
+import cn.keking.utils.OfficeUtils;
 import cn.keking.web.filter.BaseUrlFilter;
-import com.itextpdf.text.DocumentException;
 import jodd.util.StringUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +55,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String suffix = fileAttribute.getSuffix();
         String fileName = fileAttribute.getName();
+        String filePassword = fileAttribute.getFilePassword();
         String regEx = "[`#%:;.\"\\\\]"; //针对特殊符号
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String imagesss = FILE_DIR + fileName;
@@ -149,10 +150,21 @@ public class OfficeFilePreviewImpl implements FilePreview {
                                  //  System.out.println(" 文件 [%s] 正在转换中" +file.getName());
                                  return otherFilePreview.notSupportedFile(model, fileAttribute, "文件["+fileNamee+"]正在转换中,请稍后刷新访问");
                              }else {
-                                 officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //转换
+                                 if (OfficeUtils.isEncrypted(filePath) && org.apache.commons.lang3.StringUtils.isBlank(filePassword)) {
+                                     model.addAttribute("pdfUrl", url);
+                                     return  Jimi_FILE_PAGE;   //是加密文件 密码为空 输出密码框
+                                 }else {
+                                     officeToPdfService.openOfficeToPDF(filePath, outFilePath, fileAttribute); //转换
+                                 }
                              }
                          }else {
-                             officeToPdfService.openOfficeToPDF(filePath, outFilePath);  //转换
+                             if (OfficeUtils.isEncrypted(filePath) && org.apache.commons.lang3.StringUtils.isBlank(filePassword)) {
+                                 model.addAttribute("pdfUrl", url);
+                                 return  Jimi_FILE_PAGE;   //是加密文件 密码为空 输出密码框
+
+                             }else {
+                                 officeToPdfService.openOfficeToPDF(filePath, outFilePath, fileAttribute); //转换
+                             }
                          }
                      }else if(geshi.equals(".xml")) {  //如果是XML格式的WORD就用下面方法
                          String fileData = null;
@@ -194,7 +206,13 @@ public class OfficeFilePreviewImpl implements FilePreview {
             }
             if (ConfigConstants.isCacheEnabled()) {
                 // 加入缓存
-                fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
+                if (null != filePassword && !"".equals(filePassword))  {
+
+                }else {
+                    System.out.println(filePath);
+                    fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
+                }
+
             }
         }
         if (!isHtml && baseUrl != null && (OFFICE_PREVIEW_TYPE_IMAGE.equals(officePreviewType) || OFFICE_PREVIEW_TYPE_ALL_IMAGES.equals(officePreviewType))) {

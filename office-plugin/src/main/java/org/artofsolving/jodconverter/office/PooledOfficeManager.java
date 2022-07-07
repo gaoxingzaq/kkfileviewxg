@@ -35,6 +35,7 @@ class PooledOfficeManager implements OfficeManager {
         public void connected(OfficeConnectionEvent event) {
             taskCount = 0;
             taskExecutor.setAvailable(true);
+            System.out.println("稍等...正在加载启动进程...大约30秒");
         }
         public void disconnected(OfficeConnectionEvent event) {
             taskExecutor.setAvailable(false);

@@ -44,6 +44,7 @@ public class CompressFilePreviewImpl implements FilePreview {
         String fileName=fileAttribute.getName();
         String regEx = "[`#%:;.\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
+        String filePassword = fileAttribute.getFilePassword();
         String fileTree;
         String gengxin=fileAttribute.getgengxin();
         boolean pdfgx ;
@@ -64,7 +65,7 @@ public class CompressFilePreviewImpl implements FilePreview {
                 return otherFilePreview.notSupportedFile(model, fileAttribute, "文件不存在");
             }
             KkFileUtils.deleteDirectory(FILE_DIR+ysb+"/"+fileNamee);
-            fileTree = compressFileReader.un7z(filePath, FILE_DIR+ysb+"/"+fileNamee);
+            fileTree = compressFileReader.un7z(filePath, FILE_DIR+ysb+"/"+fileNamee,filePassword);
             if ("null".equals(fileTree)){
                 return otherFilePreview.notSupportedFile(model, fileAttribute, "压缩文件类型不受支持");
             }

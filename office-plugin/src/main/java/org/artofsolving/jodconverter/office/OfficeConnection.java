@@ -50,6 +50,7 @@ class OfficeConnection implements OfficeContext {
             if (connected) {
                 connected = false;
                 logger.info(String.format("disconnected: '%s'", unoUrl));
+                System.out.println(99999);
                 OfficeConnectionEvent connectionEvent = new OfficeConnectionEvent(OfficeConnection.this);
                 for (OfficeConnectionEventListener listener : connectionEventListeners) {
                     listener.disconnected(connectionEvent);
