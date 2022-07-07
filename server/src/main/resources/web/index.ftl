@@ -113,8 +113,8 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
         </div>
        <div id="div" class="panel-body" style="display:none;">
 2022年7月7日，v4.7.6版本发布:<br>  
-1、全面支持压缩包 WORD文件加密文件的浏览 参数&filePassword=  感谢&gitee yl-yue用户<br><br>
-2、更新OFD.js解析组件<br>
+1、全面支持压缩包 WORD文件加密文件的浏览 参数&filePassword=  感谢&gitee yl-yue用户<br>
+2、更新OFD.js解析组件<br><br>
 
 
 2022年7月6日，v4.7.5版本发布:<br>  
