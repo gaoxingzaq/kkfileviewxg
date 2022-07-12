@@ -35,7 +35,7 @@ public class TiffFilePreviewImpl implements FilePreview {
         String baseUrl = BaseUrlFilter.getBaseUrl();
         String gengxin=fileAttribute.getgengxin();
         String fileName = fileAttribute.getName();
-        String regEx = "[`#%:;.\"\\\\]";
+        String regEx = "[`#%:;\\[\\].\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String officePreviewType = fileAttribute.getOfficePreviewType();
         String pdfName =  fileNamee + "." +  "pdf";
@@ -51,7 +51,7 @@ public class TiffFilePreviewImpl implements FilePreview {
         }
         String tifPreviewType = ConfigConstants.getTifPreviewType();
         if("tif".equalsIgnoreCase(tifPreviewType)){
-            model.addAttribute("currentUrl",url);
+            model.addAttribute("currentUrl",FileHandlerService.zhuanyii(url));
             return TIFF_FILE_PREVIEW_PAGE;
         }else if("pdf".equalsIgnoreCase(tifPreviewType)){
             if (pdfgx ||!fileHandlerService.listConvertedFiles().containsKey(pdfName) || !ConfigConstants.isCacheEnabled()) {
@@ -67,7 +67,7 @@ public class TiffFilePreviewImpl implements FilePreview {
                         if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
 
                         }else {
-                            model.addAttribute("currentUrl", url);
+                            model.addAttribute("currentUrl", FileHandlerService.zhuanyii(url));
                             return TIFF_FILE_PREVIEW_PAGE;
                         }
                     }else {
@@ -83,7 +83,7 @@ public class TiffFilePreviewImpl implements FilePreview {
                     if (geshi.equals(".tif") || geshi.equals(".tiff") ){
                         if(ConvertPicUtil.convertJpg2Pdf(tifoutFilePath, outFilePath)){
                         }else {
-                            model.addAttribute("currentUrl", url);
+                            model.addAttribute("currentUrl",  FileHandlerService.zhuanyii(url));
                             return TIFF_FILE_PREVIEW_PAGE;
                         }
                     }else {

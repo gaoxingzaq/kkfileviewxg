@@ -93,7 +93,7 @@ public class OnlinePreviewController {
             return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrl);
         }
         FileAttribute fileAttribute = fileHandlerService.getFileAttribute(fileUrl, req);
-        if (highlightAll == null ){
+        if (highlightAll == null || highlightAll == "" ){
             highlightAll = "null";
         }
         highlightAll= HtmlUtils.htmlEscape(highlightAll);

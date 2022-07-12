@@ -37,7 +37,7 @@ public class PdfFilePreviewImpl implements FilePreview {
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         String gengxin=fileAttribute.getgengxin();
         String fileName = fileAttribute.getName();
-        String regEx = "[`#%:;\"\\\\]";
+        String regEx = "[`#%:;\\[\\]\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String officePreviewType = fileAttribute.getOfficePreviewType();
         String baseUrl = BaseUrlFilter.getBaseUrl();
@@ -72,7 +72,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                 if (geshi.equals(".pdf")){
 
                 }else if (geshi.equals(".ofd")){
-                    model.addAttribute("pdfUrl",url);
+                    model.addAttribute("pdfUrl",FileHandlerService.zhuanyii(url));
                     return OFD_FILE_PREVIEW_PAGE;
                 }else {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
@@ -113,11 +113,12 @@ public class PdfFilePreviewImpl implements FilePreview {
                     if (geshi.equals(".pdf")){
 
                     }else if (geshi.equals(".ofd")){
-                        model.addAttribute("pdfUrl",url);
+                        model.addAttribute("pdfUrl",FileHandlerService.zhuanyii(url));
                         return OFD_FILE_PREVIEW_PAGE;
                     }else {
                         return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
                     }
+
                     model.addAttribute("pdfUrl", fileHandlerService.getRelativePath(response.getContent()));
                     if (ConfigConstants.isCacheEnabled()) {
                         // 加入缓存
@@ -133,12 +134,13 @@ public class PdfFilePreviewImpl implements FilePreview {
                         model.addAttribute("pdfUrl",pdfName);
                         return FYPDF_FILE_PREVIEW_PAGE;
                     }
+
                     model.addAttribute("pdfUrl", pdfName);
                 }
             } else {
                 if(fileHandlerService.listConvertedFiles().containsKey(pdfName)){
                     String  fileTree =fileHandlerService.getConvertedFile(pdfName);
-                    model.addAttribute("pdfUrl",fileTree);
+                    model.addAttribute("pdfUrl",FileHandlerService.zhuanyii(fileTree));
                     return PDF_FILE_PREVIEW_PAGE;
                 }
                 if( ConfigConstants.getpdffy().equalsIgnoreCase("false")){  //查询是否开启分页模式
@@ -157,10 +159,10 @@ public class PdfFilePreviewImpl implements FilePreview {
                         }
                         String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
                         if (geshi.equals(".pdf")){
-                            model.addAttribute("pdfUrl",url);
+                            model.addAttribute("pdfUrl",  FileHandlerService.zhuanyii(url));
                             return PDF_FILE_PREVIEW_PAGE;
                         }else if (geshi.equals(".ofd")){
-                            model.addAttribute("pdfUrl",url);
+                            model.addAttribute("pdfUrl",  FileHandlerService.zhuanyii(url));
                             return OFD_FILE_PREVIEW_PAGE;
                         }else {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
@@ -184,7 +186,7 @@ public class PdfFilePreviewImpl implements FilePreview {
                             model.addAttribute("pdfUrl",pdfName);
                             return FYPDF_FILE_PREVIEW_PAGE;
                         }else if (geshi.equals(".ofd")){
-                            model.addAttribute("pdfUrl",url);
+                            model.addAttribute("pdfUrl", FileHandlerService.zhuanyii(url));
                             return OFD_FILE_PREVIEW_PAGE;
                         }else {
                             return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );

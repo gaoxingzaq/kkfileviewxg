@@ -41,6 +41,9 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
 	 &lt;script type="text/javascript" src="${baseUrl}js/base64.min.js">&lt;/script> 
                     var url = 'http://127.0.0.1:8080/file/test.txt'; //要预览文件的访问地址
                     window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(url)));
+                   更新功能&gengxin=ok 固定格式 为了开启缓存 而且需要更新的文件设立的
+                   其他功能  &filePassword=(密码)&highlightAll=(PDF高亮)&watermarkTxt=(水印)
+                   下载流图片的方法 &officePreviewType=imagexz
                 </pre>
             </div>
             <div>

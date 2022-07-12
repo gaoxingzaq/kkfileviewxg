@@ -49,7 +49,7 @@ public class AttributeSetFilter implements Filter {
 
     private void setWatermarkAttribute(ServletRequest request) {
         String watermarkTxt = request.getParameter("watermarkTxt");
-        if(watermarkTxt == null || "".equals(watermarkTxt)){
+        if(watermarkTxt == null || watermarkTxt.length() == 0){
         }else {
             watermarkTxt= HtmlUtils.htmlEscape(watermarkTxt);
         }

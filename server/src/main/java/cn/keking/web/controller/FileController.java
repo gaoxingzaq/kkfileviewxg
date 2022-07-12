@@ -49,7 +49,7 @@ public class FileController {
 
         // escaping dangerous characters to prevent XSS
         fileName = HtmlUtils.htmlEscape(fileName, StandardCharsets.UTF_8.name());
-        String regEx = "[`~@#%^&*()|{}:;\\\\<>/?！…（）—【】‘；：”“’。，、？']";
+        String regEx = "[`\\[\\]~@#%^&*()|{}:;\\\\<>/?！…（）—【】‘；：”“’。，、？']";
         fileName = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
 
         // Check for Unix-style path

@@ -45,7 +45,7 @@ public class OfdFilePreviewImpl implements FilePreview {
         String pdfName = fileName.substring(0, fileName.lastIndexOf(".") + 1) + "ofd";
         String outFilePath = FILE_DIR + pdfName;
         String gengxin=fileAttribute.getgengxin();
-        String regEx = "[`#%:;.\"\\\\]";
+        String regEx = "[`#%:;\\[\\].\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String ofdName =  fileNamee + "." + "pdf";
         String ofdFilePath = FILE_DIR + ofdName;
@@ -130,7 +130,7 @@ public class OfdFilePreviewImpl implements FilePreview {
                         }
                     }
                 }else if (geshi.equals(".pdf")){
-                    model.addAttribute("pdfUrl",url);
+                    model.addAttribute("pdfUrl",FileHandlerService.zhuanyii(url));
                     return PDF_FILE_PREVIEW_PAGE;
                 }else {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );
@@ -155,10 +155,10 @@ public class OfdFilePreviewImpl implements FilePreview {
                 }
                 String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
                 if (geshi.equals(".ofd")){
-                    model.addAttribute("pdfUrl",url);
+                    model.addAttribute("pdfUrl",FileHandlerService.zhuanyii(url));
                     return OFD_FILE_PREVIEW_PAGE;
                 }else if (geshi.equals(".pdf")){
-                    model.addAttribute("pdfUrl",url);
+                    model.addAttribute("pdfUrl",FileHandlerService.zhuanyii(url));
                     return PDF_FILE_PREVIEW_PAGE;
                 }else {
                     return otherFilePreview.notSupportedFile(model, fileAttribute, "文件错误或者其他类型,"+ geshi );

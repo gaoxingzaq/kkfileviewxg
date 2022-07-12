@@ -272,6 +272,8 @@ public class FileHandlerService {
         //    fuhao = fuhao.replace("+","%2B");
         //   fuhao = fuhao.replace(" ","%20");
         //   fuhao = fuhao.replace("?","%3F");
+        fuhao = fuhao.replace("[","%5B");
+        fuhao = fuhao.replace("]","%5D");
         fuhao = fuhao.replace("#","%23");
         fuhao = fuhao.replace("&","%26");
         //    fuhao = fuhao.replace("=","%3D");

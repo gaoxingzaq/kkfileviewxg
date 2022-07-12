@@ -56,7 +56,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
         String suffix = fileAttribute.getSuffix();
         String fileName = fileAttribute.getName();
         String filePassword = fileAttribute.getFilePassword();
-        String regEx = "[`#%:;.\"\\\\]"; //针对特殊符号
+        String regEx = "[`#%:\\[\\];.\"\\\\]"; //针对特殊符号
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String imagesss = FILE_DIR + fileName;
         if(officePreviewType.equalsIgnoreCase("poi") ||officexh.equals("2")){  //判断需要用什么转换器

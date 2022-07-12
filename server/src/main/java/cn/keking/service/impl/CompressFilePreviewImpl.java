@@ -42,7 +42,7 @@ public class CompressFilePreviewImpl implements FilePreview {
     @Override
     public String filePreviewHandle(String url, Model model, FileAttribute fileAttribute) {
         String fileName=fileAttribute.getName();
-        String regEx = "[`#%:;.\"\\\\]";
+        String regEx = "[`#%:\\[\\];.\"\\\\]";
         String fileNamee = Pattern.compile(regEx).matcher(fileName).replaceAll("").trim();
         String filePassword = fileAttribute.getFilePassword();
         String fileTree;
