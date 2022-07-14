@@ -1,7 +1,8 @@
 # docker版用法
 
 ## 一、准备工作
-1. 上传群主编译好的 kkFileView-4.7.2.tar.gz 文件到 docker host，并解压
+
+1. 上传编译好的 kkFileView-4.7.2.tar.gz 文件到 docker host，并解压
 
 ```
 mkdir /opt/kkfileview
@@ -19,7 +20,7 @@ ln -s kkFileView-4.7.2 kkFileView-latest
 3. 新建启动脚本 vim /opt/kkfileview/kkFileView-latest/run.sh
 
 ```
-java -Dfile.encoding=UTF-8 -Dspring.config.location=/opt/kkFileView/config/application.properties -jar /opt/kkFileView/bin/kkFileView-4.7.2.jar
+java -Dfile.encoding=UTF-8 -Dspring.config.location=/opt/kkFileView/config/application.properties -jar /opt/kkFileView/bin/$(ls /opt/kkFileView/bin | grep kkFileView-)
 ```
 
 4. 启动脚本可执行权限
@@ -54,6 +55,7 @@ kkfv:001 /bin/bash /opt/kkFileView/run.sh
 ```
 
 ## 三、修改应用配置和 nginx 反代
+
 1. 修改配置
 
     打开 /opt/kkFileView-latest/conf 目录，下面有一个 application.properties 配置文件，有部分配置是可以在程序运行中变更的，其他的变更需要重新启动程序，例如，修改默认的路径 `/preview` 为 `/document` ：
@@ -108,11 +110,11 @@ proxy_set_header  X-Real-IP $remote_addr;
 }
 ```
 
-## 四、应用升级
+## 四、应用版本升级
 
-当群主发布的新的版本，比如：kkFileView-xxx.tar.gz，升级操作如下：
+当群主发布的新的版本，比如：kkFileView-xxx.tar.gz，xxx是新版本号，升级操作如下：
 
-1. 上传群主编译好的 kkFileView-xxx.tar.gz 文件到 docker host 的 /opt/kkfileview 目录，并解压：
+1. 上传编译好的 kkFileView-xxx.tar.gz 文件到 docker host 的 /opt/kkfileview 目录，并解压：
 
 ```
 mkdir /opt/kkfileview
@@ -121,35 +123,24 @@ cd /opt/kkfileview
 tar -zxvf kkFileView-xxx.tar.gz 
 ```
 
-2. 新版本解压后的目录是kkFileView-xxx，将原来的配置文件复制到新版本目录中
+2. 新版本解压后的目录是kkFileView-xxx，将原来的配置文件和启动脚本复制到新版本目录中
 
 ```
 cp /opt/kkfileview/kkFileView-latest/conf/application.properties /opt/kkfileview/kkFileView-xxx/conf/application.properties
+cp /opt/kkfileview/kkFileView-latest/run.sh /opt/kkfileview/kkFileView-xxx/run.sh
 ```
 
 3. 重新建立软连接到 kkFileView-latest
 
 ```
+删除原来的软连接
 rm -rf /opt/kkfileview/kkFileView-latest
-重新建立新的软连接
+重新建立新版本的软连接
 ln -s kkFileView-xxx kkFileView-latest
 ```
 
-4. 更新启动脚本 vim /opt/kkfileview/kkFileView-latest/run.sh
-
-```
-java -Dfile.encoding=UTF-8 -Dspring.config.location=/opt/kkFileView/config/application.properties -jar /opt/kkFileView/bin/kkFileView-xxx.jar
-```
-
-5. 启动脚本可执行权限
-
-```
-chmod +0755 /opt/kkfileview/kkFileView-latest/run.sh
-```
-
-6. 重启 container 即可
+4. 重启 container 即可
 
 ```
 docker container restart kkfv
 ```
-
