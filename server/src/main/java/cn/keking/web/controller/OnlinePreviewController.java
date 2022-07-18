@@ -205,7 +205,6 @@ public class OnlinePreviewController {
         }else {
             logger.info("读取跨域文件url：{}", urlPath);
             try {
-                String suffix = urlPath.substring(urlPath.lastIndexOf("."));
                 URL url = WebUtils.normalizedURL(urlPath);
                 urlcon=(HttpURLConnection)url.openConnection();
                 urlcon.setConnectTimeout(30000);
@@ -224,17 +223,13 @@ public class OnlinePreviewController {
                     logger.error("读取跨域文件异常，url：{}", urlPath);
                 }else {
                     byte[] bytes = NetUtil.downloadBytes(url.toString());
-                    if (suffix.equalsIgnoreCase(".svg")){
+                    if(urlPath.contains( ".svg")){
                         response.setContentType("image/svg+xml");
                     }
                     IOUtils.write(bytes, response.getOutputStream());
                 }
             } catch (IOException | GalimatiasParseException e) {
-                if (e.getMessage().contains("connect")||e.getMessage().contains("refused")) {
-                    logger.error("读取跨域文件异常，url：{}", urlPath, e);
-                }else {
-                    logger.error("读取跨域文件异常，url：{}", urlPath, e);
-                }
+              logger.error("读取跨域文件异常，url：{}", urlPath);
             }
         }
     }
