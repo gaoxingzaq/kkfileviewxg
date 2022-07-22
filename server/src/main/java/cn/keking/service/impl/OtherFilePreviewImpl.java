@@ -4,6 +4,7 @@ import cn.keking.model.FileAttribute;
 import cn.keking.service.FilePreview;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.util.HtmlUtils;
 
 /**
  * Created by kl on 2018/1/17.
@@ -42,6 +43,7 @@ public class OtherFilePreviewImpl implements FilePreview {
      * @return 页面
      */
     public String notSupportedFile(Model model, String fileType, String errMsg) {
+        fileType= HtmlUtils.htmlEscape(fileType);
         model.addAttribute("fileType", fileType);
         model.addAttribute("msg", errMsg);
         return NOT_SUPPORTED_FILE_PAGE;
