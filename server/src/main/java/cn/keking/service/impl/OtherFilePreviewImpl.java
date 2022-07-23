@@ -44,6 +44,7 @@ public class OtherFilePreviewImpl implements FilePreview {
      */
     public String notSupportedFile(Model model, String fileType, String errMsg) {
         fileType= HtmlUtils.htmlEscape(fileType);
+        errMsg= HtmlUtils.htmlEscape(errMsg);
         model.addAttribute("fileType", fileType);
         model.addAttribute("msg", errMsg);
         return NOT_SUPPORTED_FILE_PAGE;
