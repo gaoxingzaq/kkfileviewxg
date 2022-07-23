@@ -209,7 +209,6 @@ public class OfficeFilePreviewImpl implements FilePreview {
                 if (null != filePassword && !"".equals(filePassword))  {
 
                 }else {
-                    System.out.println(filePath);
                     fileHandlerService.addConvertedFile(pdfName, fileHandlerService.getRelativePath(outFilePath));
                 }
 
