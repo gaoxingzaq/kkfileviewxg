@@ -182,7 +182,9 @@ public class PdfFilePreviewImpl implements FilePreview {
                         String geshi =FileHandlerService.geshi(outFilePath,1);// 获取文件头信息
                         if (geshi.equals(".pdf")){
                             pdfName = url.replace(baseUrl, "");
-                            pdfName ="download?urlPath="+pdfName+"&"+FileHandlerService.pdfpage(pdfName);
+                            model.addAttribute("fenye",FileHandlerService.pdfpage(pdfName));
+                            model.addAttribute("pdfpagee",pdfpagee);
+                            pdfName ="download?urlPath="+pdfName;
                             model.addAttribute("pdfUrl",pdfName);
                             return FYPDF_FILE_PREVIEW_PAGE;
                         }else if (geshi.equals(".ofd")){

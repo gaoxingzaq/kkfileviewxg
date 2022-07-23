@@ -164,8 +164,6 @@ public class OnlinePreviewController {
             fileUrls =  fileUrls.substring(0,fileUrls.lastIndexOf("&"));  //删除添加的文件流内容
         }
         logger.info("预览文件url：{}，ip：{}", fileUrls,ip);
-       // fileUrls= fileUrls.replace("<","%3C");
-       // fileUrls= fileUrls.replace(">","%3E");
         fileUrls= HtmlUtils.htmlEscape(fileUrls);
         // 抽取文件并返回文件列表
         String[] images = fileUrls.split("\\|");
@@ -188,29 +186,27 @@ public class OnlinePreviewController {
      * @param response response
      */
     @RequestMapping(value = "/getCorsFile", method = RequestMethod.GET)
-    public void getCorsFile( HttpServletRequest request, HttpServletResponse response) {
-        String query = request.getQueryString();
-        query = query.replace("%20", " ");
-        try {
-            query = URLDecoder.decode(query, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        String urlPath = query.replaceFirst("urlPath=","");
-        urlPath = urlPath.replaceFirst("&disabledownload="+ConfigConstants.getPdfDownloadDisable(),"");
-        urlPath = urlPath.replace("?pdfXianzhi="+ConfigConstants.getpdfXianzhi(),"");
+    public String getCorsFile(String urlPath, Model model, HttpServletResponse response) {
         HttpURLConnection urlcon;
         if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || !urlPath.toLowerCase().startsWith("http")) {
             logger.info("读取跨域文件异常：{}", urlPath);
+            return otherFilePreview.notSupportedFile(model, "该类型不允许预览：" + urlPath);
         }else {
             logger.info("读取跨域文件url：{}", urlPath);
+            urlPath = urlPath.replace("%20", " ");
+            try {
+                urlPath = URLDecoder.decode(urlPath, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            urlPath = urlPath.replaceFirst("&disabledownload="+ConfigConstants.getPdfDownloadDisable(),"");
+            urlPath = urlPath.replaceFirst("&pdfXianzhi="+ConfigConstants.getpdfXianzhi(),"");
             try {
                 URL url = WebUtils.normalizedURL(urlPath);
                 urlcon=(HttpURLConnection)url.openConnection();
                 urlcon.setConnectTimeout(30000);
                 urlcon.setReadTimeout(30000);
                 urlcon.setInstanceFollowRedirects(false);
-                //  System.out.println(urlcon.getResponseCode());
                 if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
                     url =new URL(urlcon.getHeaderField("Location"));
                     urlcon=(HttpURLConnection)url.openConnection();
@@ -221,71 +217,82 @@ public class OnlinePreviewController {
                 }
                 if(urlcon.getResponseCode() ==404 ||urlcon.getResponseCode() ==403 ||urlcon.getResponseCode() ==500 ){
                     logger.error("读取跨域文件异常，url：{}", urlPath);
+                    return otherFilePreview.notSupportedFile(model, "地址错误：" + urlPath);
                 }else {
+                if(urlPath.contains( ".svg")) {
+               response.setContentType("image/svg+xml");
+                }
                     byte[] bytes = NetUtil.downloadBytes(url.toString());
-                    if(urlPath.contains( ".svg")){
-                        response.setContentType("image/svg+xml");
-                    }
                     IOUtils.write(bytes, response.getOutputStream());
                 }
             } catch (IOException | GalimatiasParseException e) {
-              logger.error("读取跨域文件异常，url：{}", urlPath);
+                logger.error("读取跨域文件异常，url：{}", urlPath);
+                return otherFilePreview.notSupportedFile(model, "文件有问题：" + urlPath);
             }
         }
+        return null;
     }
     /**
      * PDF分片功能
      */
     @RequestMapping( value = "/download", method = RequestMethod.GET)
-    public void pdf(HttpServletRequest request, HttpServletResponse response) throws IOException, DocumentException {
-        //文件路径
-        String query = request.getQueryString();
-        String urlPath = query.replaceFirst("urlPath=","");
-        String page = null;
-        if(pdfpagee.equalsIgnoreCase("0")){
-            page = urlPath.substring(urlPath.lastIndexOf("=")+1);
-            urlPath = urlPath.substring(0,urlPath.lastIndexOf("?"));
-        }else {
-            urlPath = urlPath.substring(0,urlPath.lastIndexOf("?"));
-        }
-      if (page == null || "".equals(page) ||"pdf".equals(page) ||"NaN".equals(page) ){
-          page="1";
-      }
-        logger.info("读取PDF分页文件url：{}", URLDecoder.decode(urlPath, "UTF-8"));
-        String pdfname = urlPath.substring(urlPath.lastIndexOf("."));
-        if(pdfname.equalsIgnoreCase(".pdf")){ //判断是否PDF文件
-        // 读取pdf文档
-       if(urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3")){
+    public String download(String urlPath, Model model, HttpServletResponse response) throws IOException, DocumentException {
+        if(urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3")){
             logger.info("文件地址异常：{}", urlPath);
         }else if(!urlPath.toLowerCase().startsWith("http")){
-           urlPath ="file:///"+  FILE_DIR + urlPath;
-       }
-     // System.out.println(urlPath);
-        PdfReader reader = new PdfReader(urlPath);
-        //总页数
-        int numberOfPages = reader.getNumberOfPages();
-        // 截取开始页
-            //截取pdf部分页，格式"2-5" 第2页到第5页 页码超出范围（10页，你选择"15-20"）只会读最后一页
-            // 参数为String型，可让前端传值，控制读取第几页
-            // reader.selectPages("2-5");
-            int start;
-            if(pdfpagee.equalsIgnoreCase("0")){
-                start = Integer.parseInt(page.substring(0, 1));
-                reader.selectPages(page);
-            }else {
-                start = Integer.parseInt(pdfpagee.substring(0, 1));
-                reader.selectPages(pdfpagee);
+            urlPath ="file:///"+  FILE_DIR + urlPath;
+        }
+        String page = null;
+        if(pdfpagee.equalsIgnoreCase("0")){
+            try {
+                page = urlPath.substring(urlPath.lastIndexOf("=") + 1);
+            } catch (Exception e) {
+                logger.error("地址不合法，url：{}", urlPath);
             }
-        //源码没怎么看懂，但是需要内存中存放文件流，所以用了HttpServletResponse
-        PdfStamper stamp = new PdfStamper(reader, response.getOutputStream());
-        // 开始页 如果大于pdf总页数，不返回文件流，stamp.close()结果返回1
-        if(start <= numberOfPages){
-            stamp.close();
         }
-        reader.close();
-        }else {
+        try {
+            urlPath = urlPath.substring(0,urlPath.lastIndexOf("?"));
+            urlPath = URLDecoder.decode(urlPath, "UTF-8");
+        } catch (Exception e) {
+            logger.error("没有分页参数，url：{}", urlPath);
+        }
+        if (page == null || "".equals(page) ||"pdf".equals(page) ||"NaN".equals(page) ){
+            page="1";
+        }
+        logger.info("读取PDF分页文件url：{}", URLDecoder.decode(urlPath, "UTF-8"));
+        try {
+            String pdfname = urlPath.substring(urlPath.lastIndexOf("."));
+            if(pdfname.equalsIgnoreCase(".pdf")){ //判断是否PDF文件
+                // System.out.println(urlPath);
+                PdfReader reader = new PdfReader(urlPath);
+                //总页数
+                int numberOfPages = reader.getNumberOfPages();
+                // 截取开始页
+                //截取pdf部分页，格式"2-5" 第2页到第5页 页码超出范围（10页，你选择"15-20"）只会读最后一页
+                int start;
+                if(pdfpagee.equalsIgnoreCase("0")){
+                    start = Integer.parseInt(page.substring(0, 1));
+                    reader.selectPages(page);
+                }else {
+                    start = Integer.parseInt(pdfpagee.substring(0, 1));
+                    reader.selectPages(pdfpagee);
+                }
+                //源码没怎么看懂，但是需要内存中存放文件流，所以用了HttpServletResponse
+                PdfStamper stamp = new PdfStamper(reader, response.getOutputStream());
+                // 开始页 如果大于pdf总页数，不返回文件流，stamp.close()结果返回1
+                if(start <= numberOfPages){
+                    stamp.close();
+                }
+                reader.close();
+            }else {
+                logger.info("文件异常：{}", urlPath);
+                return otherFilePreview.notSupportedFile(model, "非PDF文件不能使用该功能：" + urlPath);
+            }
+        } catch (IOException e) {
             logger.info("文件异常：{}", urlPath);
+            return otherFilePreview.notSupportedFile(model, "非PDF文件不能使用该功能：" + urlPath);
         }
+        return null;
     }
     /**
      * 通过api接口入队

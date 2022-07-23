@@ -239,9 +239,9 @@ public class OfficeFilePreviewImpl implements FilePreview {
              //    } catch (DocumentException e) {
                //      e.printStackTrace();
               //    }
-
-
-                  pdfName ="download?urlPath="+pdfName+"&"+FileHandlerService.pdfpage(pdfName);   //分割PDF文件
+                  model.addAttribute("fenye",FileHandlerService.pdfpage(pdfName));
+                  model.addAttribute("pdfpagee",pdfpagee);
+                  pdfName ="download?urlPath="+pdfName;
                   model.addAttribute("pdfUrl", pdfName);
                   return  FYPDF_FILE_PREVIEW_PAGE;
               }else {
