@@ -96,6 +96,17 @@ public class FileController {
         }
     }
 
+    private static Pattern FilePattern = Pattern.compile("[\\\\/:*?\"<>|]");
+
+    /**
+     * 路径遍历 漏洞修复
+     * @param str
+     * @return
+     */
+    public static String filenameFilter(String str) {
+        return str==null?null:FilePattern.matcher(str).replaceAll("");
+    }
+
     @RequestMapping(value = "deleteFile", method = RequestMethod.GET)
     public String deleteFile(String fileName, HttpServletRequest request) throws JsonProcessingException {
         String ip = request.getHeader("x-forwarded-for");
@@ -119,6 +130,7 @@ public class FileController {
         if (fileName.contains("/")) {
             fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
         }
+        fileName= filenameFilter(fileName);
         File file = new File(fileDir + demoPath + fileName);
         logger.info("删除文件：{}，IP：{}", file.getAbsolutePath(),ip);
         if (file.exists() && !file.delete()) {

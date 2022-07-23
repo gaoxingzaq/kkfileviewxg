@@ -209,7 +209,6 @@
       <artifactId>itextpdf</artifactId>
        <version>5.5.13.3</version>
          </dependency>
-
 		<!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-jpeg2000 -->
         <dependency>
             <groupId>com.github.jai-imageio</groupId>
@@ -225,19 +224,19 @@
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>jbig2-imageio</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-jpeg -->
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-jpeg</artifactId>
-            <version>3.7.0</version>
+            <version>3.8.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-tiff -->
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-tiff</artifactId>
-            <version>3.7.0</version>
+            <version>3.8.2</version>
         </dependency>
 		 <!-- CAD转换 -->
          <dependency>
