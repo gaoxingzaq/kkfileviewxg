@@ -119,7 +119,8 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
 1、更新OFD转换组件<br>  
 2、修复xss漏洞<br>  
 3、调整PDF分片功能<br>  
-4、其他修复<br><br>
+4、任意文件删除漏洞<br>
+5、其他修复<br><br>
 
 2022年7月7日，v4.7.6版本发布:<br>  
 1、全面支持压缩包 WORD文件加密文件的浏览 参数&filePassword=  感谢&gitee yl-yue用户<br>
