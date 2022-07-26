@@ -115,6 +115,10 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年7月26日，v4.7.8版本发布:<br>  
+1、修复OFFICE转换提示密码问题<br><br>
+
+
 2022年7月23日，v4.7.7版本发布:<br>  
 1、更新OFD转换组件<br>  
 2、修复xss漏洞<br>  
