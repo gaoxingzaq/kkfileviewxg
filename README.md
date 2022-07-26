@@ -11,6 +11,7 @@
 1. 支持 OFD 来源于 https://gitee.com/Donal/ofd.js  (浏览器版本 目前收费了免费 有水印和时间限制) 开源协议Apache-2.0
 1. 支持 OFD 来源于 https://gitee.com/cnofd/ofdview (浏览器版本) 开源协议Apache-2.0
 1. 支持 OFD 转换 来源于 https://gitee.com/ofdrw/ofdrw  开源协议Apache-2.0
+1. 支持 压缩包 来源于 https://github.com/borisbrodski/sevenzipjbinding 开源协议LGPL-2.1 
 1. 使用 spring-boot 开发，预览服务搭建部署非常简便
 1. rest 接口提供服务，跨语言、跨平台特性(java,php,python,go,php，....)都支持，应用接入简单方便
 1. 抽象预览服务接口，方便二次开发，非常方便添加其他类型文件预览支持

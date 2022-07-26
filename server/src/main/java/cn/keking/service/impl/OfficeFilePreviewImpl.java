@@ -150,7 +150,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
                                  //  System.out.println(" 文件 [%s] 正在转换中" +file.getName());
                                  return otherFilePreview.notSupportedFile(model, fileAttribute, "文件["+fileNamee+"]正在转换中,请稍后刷新访问");
                              }else {
-                                 if (OfficeUtils.isEncrypted(filePath) && org.apache.commons.lang3.StringUtils.isBlank(filePassword)) {
+                                 if (OfficeUtils.isPwdProtected(filePath) && !StringUtils.hasLength(filePassword)) {
                                      model.addAttribute("pdfUrl", url);
                                      return  Jimi_FILE_PAGE;   //是加密文件 密码为空 输出密码框
                                  }else {
@@ -158,7 +158,7 @@ public class OfficeFilePreviewImpl implements FilePreview {
                                  }
                              }
                          }else {
-                             if (OfficeUtils.isEncrypted(filePath) && org.apache.commons.lang3.StringUtils.isBlank(filePassword)) {
+                             if (OfficeUtils.isPwdProtected(filePath) && !StringUtils.hasLength(filePassword)) {
                                  model.addAttribute("pdfUrl", url);
                                  return  Jimi_FILE_PAGE;   //是加密文件 密码为空 输出密码框
 
