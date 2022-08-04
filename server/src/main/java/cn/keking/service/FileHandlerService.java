@@ -4,10 +4,7 @@ import cn.keking.config.ConfigConstants;
 import cn.keking.model.FileAttribute;
 import cn.keking.model.FileType;
 import cn.keking.service.cache.CacheService;
-import cn.keking.utils.KkFileUtils;
-import cn.keking.utils.UrlEncoderUtilss;
-import cn.keking.utils.WebUtils;
-import cn.keking.utils.WjtTypeUtils;
+import cn.keking.utils.*;
 import com.aspose.cad.CodePages;
 import com.aspose.cad.Color;
 import com.aspose.cad.Image;
@@ -149,8 +146,9 @@ public class FileHandlerService {
      */
     public void doActionConvertedFile(String outFilePath) {
         StringBuilder sb = new StringBuilder();
+        String charset = EncodingDetects.getJavaEncode(outFilePath);
         try (InputStream inputStream = new FileInputStream(outFilePath);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, DEFAULT_CONVERTER_CHARSET))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, charset))) {
             String line;
             while (null != (line = reader.readLine())) {
                 if (line.contains("charset=gb2312")) {
