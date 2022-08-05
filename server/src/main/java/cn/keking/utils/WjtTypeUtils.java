@@ -127,7 +127,7 @@ public class WjtTypeUtils {
             }else if(type.contains("504B0304")){
                 return TYPE_OFD;
             } else{
-                return "未知文件";
+                return "未知类型";
             }
         } catch (IOException e) {
             e.printStackTrace();

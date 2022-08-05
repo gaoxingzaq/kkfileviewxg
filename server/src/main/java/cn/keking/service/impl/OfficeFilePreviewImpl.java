@@ -154,16 +154,23 @@ public class OfficeFilePreviewImpl implements FilePreview {
                                      model.addAttribute("pdfUrl", url);
                                      return  Jimi_FILE_PAGE;   //是加密文件 密码为空 输出密码框
                                  }else {
-                                     officeToPdfService.openOfficeToPDF(filePath, outFilePath, fileAttribute); //转换
+                                     try {
+                                         officeToPdfService.openOfficeToPDF(filePath, outFilePath, fileAttribute); //转换
+                                     } catch (Exception e) {
+                                         return otherFilePreview.notSupportedFile(model, fileAttribute, "抱歉，该文件版本不兼容，文件版本错误。");
+                                     }
                                  }
                              }
                          }else {
                              if (OfficeUtils.isPwdProtected(filePath) && !StringUtils.hasLength(filePassword)) {
                                  model.addAttribute("pdfUrl", url);
                                  return  Jimi_FILE_PAGE;   //是加密文件 密码为空 输出密码框
-
                              }else {
-                                 officeToPdfService.openOfficeToPDF(filePath, outFilePath, fileAttribute); //转换
+                                 try {
+                                     officeToPdfService.openOfficeToPDF(filePath, outFilePath, fileAttribute); //转换
+                                 } catch (Exception e) {
+                                     return otherFilePreview.notSupportedFile(model, fileAttribute, "抱歉，该文件版本不兼容，文件版本错误。");
+                                 }
                              }
                          }
                      }else if(geshi.equals(".xml")) {  //如果是XML格式的WORD就用下面方法

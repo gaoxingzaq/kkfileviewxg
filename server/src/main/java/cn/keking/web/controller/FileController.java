@@ -8,10 +8,7 @@ import cn.keking.model.ReturnResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -38,7 +35,7 @@ public class FileController {
     private final String demoDir = "demo";
     private final String demoPath = demoDir + File.separator;
 
-    @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
+    @PostMapping("/fileUpload")
     public String fileUpload(@RequestParam("file") MultipartFile file) throws JsonProcessingException {
         if (ConfigConstants.getFileUploadDisable()) {
             return new ObjectMapper().writeValueAsString(ReturnResponse.failure("文件传接口已禁用"));
@@ -107,7 +104,7 @@ public class FileController {
         return str==null?null:FilePattern.matcher(str).replaceAll("");
     }
 
-    @RequestMapping(value = "deleteFile", method = RequestMethod.GET)
+    @GetMapping("/deleteFile")
     public String deleteFile(String fileName, HttpServletRequest request) throws JsonProcessingException {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -171,7 +168,7 @@ public class FileController {
         }
         return files;
     }
-    @RequestMapping(value = "listFiles", method = RequestMethod.GET)
+    @GetMapping("/listFiles")
     public String getFiles() throws JsonProcessingException {
         List<Map<String, String>> list = new ArrayList<>();
         List<File> listl = getFileSort(fileDir + demoPath);

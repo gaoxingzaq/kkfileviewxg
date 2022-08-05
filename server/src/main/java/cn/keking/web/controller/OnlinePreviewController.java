@@ -21,8 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
@@ -62,25 +61,13 @@ public class OnlinePreviewController {
     }
     @Value("${pdfpagee:0}")
     private String pdfpagee;
-    @RequestMapping(value = "/onlinePrevieww")
+    @GetMapping( "/onlinePrevieww")
     public String onlinePrevieww(String url,String highlightAll, Model model, HttpServletRequest req) {
-        String ip = req.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = req.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = req.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = req.getRemoteAddr();
-        }
-        if (ip.contains(",")) {
-            ip = ip.split(",")[0];
-        }
+        String ip = jilvip(req);  //获取IP地址
         String fileUrl;
         try {
             if(IndexController.isBase64(url)){
-                fileUrl = new String(Base64.decodeBase64(url), StandardCharsets.UTF_8);
+                fileUrl = WebUtils.decodeBase64String(url);
             }else {
                 fileUrl = url;
             }
@@ -113,7 +100,7 @@ public class OnlinePreviewController {
         logger.info("预览文件url：{}，IP：{}，previewType：{}", fileUrl,ip, fileAttribute.getType());
         return filePreview.filePreviewHandle(fileUrl, model, fileAttribute);
     }
-    @RequestMapping(value = "/onlinePreview")
+    @GetMapping( "/onlinePreview")
     public String onlinePreview(HttpServletRequest request, Model model) throws IOException{
         String query = request.getQueryString();
         if(query == null){
@@ -124,35 +111,21 @@ public class OnlinePreviewController {
         return Jiaz_FILE_PAGE;
     }
 
-    @RequestMapping(value = "/picturesPreview")
+    @GetMapping( "/picturesPreview")
     public String picturesPreview(String urls, Model model, HttpServletRequest req) throws UnsupportedEncodingException {
-        String ip = req.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = req.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = req.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = req.getRemoteAddr();
-        }
-        if (ip.contains(",")) {
-            ip = ip.split(",")[0];
-        }
-
+        String ip = jilvip(req);  //获取IP地址
         String fileUrls;
         try {
             if(IndexController.isBase64(urls)){
-                fileUrls = new String(Base64.decodeBase64(urls));
+                fileUrls = WebUtils.decodeBase64String(urls);
             }else {
                 fileUrls = urls;
             }
-
+            fileUrls= HtmlUtils.htmlEscape(fileUrls);
         } catch (Exception ex) {
             String errorMsg = String.format(BASE64_DECODE_ERROR_MSG, "urls");
             return otherFilePreview.notSupportedFile(model, errorMsg);
         }
-
         if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false")) {
             if (fileUrls == null || fileUrls.toLowerCase().startsWith("file:") || fileUrls.toLowerCase().startsWith("file%3")) {
                 logger.info("URL异常：{}", fileUrls);
@@ -164,7 +137,7 @@ public class OnlinePreviewController {
             fileUrls =  fileUrls.substring(0,fileUrls.lastIndexOf("&"));  //删除添加的文件流内容
         }
         logger.info("预览文件url：{}，ip：{}", fileUrls,ip);
-        fileUrls= HtmlUtils.htmlEscape(fileUrls);
+
         // 抽取文件并返回文件列表
         String[] images = fileUrls.split("\\|");
         List<String> imgUrls = Arrays.asList(images);
@@ -178,14 +151,29 @@ public class OnlinePreviewController {
         }
         return PPICTURE_FILE_PREVIEW_PAGE;
     }
-
+    private String jilvip(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip.contains(",")) {
+            ip = ip.split(",")[0];
+        }
+        return ip;
+    }
     /**
      * 根据url获取文件内容
      * 当pdfjs读取存在跨域问题的文件时将通过此接口读取
      *
      * @param response response
      */
-    @RequestMapping(value = "/getCorsFile", method = RequestMethod.GET)
+    @GetMapping("/getCorsFile")
     public String getCorsFile(String urlPath, Model model, HttpServletResponse response) {
         HttpURLConnection urlcon;
         if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || !urlPath.toLowerCase().startsWith("http")) {
@@ -194,13 +182,12 @@ public class OnlinePreviewController {
         }else {
             logger.info("读取跨域文件url：{}", urlPath);
             urlPath = urlPath.replace("%20", " ");
+            urlPath = urlPath.replace("?pdfXianzhi="+ConfigConstants.getpdfXianzhi(),"");
             try {
                 urlPath = URLDecoder.decode(urlPath, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            urlPath = urlPath.replaceFirst("&disabledownload="+ConfigConstants.getPdfDownloadDisable(),"");
-            urlPath = urlPath.replaceFirst("&pdfXianzhi="+ConfigConstants.getpdfXianzhi(),"");
             try {
                 URL url = WebUtils.normalizedURL(urlPath);
                 urlcon=(HttpURLConnection)url.openConnection();
@@ -235,7 +222,7 @@ public class OnlinePreviewController {
     /**
      * PDF分片功能
      */
-    @RequestMapping( value = "/download", method = RequestMethod.GET)
+    @GetMapping("/download")
     public String download(String urlPath, Model model, HttpServletResponse response) throws IOException, DocumentException {
         if(urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3")){
             logger.info("文件地址异常：{}", urlPath);
@@ -299,7 +286,7 @@ public class OnlinePreviewController {
      *
      * @param url 请编码后在入队
      */
-    @RequestMapping("/addTask")
+    @GetMapping("/addTask")
     @ResponseBody
     public String addQueueTask(String url) {
         logger.info("添加转码队列url：{}", url);

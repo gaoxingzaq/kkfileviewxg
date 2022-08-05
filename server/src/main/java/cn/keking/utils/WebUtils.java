@@ -2,12 +2,17 @@ package cn.keking.utils;
 
 import cn.keking.service.FileHandlerService;
 import io.mola.galimatias.GalimatiasParseException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Base64Utils;
 
+import javax.servlet.ServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,6 +103,14 @@ public class WebUtils {
         // 因为url的参数中可能会存在/的情况，所以直接url.lastIndexOf("/")会有问题
         // 所以先从？处将url截断，然后运用url.lastIndexOf("/")获取文件名
        // String noQueryUrl = url.substring(0, url.contains("?") ? url.indexOf("?") : url.length());
+        if (url.toLowerCase().startsWith("file:")) {
+            try {
+                URL urlObj = new URL(url);
+                url = urlObj.getPath().substring(1);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
         String noQueryUrl = url;
         try {
             noQueryUrl= FileHandlerService.zhuanyii(noQueryUrl);
@@ -136,15 +149,14 @@ public class WebUtils {
      */
     public static String encodeUrlFileName(String url) {
        // String noQueryUrl = url.substring(0, url.contains("?") ? url.indexOf("?") : url.length());
-        String noQueryUrl = url;
-        int fileNameStartIndex = noQueryUrl.lastIndexOf('/') + 1;
-        int fileNameEndIndex = noQueryUrl.lastIndexOf('.');
+        int fileNameStartIndex = url.lastIndexOf('/') + 1;
+        int fileNameEndIndex = url.lastIndexOf('.');
         if (fileNameStartIndex >= fileNameEndIndex) {
             return url;
         }
         String encodedFileName;
         try {
-            encodedFileName = URLEncoder.encode(noQueryUrl.substring(fileNameStartIndex, fileNameEndIndex), "UTF-8");
+            encodedFileName = URLEncoder.encode(url.substring(fileNameStartIndex, fileNameEndIndex), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             return null;
         }
@@ -164,4 +176,70 @@ public class WebUtils {
         }
         return result;
     }
+    /**
+     * 将 Base64 字符串解码，默认使用 UTF-8
+     * @param source 原始 Base64 字符串
+     * @return decoded string
+     */
+    public static String decodeBase64String(String source) {
+        return decodeBase64String(source, StandardCharsets.UTF_8);
+    }
+    /**
+     * 将 Base64 字符串使用指定字符集解码
+     * @param source 原始 Base64 字符串
+     * @param charsets 字符集
+     * @return decoded string
+     */
+    public static String decodeBase64String(String source, Charset charsets) {
+        /*
+         * url 传入的参数里加号会被替换成空格，导致解析出错，这里需要把空格替换回加号
+         * 有些 Base64 实现可能每 76 个字符插入换行符，也一并去掉
+         * https://github.com/kekingcn/kkFileView/pull/340
+         */
+        return new String(Base64Utils.decodeFromString(
+                source.replaceAll(" ", "+").replaceAll("\n", "")
+        ), charsets);
+    }
+    /**
+     * 从 ServletRequest 获取预览的源 url , 已 base64 解码
+     *
+     * @param request 请求 request
+     * @return url
+     */
+    public static String getSourceUrl(ServletRequest request) {
+        String url = request.getParameter("url");
+        String urls = request.getParameter("urls");
+        String currentUrl = request.getParameter("currentUrl");
+        String urlPath = request.getParameter("urlPath");
+        if (StringUtils.isNotBlank(url)) {
+            return new String(Base64Utils.decodeFromString(url), StandardCharsets.UTF_8);
+        }
+        if (StringUtils.isNotBlank(currentUrl)) {
+            return new String(Base64Utils.decodeFromString(currentUrl), StandardCharsets.UTF_8);
+        }
+        if (StringUtils.isNotBlank(urlPath)) {
+            return new String(Base64Utils.decodeFromString(urlPath), StandardCharsets.UTF_8);
+        }
+        if (StringUtils.isNotBlank(urls)) {
+            urls = new String(Base64Utils.decodeFromString(urls), StandardCharsets.UTF_8);
+            String[] images = urls.split("\\|");
+            return images[0];
+        }
+        return null;
+    }
+
+    /**
+     * 获取 url 的 host
+     * @param urlStr url
+     * @return host
+     */
+    public static String getHost(String urlStr) {
+        try {
+            URL url = new URL(urlStr);
+            return url.getHost().toLowerCase();
+        } catch (MalformedURLException ignored) {
+        }
+        return null;
+    }
+
 }

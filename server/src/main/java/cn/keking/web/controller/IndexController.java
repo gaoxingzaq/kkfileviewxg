@@ -2,8 +2,7 @@ package cn.keking.web.controller;
 
 import cn.keking.config.ConfigConstants;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  *  页面跳转
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class IndexController {
 
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
+    @GetMapping( "/index")
     public String go2Index(){
         if(ConfigConstants.getpreviewindex().equalsIgnoreCase("true")){
             return "index";
@@ -42,7 +41,7 @@ public class IndexController {
             return true;
         }
     }
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @GetMapping( "/")
     public String root() {
             return "redirect:/index";
     }
