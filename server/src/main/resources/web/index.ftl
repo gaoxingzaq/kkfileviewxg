@@ -115,6 +115,12 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年8月9日，v4.7.9版本发布:<br>  
+1、修复修复Excel 乱码问题<br><br>
+2、优化代码<br>
+3、OFD转换优化/OFD.JS解析插件优化图片处理/优化字体处理/修复只能预览10页的BUG<br><br>
+
+
 2022年7月26日，v4.7.8版本发布:<br>  
 1、修复OFFICE转换提示密码问题<br><br>
 
