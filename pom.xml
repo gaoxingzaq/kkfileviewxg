@@ -15,6 +15,7 @@
     <modules>
         <module>office-plugin</module>
         <module>server</module>
+         <module>ofdrw-converter</module>
     </modules>
 
     <properties>

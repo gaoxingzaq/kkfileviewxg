@@ -202,14 +202,14 @@ public class OfdFilePreviewImpl implements FilePreview {
     }
 
     public static boolean convertPdf(String filename, String dirPath) {
-
         try {
             ConvertHelper.toPdf(Paths.get(filename), Paths.get(dirPath));
+            return true;
         } catch (GeneralConvertException e) {
-            e.printStackTrace();
+          //  e.printStackTrace();
             return false;
         }
-        return true;
+
     }
 
 }

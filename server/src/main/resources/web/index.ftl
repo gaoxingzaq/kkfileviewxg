@@ -43,7 +43,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
                     window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(url)));
                    更新功能&gengxin=ok 固定格式 为了开启缓存 而且需要更新的文件设立的
                    其他功能  &filePassword=(密码)&highlightAll=(PDF高亮)&watermarkTxt=(水印)
-                   下载流图片的方法 &officePreviewType=imagexz
+                   下载流图片的方法 &officePreviewType=imagexz 其他转换内核 &officePreviewType=poi 
                 </pre>
             </div>
             <div>
