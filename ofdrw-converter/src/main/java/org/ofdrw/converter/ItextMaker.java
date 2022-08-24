@@ -18,6 +18,7 @@ import com.itextpdf.kernel.pdf.colorspace.PdfDeviceCs;
 import com.itextpdf.kernel.pdf.colorspace.PdfPattern;
 import com.itextpdf.kernel.pdf.colorspace.PdfShading;
 import com.itextpdf.kernel.pdf.extgstate.PdfExtGState;
+import com.itextpdf.kernel.pdf.filespec.PdfFileSpec;
 import com.itextpdf.kernel.pdf.xobject.PdfFormXObject;
 import com.itextpdf.kernel.pdf.xobject.PdfImageXObject;
 import com.itextpdf.layout.Canvas;
@@ -29,6 +30,7 @@ import org.ofdrw.converter.utils.CommonUtil;
 import org.ofdrw.converter.utils.PointUtil;
 import org.ofdrw.converter.utils.StringUtils;
 import org.ofdrw.core.annotation.pageannot.Annot;
+import org.ofdrw.core.attachment.CT_Attachment;
 import org.ofdrw.core.basicStructure.pageObj.layer.CT_Layer;
 import org.ofdrw.core.basicStructure.pageObj.layer.PageBlockType;
 import org.ofdrw.core.basicStructure.pageObj.layer.block.*;
@@ -56,6 +58,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,6 +128,28 @@ public class ItextMaker {
         // 绘制注释
         writeAnnoAppearance(resMgt, pdfCanvas, pageInfo, annotationEntities, pageBox);
         return pdfPage;
+    }
+    /**
+     * 添加附件
+     *
+     * @param pdf
+     * @param ofdReader
+     * @throws IOException
+     */
+    public void addAttachments(PdfDocument pdf, OFDReader ofdReader) throws IOException {
+        List<CT_Attachment> attachmentList = ofdReader.getAttachmentList();
+        for (CT_Attachment attachment : attachmentList) {
+            Path attFile = ofdReader.getAttachmentFile(attachment);
+            byte[] fileBytes = Files.readAllBytes(attFile);
+            String fileName = attFile.getFileName().toString();
+            final String attachmentName = attachment.getAttachmentName();
+            String displayFileName = StringUtils.isBlank(attachmentName) ? fileName :
+                    attachmentName.concat(fileName.contains(".") ?
+                            fileName.substring(fileName.lastIndexOf(".")) : "");
+            PdfFileSpec fs = PdfFileSpec.createEmbeddedFileSpec(pdf, fileBytes, null, displayFileName,
+                    null);
+            pdf.addFileAttachment(displayFileName, fs);
+        }
     }
 
     /**
@@ -224,7 +250,7 @@ public class ItextMaker {
                     ST_Box annotBox = annot.getAppearance().getBoundary();
                     writePageBlock(resMgt, pdfCanvas, box, null, pageBlockTypeList, null, annotBox, null, null, null);
                 } catch (Exception e) {
-                //    e.printStackTrace();
+                    //    e.printStackTrace();
                 }
             }
         }
@@ -424,7 +450,7 @@ public class ItextMaker {
             } else {
                 pdfCanvas.setFillColor(defaultFillColor);
             }if(sealBox ==null){
-              //  System.out.println(box);
+                //  System.out.println(box);
                 path(pdfCanvas, box.getInstance("0 0 0 0"), sealBox, annotBox, pathObject, compositeObjectBoundary, compositeObjectCTM);
             }else {
                 path(pdfCanvas, box, sealBox, annotBox, pathObject, compositeObjectBoundary, compositeObjectCTM);
@@ -589,6 +615,11 @@ public class ItextMaker {
                     textObject.getBoundary().getWidth(),
                     textObject.getBoundary().getHeight());
         }
+        //start:roy19831015@gmail.com 修正线宽不受ctm影响的问题
+        double lineWidth = 0.0;
+        if (textObject.getLineWidth() != null) {
+            lineWidth = textObject.getLineWidth();
+        }
         if (textObject.getCTM() != null) {
             Double[] ctm = textObject.getCTM().toDouble();
             double a = ctm[0];
@@ -599,6 +630,7 @@ public class ItextMaker {
             double angel = Math.atan2(-b, d);
             if (!(angel == 0 && a != 0 && d == 1)) {
                 fontSize = (float) (fontSize * sx);
+                lineWidth = lineWidth * sx;
             }
         }
         if (compositeObjectCTM != null) {
@@ -611,6 +643,7 @@ public class ItextMaker {
             double angel = Math.atan2(-b, d);
             if (!(angel == 0 && a != 0 && d == 1)) {
                 fontSize = (float) (fontSize * sx);
+                lineWidth = lineWidth * sx;
             }
         }
 
@@ -655,22 +688,23 @@ public class ItextMaker {
 
             if (textObject.getLineWidth() != null) {
 //                pdfCanvas.setLineWidth((float) converterDpi(textObject.getLineWidth()));
+                pdfCanvas.setLineWidth((float) lineWidth);
                 pdfCanvas.setLineWidth(new Float(textObject.getLineWidth()));
                 //处理加粗字体
                 pdfCanvas.setFillColor(ColorConstants.BLACK);
                 pdfCanvas.setTextRenderingMode(PdfCanvasConstants.TextRenderingMode.FILL_STROKE);
             }
 
-
             if (!StringUtils.isBlank(textCodePoint.getGlyph()) && !pdfFontWrapper.isEnableSimilarFontReplace()) {
                 List<Glyph> glyphs = new ArrayList<>();
-                String[] glys = textCodePoint.getGlyph().split(" ");
-                for (String gly : glys) {
-                    Glyph g = font.getFontProgram().getGlyphByCode(Integer.parseInt(gly));
-                    if (g != null) {
-                        glyphs.add(g);
-                    }
-                }
+
+                 String[] glys = textCodePoint.getGlyph().split(" ");
+                 for (String gly : glys) {
+                 Glyph g = font.getFontProgram().getGlyphByCode(Integer.parseInt(gly));   //这里读取字体
+                 if (g != null) {
+                 glyphs.add(g);
+                 }
+                 }
                 if (glyphs.size() > 0) {
                     pdfCanvas.showText(new GlyphLine(glyphs));
                 } else {
