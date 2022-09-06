@@ -238,6 +238,22 @@ Property Get DocumentType() As String
 End Property	&apos;	SFDocuments.SF_Document.DocumentType
 
 REM -----------------------------------------------------------------------------
+Property Get ExportFilters() As Variant
+&apos;&apos;&apos;	Returns the list of the export filter names applicable to the current document
+&apos;&apos;&apos;	as a zero-based array of strings
+&apos;&apos;&apos;	Import/Export filters are included
+	ExportFilters = _PropertyGet(&quot;ExportFilters&quot;)
+End Property	&apos;	SFDocuments.SF_Document.ExportFilters
+
+REM -----------------------------------------------------------------------------
+Property Get ImportFilters() As Variant
+&apos;&apos;&apos;	Returns the list of the import filter names applicable to the current document
+&apos;&apos;&apos;	as a zero-based array of strings
+&apos;&apos;&apos;	Import/Export filters are included
+	ImportFilters = _PropertyGet(&quot;ImportFilters&quot;)
+End Property	&apos;	SFDocuments.SF_Document.ImportFilters
+
+REM -----------------------------------------------------------------------------
 Property Get IsBase() As Boolean
 	IsBase = _PropertyGet(&quot;IsBase&quot;)
 End Property	&apos;	SFDocuments.SF_Document.IsBase
@@ -436,7 +452,7 @@ Check:
 	If IsMissing(SaveAsk) Or IsEmpty(SaveAsk) Then SaveAsk = True
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
 		If Not _IsStillAlive() Then GoTo Finally
-		If Not ScriptForge.SF_Utils._Validate(SaveAsk, &quot;SaveAsk&quot;, V_BOOLEAN) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(SaveAsk, &quot;SaveAsk&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
 	End If
 
 Try:
@@ -458,6 +474,63 @@ Finally:
 Catch:
 	GoTo Finally
 End Function   &apos;   SFDocuments.SF_Document.CloseDocument
+
+REM -----------------------------------------------------------------------------
+Public Function CreateMenu(Optional ByVal MenuHeader As Variant _
+								, Optional ByVal Before As Variant _
+								, Optional ByVal SubmenuChar As Variant _
+								, Optional ByRef _Document As Variant _
+								) As Object
+&apos;&apos;&apos; Create a new menu entry in the document&apos;s menubar
+&apos;&apos;&apos;	The menu is not intended to be saved neither in the LibreOffice global environment, nor in the document
+&apos;&apos;&apos;	The method returns a SFWidgets.Menu instance. Its methods let define the menu further.
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		MenuHeader: the name/header of the menu
+&apos;&apos;&apos;		Before: the place where to put the new menu on the menubar (string or number &gt;= 1)
+&apos;&apos;&apos;			When not found =&gt; last position
+&apos;&apos;&apos;		SubmenuChar: the delimiter used in menu trees. Default = &quot;&gt;&quot;
+&apos;&apos;&apos;		_Document: undocumented argument to designate the document where the menu will be located
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A SFWidgets.Menu instance or Nothing
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		Dim oMenu As Object
+&apos;&apos;&apos;		Set oMenu = oDoc.CreateMenu(&quot;My menu&quot;, Before := &quot;Styles&quot;)
+&apos;&apos;&apos;		With oMenu
+&apos;&apos;&apos;			.AddItem(&quot;Item 1&quot;, Command := &quot;About&quot;)
+&apos;&apos;&apos;			&apos;...
+&apos;&apos;&apos;			.Dispose()	&apos;	When definition is complete, the menu instance may be disposed
+&apos;&apos;&apos;		End With
+&apos;&apos;&apos;			&apos; ...
+
+Dim oMenu As Object			&apos;	return value
+Const cstThisSub = &quot;SFDocuments.Document.CreateMenu&quot;
+Const cstSubArgs = &quot;MenuHeader, [Before=&quot;&quot;&quot;&quot;], [SubmenuChar=&quot;&quot;&gt;&quot;&quot;]&quot;
+
+	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	Set oMenu = Nothing
+
+Check:
+	If IsMissing(Before) Or IsEmpty(Before) Then Before = &quot;&quot;
+	If IsMissing(SubmenuChar) Or IsEmpty(SubmenuChar) Then SubmenuChar = &quot;&quot;
+	If IsMissing(_Document) Or IsEmpty(_Document) Or IsNull(_Document) Then Set _Document = _Component
+
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(MenuHeader, &quot;MenuHeader&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Before, &quot;Before&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(SubmenuChar, &quot;SubmenuChar&quot;, V_STRING) Then GoTo Finally
+	End If
+
+Try:
+	Set oMenu = ScriptForge.SF_Services.CreateScriptService(&quot;SFWidgets.Menu&quot;, _Document, MenuHeader, Before, SubmenuChar)
+
+Finally:
+	Set CreateMenu = oMenu
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+End Function   &apos;   SFDocuments.SF_Document.CreateMenu
 
 REM -----------------------------------------------------------------------------
 Public Function ExportAsPDF(Optional ByVal FileName As Variant _
@@ -502,7 +575,7 @@ Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
 		If Not _IsStillAlive() Then GoTo Finally
 		If Not SF_Utils._ValidateFile(FileName, &quot;FileName&quot;) Then GoTo Finally
-		If Not SF_Utils._Validate(Overwrite, &quot;Overwrite&quot;, V_BOOLEAN) Then GoTo Finally
+		If Not SF_Utils._Validate(Overwrite, &quot;Overwrite&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
 		If Not SF_Utils._Validate(Pages, &quot;Pages&quot;, V_STRING) Then GoTo Finally
 		If Not SF_Utils._Validate(Password, &quot;Password&quot;, V_STRING) Then GoTo Finally
 		If Not SF_Utils._Validate(Watermark, &quot;Watermark&quot;, V_STRING) Then GoTo Finally
@@ -596,8 +669,10 @@ Public Function Methods() As Variant
 	Methods = Array( _
 					&quot;Activate&quot; _
 					, &quot;CloseDocument&quot; _
+					, &quot;CreateMenu&quot; _
 					, &quot;ExportAsPDF&quot; _
 					, &quot;PrintOut&quot; _
+					, &quot;RemoveMenu&quot; _
 					, &quot;RunCommand&quot; _
 					, &quot;Save&quot; _
 					, &quot;SaveAs&quot; _
@@ -636,7 +711,7 @@ Check:
 	If IsMissing(Pages) Or IsEmpty(Pages) Then Pages = &quot;&quot;
 	If IsMissing(Copies) Or IsEmpty(Copies) Then Copies = 1
 	If IsMissing(_Document) Or IsEmpty(_Document) Or IsNull(_Document) Then Set _Document = _Component
-	
+
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
 		If Not _IsStillAlive() Then GoTo Finally
 		If Not ScriptForge.SF_Utils._Validate(Pages, &quot;Pages&quot;, V_STRING) Then GoTo Finally
@@ -671,6 +746,8 @@ Public Function Properties() As Variant
 					, &quot;Description&quot; _
 					, &quot;DocumentProperties&quot; _
 					, &quot;DocumentType&quot; _
+					, &quot;ExportFilters&quot; _
+					, &quot;ImportFilters&quot; _
 					, &quot;IsBase&quot; _
 					, &quot;IsCalc&quot; _
 					, &quot;IsDraw&quot; _
@@ -687,40 +764,134 @@ Public Function Properties() As Variant
 End Function	&apos;	SFDocuments.SF_Document.Properties
 
 REM -----------------------------------------------------------------------------
-Public Sub RunCommand(Optional ByVal Command As Variant)
-&apos;&apos;&apos; Run on the document the given menu command. The command is executed without arguments
-&apos;&apos;&apos;	A few typical commands:
-&apos;&apos;&apos;		Save, SaveAs, ExportToPDF, SetDocumentProperties, Undo, Copy, Paste, ...
-&apos;&apos;&apos;	Dozens can be found in the directory $install/share/config/soffice.cfg/modules
+Public Function RemoveMenu(Optional ByVal MenuHeader As Variant _
+							, Optional ByRef _Document As Variant _
+) As Boolean
+&apos;&apos;&apos; Remove a menu entry in the document&apos;s menubar
+&apos;&apos;&apos;	The removal is not intended to be saved neither in the LibreOffice global environment, nor in the document
 &apos;&apos;&apos;	Args:
-&apos;&apos;&apos;		Command: Case-sensitive. The command itself is not checked.
-&apos;&apos;&apos;			If nothing happens, then the command is probably wrong
+&apos;&apos;&apos;		MenuHeader: the name/header of the menu, without tilde &quot;~&quot;, as a case-sensitive string
+&apos;&apos;&apos;		_Document: undocumented argument to designate the document where the menu is located
 &apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		True when successful
 &apos;&apos;&apos;	Examples:
-&apos;&apos;&apos;		oDoc.RunCommand(&quot;About&quot;)
+&apos;&apos;&apos;		oDoc.RemoveMenu(&quot;File&quot;)
+&apos;&apos;&apos;			&apos; ...
 
-Dim oDispatch				&apos;	com.sun.star.frame.DispatchHelper
-Const cstThisSub = &quot;SFDocuments.Document.RunCommand&quot;
-Const cstSubArgs = &quot;Command&quot;
+Dim bRemove As Boolean			&apos;	Return value
+Dim oLayout As Object			&apos;	com.sun.star.comp.framework.LayoutManager
+Dim oMenuBar As Object			&apos;	com.sun.star.awt.XMenuBar or stardiv.Toolkit.VCLXMenuBar
+Dim sName As String				&apos;	Menu name
+Dim iMenuId As Integer			&apos;	Menu identifier
+Dim iMenuPosition As Integer	&apos;	Menu position &gt;= 0
+Dim i As Integer
+Const cstTilde = &quot;~&quot;
+
+Const cstThisSub = &quot;SFDocuments.Document.RemoveMenu&quot;
+Const cstSubArgs = &quot;MenuHeader&quot;
 
 	If ScriptForge.SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+	bRemove = False
 
 Check:
+	If IsMissing(_Document) Or IsEmpty(_Document) Or IsNull(_Document) Then Set _Document = _Component
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
 		If Not _IsStillAlive() Then GoTo Finally
-		If Not ScriptForge.SF_Utils._Validate(Command, &quot;Command&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(MenuHeader, &quot;MenuHeader&quot;, V_STRING) Then GoTo Finally
 	End If
 
 Try:
+	Set oLayout = _Document.CurrentController.Frame.LayoutManager
+	Set oMenuBar = oLayout.getElement(&quot;private:resource/menubar/menubar&quot;).XMenuBar
+
+	&apos;	Search the menu identifier to remove by its name, Mark its position
+	With oMenuBar
+		iMenuPosition = -1
+		For i = 0 To .ItemCount - 1
+			iMenuId = .getItemId(i)
+			sName = Replace(.getItemText(iMenuId), cstTilde, &quot;&quot;)
+			If MenuHeader= sName Then
+				iMenuPosition = i
+				Exit For
+			End If
+		Next i
+		&apos;	Remove the found menu item
+		If iMenuPosition &gt;= 0 Then
+			.removeItem(iMenuPosition, 1)
+			bRemove = True
+		End If
+	End With
+
+Finally:
+	RemoveMenu = bRemove
+	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
+	Exit Function
+Catch:
+	GoTo Finally
+End Function   &apos;   SFDocuments.SF_Document.RemoveMenu
+
+REM -----------------------------------------------------------------------------
+Public Sub RunCommand(Optional ByVal Command As Variant _
+									, ParamArray Args As Variant _
+									)
+&apos;&apos;&apos; Run on the current document window the given menu command. The command is executed with or without arguments
+&apos;&apos;&apos;	A few typical commands:
+&apos;&apos;&apos;		Save, SaveAs, ExportToPDF, SetDocumentProperties, Undo, Copy, Paste, ...
+&apos;&apos;&apos;	Dozens can be found on next page: https://wiki.documentfoundation.org/Development/DispatchCommands
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		Command: Case-sensitive. The command itself is not checked.
+&apos;&apos;&apos;			If the command does not contain the &quot;.uno:&quot; prefix, it is added.
+&apos;&apos;&apos;			If nothing happens, then the command is probably wrong
+&apos;&apos;&apos;		Args: Pairs of arguments name (string), value (any)
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;	Examples:
+&apos;&apos;&apos;		oDoc.RunCommand(&quot;EditDoc&quot;, &quot;Editable&quot;, False)	&apos;	Toggle edit mode
+
+Dim vArgs As Variant		&apos;	Alias of Args
+Dim oDispatch				&apos;	com.sun.star.frame.DispatchHelper
+Dim vProps As Variant		&apos;	Array of PropertyValues
+Dim vValue As Variant		&apos;	A single value argument
+Dim sCommand As String		&apos;	Alias of Command
+Dim i As Long
+Const cstPrefix = &quot;.uno:&quot;
+
+Const cstThisSub = &quot;SFDocuments.Document.RunCommand&quot;
+Const cstSubArgs = &quot;Command, [arg0Name, arg0Value], [arg1Name, arg1Value], ...&quot;
+
+	If SF_Utils._ErrorHandling() Then On Local Error GoTo Catch
+
+Check:
+	&apos;	When called from a subclass (Calc, Writer, ..) the arguments are gathered into one single array item
+	vArgs = Args
+	If IsArray(Args) Then
+		If UBound(Args) &gt;= 0 And IsArray(Args(0)) Then vArgs = Args(0)
+	End If
+	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
+		If Not _IsStillAlive() Then GoTo Finally
+		If Not ScriptForge.SF_Utils._Validate(Command, &quot;Command&quot;, V_STRING) Then GoTo Finally
+		If Not ScriptForge.SF_Utils._ValidateArray(vArgs, &quot;Args&quot;, 1) Then GoTo Finally
+		For i = 0 To UBound(vArgs) - 1 Step 2
+			If Not ScriptForge.SF_Utils._Validate(vArgs(i), &quot;Arg&quot; &amp; CStr(i/2) &amp; &quot;Name&quot;, V_STRING) Then GoTo Finally
+		Next i
+	End If
+
+Try:
+	&apos;	Build array of property values
+	vProps = Array()
+	For i = 0 To UBound(vArgs) - 1 Step 2
+		If IsEmpty(vArgs(i + 1)) Then vValue = Null Else vValue = vArgs(i + 1)
+		vProps = ScriptForge.SF_Array.Append(vProps, ScriptForge.SF_Utils._MakePropertyValue(vArgs(i), vValue))
+	Next i
 	Set oDispatch = ScriptForge.SF_Utils._GetUNOService(&quot;DispatchHelper&quot;)
-	oDispatch.executeDispatch(_Frame, &quot;.uno:&quot; &amp; Command, &quot;&quot;, 0, Array())
+	If ScriptForge.SF_String.StartsWith(Command, cstPrefix) Then sCommand = Command Else sCommand = cstPrefix &amp; Command
+	oDispatch.executeDispatch(_Frame, sCommand, &quot;&quot;, 0, vProps)
 
 Finally:
 	ScriptForge.SF_Utils._ExitFunction(cstThisSub)
 	Exit Sub
 Catch:
 	GoTo Finally
-End Sub		  &apos;   SFDocuments.SF_Document.RunCommand
+End Sub			&apos;	SFDocuments.SF_Document.RunCommand
 
 REM -----------------------------------------------------------------------------
 Public Function Save() As Boolean
@@ -811,7 +982,7 @@ Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
 		If Not _IsStillAlive() Then GoTo Finally
 		If Not SF_Utils._ValidateFile(FileName, &quot;FileName&quot;) Then GoTo Finally
-		If Not SF_Utils._Validate(Overwrite, &quot;Overwrite&quot;, V_BOOLEAN) Then GoTo Finally
+		If Not SF_Utils._Validate(Overwrite, &quot;Overwrite&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
 		If Not SF_Utils._Validate(Password, &quot;Password&quot;, V_STRING) Then GoTo Finally
 		If Not SF_Utils._Validate(FilterName, &quot;FilterName&quot;, V_STRING) Then GoTo Finally
 		If Not SF_Utils._Validate(FilterOptions, &quot;FilterOptions&quot;, V_STRING) Then GoTo Finally
@@ -910,7 +1081,7 @@ Check:
 	If ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs) Then
 		If Not _IsStillAlive() Then GoTo Finally
 		If Not SF_Utils._ValidateFile(FileName, &quot;FileName&quot;) Then GoTo Finally
-		If Not SF_Utils._Validate(Overwrite, &quot;Overwrite&quot;, V_BOOLEAN) Then GoTo Finally
+		If Not SF_Utils._Validate(Overwrite, &quot;Overwrite&quot;, ScriptForge.V_BOOLEAN) Then GoTo Finally
 		If Not SF_Utils._Validate(Password, &quot;Password&quot;, V_STRING) Then GoTo Finally
 		If Not SF_Utils._Validate(FilterName, &quot;FilterName&quot;, V_STRING) Then GoTo Finally
 		If Not SF_Utils._Validate(FilterOptions, &quot;FilterOptions&quot;, V_STRING) Then GoTo Finally
@@ -1001,7 +1172,7 @@ Check:
 	If IsMissing(Orientation) Or IsEmpty(Orientation) Then Orientation = &quot;&quot;
 	If IsMissing(PaperFormat) Or IsEmpty(PaperFormat) Then PaperFormat = &quot;&quot;
 	If IsMissing(_PrintComponent) Or IsEmpty(_PrintComponent) Then Set _PrintComponent = _Component
-	
+
 	ScriptForge.SF_Utils._EnterFunction(cstThisSub, cstSubArgs)		&apos;	Unconditional validation
 	If Not _IsStillAlive() Then GoTo Finally
 	If VarType(Printer) = V_STRING Then
@@ -1111,6 +1282,68 @@ Private Function _FileIdent() As String
 	_FileIdent = Iif(Len(_WindowFileName) &gt; 0, SF_FileSystem._ConvertFromUrl(_WindowFileName), _WindowTitle)
 
 End Function	&apos;	SFDocuments.SF_Document._FileIdent
+
+REM -----------------------------------------------------------------------------
+Private Function _GetFilterNames(ByVal pbExport As Boolean) As Variant
+&apos;&apos;&apos;	Returns the list of export (pbExport = True) or import filters
+&apos;&apos;&apos;	applicable to the current document
+&apos;&apos;&apos;	Args:
+&apos;&apos;&apos;		pbExport: True for export, False for import
+&apos;&apos;&apos;	Returns:
+&apos;&apos;&apos;		A zero-based array of strings
+
+Dim vFilters As Variant				&apos;	Return value
+Dim sIdentifier As String			&apos;	Document service, like com.sun.star.text.TextDocument
+Dim oFilterFactory As Object		&apos;	com.sun.star.document.FilterFactory
+Dim vAllFilters As Variant			&apos;	The full list of installed filters
+Dim sFilter As String				&apos;	A single filter name
+Dim iCount As Integer				&apos;	Filters counter
+Dim vFilter As Variant				&apos;	A filter descriptor as an array of Name/Value pairs
+Dim sType As String					&apos;	The filter type to be compared with the document service
+Dim lFlags As Long					&apos;	Read https://wiki.documentfoundation.org/Documentation/DevGuide/Office_Development#Properties_of_a_Filter
+Dim bExport As Boolean				&apos;	Filter valid for export when True
+Dim bImport As Boolean				&apos;	Filter valid for import when True
+Dim bImportExport As Boolean		&apos;	Filter valid both for import and export when True
+
+	vFilters = Array()
+	On Local Error GoTo Finally		&apos;	Return empty or partial list if error
+
+Try:
+	sIdentifier = _Component.Identifier
+	Set oFilterFactory = ScriptForge.SF_Utils._GetUNOService(&quot;FilterFactory&quot;)
+	vAllFilters = oFilterFactory.getElementNames()
+	ReDim vFilters(0 To UBound(vAllFilters))
+	iCount = -1
+
+	For Each sFilter In vAllFilters
+		vFilter = oFilterFactory.getByName(sFilter)
+		sType = vFilter(12).Value		&apos;	Hard-coded index for document types
+		If sType = sIdentifier Then
+			lFlags = vFilter(10).Value	&apos;	Hard-coded index for flags
+			&apos;	export: flag is even
+			&apos;	import: flag is odd and flag/2 is even
+			&apos;	import/export: flag is odd and flag/2 is odd
+			bExport = ( lFlags Mod 2 = 0 )
+			bImport = ( (lFlags Mod 2 = 1) And ((lFlags \ 2) Mod 2 = 0) )
+			bImportExport = ( (lFlags Mod 2 = 1) And ((lFlags \ 2) Mod 2 = 1) )
+			&apos;	Select filter ?
+			If bImportExport _
+				Or (pbExport And bExport) _
+				Or (Not pbExport And bImport) Then
+					iCount = iCount + 1
+					vFilters(iCount) = sFilter
+			End If
+		End If
+	Next sFilter
+
+	If iCount &gt; -1 Then
+		ReDim Preserve vFilters(0 To iCount)
+	End If
+
+Finally:
+	_GetFilterNames = vFilters
+	Exit Function
+End Function	&apos;	SFDocuments.SF_Document._GetFilterNames
 
 REM -----------------------------------------------------------------------------
 Private Function _IsStillAlive(Optional ByVal pbForUpdate As Boolean _
@@ -1231,6 +1464,10 @@ Const cstSubArgs = &quot;&quot;
 			Set _PropertyGet = _DocumentProperties
 		Case &quot;DocumentType&quot;
 			_PropertyGet = _DocumentType
+		Case &quot;ExportFilters&quot;
+			_PropertyGet = _GetFilterNames(True)
+		Case &quot;ImportFilters&quot;
+			_PropertyGet = _GetFilterNames(False)
 		Case &quot;IsBase&quot;, &quot;IsCalc&quot;, &quot;IsDraw&quot;, &quot;IsImpress&quot;, &quot;IsMath&quot;, &quot;IsWriter&quot;
 			_PropertyGet = ( Mid(psProperty, 3) = _DocumentType )
 		Case &quot;Keywords&quot;

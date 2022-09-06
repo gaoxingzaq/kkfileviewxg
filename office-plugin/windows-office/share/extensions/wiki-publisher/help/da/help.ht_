@@ -15,4 +15,4 @@
 31 com.sun.star.wiki.MediaWiki.Settings.RemoveButton 24 Fjerner det valgte punkt fra listen.
 2f com.sun.star.wiki.MediaWiki.Settings.EditButton 3d Åbner MediaWiki-dialogen for at redigere det valgte element.
 2d com.sun.star.wiki.MediaWiki.Settings.WikiList c9 Klik på Tilføj for at tilføje en ny wiki-server.Marker et element og klik på Rediger for at redigere kontoindstillingerne.Marker et element og klik på Fjern for at fjerne dette element fra listen.
-2e com.sun.star.wiki.MediaWiki.Settings.AddButton 44 Åbner MediaWiki dialogen for at tilføje et nyt element til listen.
+2e com.sun.star.wiki.MediaWiki.Settings.AddButton 41 Åbner MediaWiki dialogen for at føje et nyt element til listen.

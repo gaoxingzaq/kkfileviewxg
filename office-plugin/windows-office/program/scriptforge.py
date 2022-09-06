@@ -51,7 +51,7 @@
             ScriptForge(hostname = 'localhost', port = 2021)
 
     Specific documentation about the use of ScriptForge from Python scripts:
-        https://help.libreoffice.org/7.3/en-US/text/sbasic/shared/03/sf_intro.html
+        https://help.libreoffice.org/latest/en-US/text/sbasic/shared/03/sf_intro.html?DbPAR=BASIC
     """
 
 import uno
@@ -103,7 +103,7 @@ class ScriptForge(object, metaclass = _Singleton):
     # Class constants
     # #########################################################################
     library = 'ScriptForge'
-    Version = '7.3'  # Actual version number
+    Version = '7.4'  # Actual version number
     #
     # Basic dispatcher for Python scripts
     basicdispatcher = '@application#ScriptForge.SF_PythonHelper._PythonDispatcher'
@@ -123,10 +123,11 @@ class ScriptForge(object, metaclass = _Singleton):
                             ('ScriptForge.Exception', 1),
                             ('ScriptForge.FileSystem', 2),
                             ('ScriptForge.Platform', 3),
-                            ('ScriptForge.Services', 4),
-                            ('ScriptForge.Session', 5),
-                            ('ScriptForge.String', 6),
-                            ('ScriptForge.UI', 7)])
+                            ('ScriptForge.Region', 4),
+                            ('ScriptForge.Services', 5),
+                            ('ScriptForge.Session', 6),
+                            ('ScriptForge.String', 7),
+                            ('ScriptForge.UI', 8)])
 
     def __init__(self, hostname = '', port = 0):
         """
@@ -211,7 +212,7 @@ class ScriptForge(object, metaclass = _Singleton):
             fullscript = script
             paramarray = True
         #    Build the URI specification described in
-        #    https://wiki.openoffice.org/wiki/Documentation/DevGuide/Scripting/Scripting_Framework_URI_Specification
+        #    https://wiki.documentfoundation.org/Documentation/DevGuide/Scripting_Framework#Scripting_Framework_URI_Specification
         elif len(script) > 0:
             # Check ParamArray arguments
             paramarray = False
@@ -267,7 +268,7 @@ class ScriptForge(object, metaclass = _Singleton):
             Execute a given Basic script and interpret its result
             This method has as counterpart the ScriptForge.SF_PythonHelper._PythonDispatcher() Basic method
             :param basicobject: a Service subclass
-            :param flags: see the vb* and flg* constants below
+            :param flags: see the vb* and flg* constants in the SFServices class
             :param method: the name of the method or property to invoke, as a string
             :param args: the arguments of the method. Symbolic cst* constants may be necessary
             :return: The invoked Basic counterpart script (with InvokeSimpleScript()) will return a tuple
@@ -370,6 +371,15 @@ class ScriptForge(object, metaclass = _Singleton):
                         setattr(cls, cc, func)
         return
 
+    @staticmethod
+    def unpack_args(kwargs):
+        """
+            Convert a dictionary passed as argument to a list alternating keys and values
+            Example:
+                dict(A = 'a', B = 2) => 'A', 'a', 'B', 2
+            """
+        return [v for p in zip(list(kwargs.keys()), list(kwargs.values())) for v in p]
+
 
 # #####################################################################################################################
 #                           SFServices CLASS    (ScriptForge services superclass)                                   ###
@@ -445,6 +455,7 @@ class SFServices(object):
     flgArrayRet = 1024  # Invoked service method can return a 2D array (standard modules) or any array (class modules)
     flgUno = 256  # Invoked service method/property can return a UNO object
     flgObject = 2048  # 1st argument may be a Basic object
+    flgHardCode = 4096  # Force hardcoded call to method, avoid CallByName()
     # Basic class type
     moduleClass, moduleStandard = 2, 1
     #
@@ -559,6 +570,18 @@ class SFServices(object):
 
     def Properties(self):
         return list(self.serviceproperties)
+
+    def basicmethods(self):
+        if self.serviceimplementation == 'basic':
+            return self.ExecMethod(self.vbMethod + self.flgArrayRet, 'Methods')
+        else:
+            return []
+
+    def basicproperties(self):
+        if self.serviceimplementation == 'basic':
+            return self.ExecMethod(self.vbMethod + self.flgArrayRet, 'Properties')
+        else:
+            return []
 
     def SetProperty(self, propertyname, value):
         """
@@ -1086,6 +1109,9 @@ class SFScriptForge:
         def DeleteFolder(self, foldername):
             return self.ExecMethod(self.vbMethod, 'DeleteFolder', foldername)
 
+        def ExtensionFolder(self, extension):
+            return self.ExecMethod(self.vbMethod, 'ExtensionFolder', extension)
+
         def FileExists(self, filename):
             return self.ExecMethod(self.vbMethod, 'FileExists', filename)
 
@@ -1170,11 +1196,12 @@ class SFScriptForge:
         serviceproperties = dict(Folder = False, Languages = False, Locale = False)
 
         @classmethod
-        def ReviewServiceArgs(cls, foldername = '', locale = '', encoding = 'UTF-8'):
+        def ReviewServiceArgs(cls, foldername = '', locale = '', encoding = 'UTF-8',
+                              locale2 = '', encoding2 = 'UTF-8'):
             """
                 Transform positional and keyword arguments into positional only
                 """
-            return foldername, locale, encoding
+            return foldername, locale, encoding, locale2, encoding2
 
         def AddText(self, context = '', msgid = '', comment = ''):
             return self.ExecMethod(self.vbMethod, 'AddText', context, msgid, comment)
@@ -1209,9 +1236,10 @@ class SFScriptForge:
         servicename = 'ScriptForge.Platform'
         servicesynonyms = ('platform', 'scriptforge.platform')
         serviceproperties = dict(Architecture = False, ComputerName = False, CPUCount = False, CurrentUser = False,
-                                 Fonts = False, Locale = False, Machine = False, OfficeVersion = False, OSName = False,
-                                 OSPlatform = False, OSRelease = False, OSVersion = False, Printers = False,
-                                 Processor = False, PythonVersion = False)
+                                 Extensions = False, FilterNames = False, Fonts = False, FormatLocale = False,
+                                 Locale = False, Machine = False, OfficeLocale = False, OfficeVersion = False,
+                                 OSName = False, OSPlatform = False, OSRelease = False, OSVersion = False,
+                                 Printers = False, Processor = False, PythonVersion = False, SystemLocale = False)
         # Python helper functions
         py = ScriptForge.pythonhelpermodule + '$' + '_SF_Platform'
 
@@ -1258,6 +1286,101 @@ class SFScriptForge:
         @property
         def PythonVersion(self):
             return self.SIMPLEEXEC(self.py, 'PythonVersion')
+
+    # #########################################################################
+    # SF_Region CLASS
+    # #########################################################################
+    class SF_Region(SFServices, metaclass = _Singleton):
+        """
+            The "Region" service gathers a collection of functions about languages, countries and timezones
+                - Locales
+                - Currencies
+                - Numbers and dates formatting
+                - Calendars
+                - Timezones conversions
+                - Numbers transformed to text
+            """
+        # Mandatory class properties for service registration
+        serviceimplementation = 'basic'
+        servicename = 'ScriptForge.Region'
+        servicesynonyms = ('region', 'scriptforge.region')
+        serviceproperties = dict()
+
+        # Next functions are implemented in Basic as read-only properties with 1 argument
+        def Country(self, region = ''):
+            return self.GetProperty('Country', region)
+
+        def Currency(self, region = ''):
+            return self.GetProperty('Currency', region)
+
+        def DatePatterns(self, region = ''):
+            return self.GetProperty('DatePatterns', region)
+
+        def DateSeparator(self, region = ''):
+            return self.GetProperty('DateSeparator', region)
+
+        def DayAbbrevNames(self, region = ''):
+            return self.GetProperty('DayAbbrevNames', region)
+
+        def DayNames(self, region = ''):
+            return self.GetProperty('DayNames', region)
+
+        def DayNarrowNames(self, region = ''):
+            return self.GetProperty('DayNarrowNames', region)
+
+        def DecimalPoint(self, region = ''):
+            return self.GetProperty('DecimalPoint', region)
+
+        def Language(self, region = ''):
+            return self.GetProperty('Language', region)
+
+        def ListSeparator(self, region = ''):
+            return self.GetProperty('ListSeparator', region)
+
+        def MonthAbbrevNames(self, region = ''):
+            return self.GetProperty('MonthAbbrevNames', region)
+
+        def MonthNames(self, region = ''):
+            return self.GetProperty('MonthNames', region)
+
+        def MonthNarrowNames(self, region = ''):
+            return self.GetProperty('MonthNarrowNames', region)
+
+        def ThousandSeparator(self, region = ''):
+            return self.GetProperty('ThousandSeparator', region)
+
+        def TimeSeparator(self, region = ''):
+            return self.GetProperty('TimeSeparator', region)
+
+        # Usual methods
+        def DSTOffset(self, localdatetime, timezone, locale = ''):
+            if isinstance(localdatetime, datetime.datetime):
+                localdatetime = SFScriptForge.SF_Basic.CDateToUnoDateTime(localdatetime)
+            return self.ExecMethod(self.vbMethod + self.flgDateArg, 'DSTOffset', localdatetime, timezone, locale)
+
+        def LocalDateTime(self, utcdatetime, timezone, locale = ''):
+            if isinstance(utcdatetime, datetime.datetime):
+                utcdatetime = SFScriptForge.SF_Basic.CDateToUnoDateTime(utcdatetime)
+            localdate = self.ExecMethod(self.vbMethod + self.flgDateArg + self.flgDateRet, 'LocalDateTime',
+                                        utcdatetime, timezone, locale)
+            return SFScriptForge.SF_Basic.CDateFromUnoDateTime(localdate)
+
+        def Number2Text(self, number, locale = ''):
+            return self.ExecMethod(self.vbMethod, 'Number2Text', number, locale)
+
+        def TimeZoneOffset(self, timezone, locale = ''):
+            return self.ExecMethod(self.vbMethod, 'TimeZoneOffset', timezone, locale)
+
+        def UTCDateTime(self, localdatetime, timezone, locale = ''):
+            if isinstance(localdatetime, datetime.datetime):
+                localdatetime = SFScriptForge.SF_Basic.CDateToUnoDateTime(localdatetime)
+            utcdate = self.ExecMethod(self.vbMethod + self.flgDateArg + self.flgDateRet, 'UTCDateTime', localdatetime,
+                                      timezone, locale)
+            return SFScriptForge.SF_Basic.CDateFromUnoDateTime(utcdate)
+
+        def UTCNow(self, timezone, locale = ''):
+            now = self.ExecMethod(self.vbMethod + self.flgDateRet, 'UTCNow', timezone, locale)
+            return SFScriptForge.SF_Basic.CDateFromUnoDateTime(now)
 
     # #########################################################################
     # SF_Session CLASS
@@ -1485,7 +1608,7 @@ class SFScriptForge:
         serviceimplementation = 'basic'
         servicename = 'ScriptForge.UI'
         servicesynonyms = ('ui', 'scriptforge.ui')
-        serviceproperties = dict(ActiveWindow = False)
+        serviceproperties = dict(ActiveWindow = False, Height = False, Width = False, X = False, Y = False)
 
         # Class constants
         MACROEXECALWAYS, MACROEXECNEVER, MACROEXECNORMAL = 2, 1, 0
@@ -1529,6 +1652,14 @@ class SFScriptForge:
 
         def Resize(self, left = -1, top = -1, width = -1, height = -1):
             return self.ExecMethod(self.vbMethod, 'Resize', left, top, width, height)
+
+        def RunCommand(self, command, *args, **kwargs):
+            params = tuple(list(args) + ScriptForge.unpack_args(kwargs))
+            if len(params) == 0:
+                params = (command,) + (None,)
+            else:
+                params = (command,) + params
+            return self.SIMPLEEXEC('@SF_UI.RunCommand', params)
 
         def SetStatusbar(self, text = '', percentage = -1):
             return self.ExecMethod(self.vbMethod, 'SetStatusbar', text, percentage)
@@ -1651,21 +1782,31 @@ class SFDialogs:
                 """
             return container, library, dialogname, ScriptForge.componentcontext
 
+        # Methods potentially executed while the dialog is in execution require the flgHardCode flag
         def Activate(self):
-            return self.ExecMethod(self.vbMethod, 'Activate')
+            return self.ExecMethod(self.vbMethod + self.flgHardCode, 'Activate')
+
+        def Center(self, parent = ScriptForge.cstSymMissing):
+            parentclasses = (SFDocuments.SF_Document, SFDocuments.SF_Base, SFDocuments.SF_Calc, SFDocuments.SF_Writer,
+                                                          SFDialogs.SF_Dialog)
+            parentobj = parent.objectreference if isinstance(parent, parentclasses) else parent
+            return self.ExecMethod(self.vbMethod + self.flgObject + self.flgHardCode, 'Center', parentobj)
 
         def Controls(self, controlname = ''):
-            return self.ExecMethod(self.vbMethod + self.flgArrayRet, 'Controls', controlname)
+            return self.ExecMethod(self.vbMethod + self.flgArrayRet + self.flgHardCode, 'Controls', controlname)
 
         def EndExecute(self, returnvalue):
-            return self.ExecMethod(self.vbMethod, 'EndExecute', returnvalue)
+            return self.ExecMethod(self.vbMethod + self.flgHardCode, 'EndExecute', returnvalue)
 
         def Execute(self, modal = True):
-            return self.ExecMethod(self.vbMethod, 'Execute', modal)
+            return self.ExecMethod(self.vbMethod + self.flgHardCode, 'Execute', modal)
 
         def GetTextsFromL10N(self, l10n):
             l10nobj = l10n.objectreference if isinstance(l10n, SFScriptForge.SF_L10N) else l10n
             return self.ExecMethod(self.vbMethod + self.flgObject, 'GetTextsFromL10N', l10nobj)
+
+        def Resize(self, left = -1, top = -1, width = -1, height = -1):
+            return self.ExecMethod(self.vbMethod + self.flgHardCode, 'Resize', left, top, width, height)
 
         def Terminate(self):
             return self.ExecMethod(self.vbMethod, 'Terminate')
@@ -1754,9 +1895,9 @@ class SFDocuments:
         serviceimplementation = 'basic'
         servicename = 'SFDocuments.Document'
         servicesynonyms = ('document', 'sfdocuments.document')
-        serviceproperties = dict(Description = True, DocumentType = False, IsBase = False, IsCalc = False,
-                                 IsDraw = False, IsImpress = False, IsMath = False, IsWriter = False,
-                                 Keywords = True, Readonly = False, Subject = True, Title = True,
+        serviceproperties = dict(Description = True, DocumentType = False, ExportFilters = False, ImportFilters = False,
+                                 IsBase = False, IsCalc = False, IsDraw = False, IsImpress = False, IsMath = False,
+                                 IsWriter = False, Keywords = True, Readonly = False, Subject = True, Title = True,
                                  XComponent = False)
         # Force for each property to get its value from Basic - due to intense interactivity with user
         forceGetProperty = True
@@ -1774,14 +1915,21 @@ class SFDocuments:
         def CloseDocument(self, saveask = True):
             return self.ExecMethod(self.vbMethod, 'CloseDocument', saveask)
 
+        def CreateMenu(self, menuheader, before = '', submenuchar = '>'):
+            return self.ExecMethod(self.vbMethod, 'CreateMenu', menuheader, before, submenuchar)
+
         def ExportAsPDF(self, filename, overwrite = False, pages = '', password = '', watermark = ''):
             return self.ExecMethod(self.vbMethod, 'ExportAsPDF', filename, overwrite, pages, password, watermark)
 
         def PrintOut(self, pages = '', copies = 1):
             return self.ExecMethod(self.vbMethod, 'PrintOut', pages, copies)
 
-        def RunCommand(self, command):
-            return self.ExecMethod(self.vbMethod, 'RunCommand', command)
+        def RemoveMenu(self, menuheader):
+            return self.ExecMethod(self.vbMethod, 'RemoveMenu', menuheader)
+
+        def RunCommand(self, command, *args, **kwargs):
+            params = tuple([command] + list(args) + ScriptForge.unpack_args(kwargs))
+            return self.ExecMethod(self.vbMethod, 'RunCommand', *params)
 
         def Save(self):
             return self.ExecMethod(self.vbMethod, 'Save')
@@ -1861,9 +2009,9 @@ class SFDocuments:
         servicename = 'SFDocuments.Calc'
         servicesynonyms = ('calc', 'sfdocuments.calc')
         serviceproperties = dict(CurrentSelection = True, Sheets = False,
-                                 Description = True, DocumentType = False, IsBase = False, IsCalc = False,
-                                 IsDraw = False, IsImpress = False, IsMath = False, IsWriter = False,
-                                 Keywords = True, Readonly = False, Subject = True, Title = True,
+                                 Description = True, DocumentType = False, ExportFilters = False, ImportFilters = False,
+                                 IsBase = False, IsCalc = False, IsDraw = False, IsImpress = False, IsMath = False,
+                                 IsWriter = False, Keywords = True, Readonly = False, Subject = True, Title = True,
                                  XComponent = False)
         # Force for each property to get its value from Basic - due to intense interactivity with user
         forceGetProperty = True
@@ -1940,6 +2088,12 @@ class SFDocuments:
         def ClearValues(self, range):
             return self.ExecMethod(self.vbMethod, 'ClearValues', range)
 
+        def CompactLeft(self, range, wholecolumn = False, filterformula = ''):
+            return self.ExecMethod(self.vbMethod, 'CompactLeft', range, wholecolumn, filterformula)
+
+        def CompactUp(self, range, wholerow = False, filterformula = ''):
+            return self.ExecMethod(self.vbMethod, 'CompactUp', range, wholerow, filterformula)
+
         def CopySheet(self, sheetname, newname, beforesheet = 32768):
             sheet = (sheetname.objectreference if isinstance(sheetname, SFDocuments.SF_CalcReference) else sheetname)
             return self.ExecMethod(self.vbMethod + self.flgObject, 'CopySheet', sheet, newname, beforesheet)
@@ -1962,6 +2116,12 @@ class SFDocuments:
         def CreateChart(self, chartname, sheetname, range, columnheader = False, rowheader = False):
             return self.ExecMethod(self.vbMethod, 'CreateChart', chartname, sheetname, range, columnheader, rowheader)
 
+        def CreatePivotTable(self, pivottablename, sourcerange, targetcell, datafields = ScriptForge.cstSymEmpty,
+                             rowfields = ScriptForge.cstSymEmpty, columnfields = ScriptForge.cstSymEmpty,
+                             filterbutton = True, rowtotals = True, columntotals = True):
+            return self.ExecMethod(self.vbMethod, 'CreatePivotTable', pivottablename, sourcerange, targetcell,
+                                   datafields, rowfields, columnfields, filterbutton, rowtotals, columntotals)
+
         def DAvg(self, range):
             return self.ExecMethod(self.vbMethod, 'DAvg', range)
 
@@ -1976,6 +2136,9 @@ class SFDocuments:
 
         def DSum(self, range):
             return self.ExecMethod(self.vbMethod, 'DSum', range)
+
+        def ExportRangeToFile(self, range, filename, imagetype = 'pdf', overwrite = False):
+            return self.ExecMethod(self.vbMethod, 'ExportRangeToFile', range, filename, imagetype, overwrite)
 
         def Forms(self, sheetname, form = ''):
             return self.ExecMethod(self.vbMethod + self.flgArrayRet, 'Forms', sheetname, form)
@@ -2197,9 +2360,9 @@ class SFDocuments:
         serviceimplementation = 'basic'
         servicename = 'SFDocuments.Writer'
         servicesynonyms = ('writer', 'sfdocuments.writer')
-        serviceproperties = dict(Description = True, DocumentType = False, IsBase = False, IsCalc = False,
-                                 IsDraw = False, IsImpress = False, IsMath = False, IsWriter = False,
-                                 Keywords = True, Readonly = False, Subject = True, Title = True,
+        serviceproperties = dict(Description = True, DocumentType = False, ExportFilters = False, ImportFilters = False,
+                                 IsBase = False, IsCalc = False, IsDraw = False, IsImpress = False, IsMath = False,
+                                 IsWriter = False, Keywords = True, Readonly = False, Subject = True, Title = True,
                                  XComponent = False)
         # Force for each property to get its value from Basic - due to intense interactivity with user
         forceGetProperty = True
@@ -2228,6 +2391,39 @@ class SFWidgets:
         The SFWidgets class manages toolbars and popup menus
         """
     pass
+
+    # #########################################################################
+    # SF_Menu CLASS
+    # #########################################################################
+    class SF_Menu(SFServices):
+        """
+            Display a menu in the menubar of a document or a form document.
+            After use, the menu will not be saved neither in the application settings, nor in the document.
+            The menu will be displayed, as usual, when its header in the menubar is clicked.
+            When one of its items is selected, there are 3 alternative options:
+            - a UNO command (like ".uno:About") is triggered
+            - a user script is run receiving a standard argument defined in this service
+            - one of above combined with a toggle of the status of the item
+            The menu is described from top to bottom. Each menu item receives a numeric and a string identifier.
+            """
+        # Mandatory class properties for service registration
+        serviceimplementation = 'basic'
+        servicename = 'SFWidgets.Menu'
+        servicesynonyms = ('menu', 'sfwidgets.menu')
+        serviceproperties = dict(ShortcutCharacter = False, SubmenuCharacter = False)
+
+        def AddCheckBox(self, menuitem, name = '', status = False, icon = '', tooltip = '',
+                        command = '', script = ''):
+            return self.ExecMethod(self.vbMethod, 'AddCheckBox', menuitem, name, status, icon, tooltip,
+                                   command, script)
+
+        def AddItem(self, menuitem, name = '', icon = '', tooltip = '', command = '', script = ''):
+            return self.ExecMethod(self.vbMethod, 'AddItem', menuitem, name, icon, tooltip, command, script)
+
+        def AddRadioButton(self, menuitem, name = '', status = False, icon = '', tooltip = '',
+                           command = '', script = ''):
+            return self.ExecMethod(self.vbMethod, 'AddRadioButton', menuitem, name, status, icon, tooltip,
+                                   command, script)
 
     # #########################################################################
     # SF_PopupMenu CLASS

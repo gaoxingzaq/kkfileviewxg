@@ -107,6 +107,7 @@ Const CALCADDRESSERROR			=	&quot;CALCADDRESSERROR&quot;
 Const DUPLICATESHEETERROR		=	&quot;DUPLICATESHEETERROR&quot;
 Const OFFSETADDRESSERROR		=	&quot;OFFSETADDRESSERROR&quot;
 Const DUPLICATECHARTERROR		=	&quot;DUPLICATECHARTERROR&quot;
+Const RANGEEXPORTERROR			=	&quot;RANGEEXPORTERROR&quot;
 
 &apos;	SF_Chart
 Const CHARTEXPORTERROR			=	&quot;CHARTEXPORTERROR&quot;
@@ -131,6 +132,10 @@ Const SQLSYNTAXERROR			=	&quot;SQLSYNTAXERROR&quot;
 
 &apos;	Python
 Const PYTHONSHELLERROR			=	&quot;PYTHONSHELLERROR&quot;
+
+&apos;	SF_UnitTest
+Const UNITTESTLIBRARYERROR		=	&quot;UNITTESTLIBRARYERROR&quot;
+Const UNITTESTMETHODERROR		=	&quot;UNITTESTMETHODERROR&quot;
 
 REM ============================================================= PRIVATE MEMBERS
 
@@ -265,7 +270,6 @@ Public Sub Console(Optional ByVal Modal As Variant, _
 &apos;&apos;&apos;		SF_Exception.Console()
 
 Dim bConsoleActive As Boolean		&apos;	When True, dialog is active
-Dim sClose As String				&apos;	Caption of the close buttons
 Dim oModalBtn As Object				&apos;	Modal close button
 Dim oNonModalBtn As Object			&apos;	Non modal close button
 Const cstThisSub = &quot;Exception.Console&quot;
@@ -294,10 +298,8 @@ Try:
 			&apos;		- a Default button triggering the Close action
 			Set .ConsoleDialog = CreateScriptService(&quot;SFDialogs.Dialog&quot;, &quot;GlobalScope&quot;, &quot;ScriptForge&quot;, &quot;dlgConsole&quot;, _Context)
 			&apos;	Setup labels and visibility
-			sClose = .Interface.GetText(&quot;CLOSEBUTTON&quot;)
 			Set oModalBtn = .ConsoleDialog.Controls(&quot;CloseModalButton&quot;)
 			Set oNonModalBtn = .ConsoleDialog.Controls(&quot;CloseNonModalButton&quot;)
-			If Modal Then oModalBtn.Caption = sClose Else oNonModalBtn.Caption = sClose
 			oModalBtn.Visible = Modal
 			oNonModalBtn.Visible = CBool(Not Modal)
 			&apos;	Load console lines
@@ -614,7 +616,7 @@ Public Sub Raise(Optional ByVal Number As Variant _
 &apos;&apos;&apos;			SF_Exception.Raise(,, &quot;To divide by zero is not a good idea !&quot;)
 
 Dim sMessage As String			&apos;	Error message to log and to display
-Dim L10N As Object				&apos;	Alias to Interface
+Dim L10N As Object				&apos;	Alias to LocalizedInterface
 Const cstThisSub = &quot;Exception.Raise&quot;
 Const cstSubArgs = &quot;[Number=Err], [Source=Erl], [Description]&quot;
 
@@ -643,7 +645,7 @@ Try:
 		If Len(Description) &gt; 0 Then .Description = Description
 
 		&apos;	Log and display
-		Set L10N = _SF_.Interface
+		Set L10N = _SF_._GetLocalizedInterface()
 		sMessage = L10N.GetText(&quot;LONGERRORDESC&quot;, .Number, .Source, .Description)
 		.DebugPrint(sMessage)
 		If _SF_.DisplayEnabled Then MsgBox L10N.GetText(&quot;ERRORNUMBER&quot;, .Number) _
@@ -677,7 +679,7 @@ Public Sub RaiseAbort(Optional ByVal Source As Variant)
 Dim sLocation As String		&apos;	Common header in error messages: location of error
 Dim vLocation As Variant	&apos;	Split array (library, module, method)
 Dim sMessage As String		&apos;	Error message to log and to display
-Dim L10N As Object			&apos;	Alias to Interface
+Dim L10N As Object			&apos;	Alias to LocalizedInterface
 Const cstTabSize = 4
 Const cstThisSub = &quot;Exception.RaiseAbort&quot;
 Const cstSubArgs = &quot;[Source=Erl]&quot;
@@ -693,7 +695,7 @@ Try:
 	With SF_Exception
 
 		&apos;	Prepare message header
-		Set L10N = _SF_.Interface
+		Set L10N = _SF_._GetLocalizedInterface()
 		If Len(_SF_.MainFunction) &gt; 0 Then	&apos;	MainFunction = [Library.]Module.Method
 			vLocation = Split(_SF_.MainFunction, &quot;.&quot;)
 			If UBound(vLocation) &lt; 2 Then vLocation = SF_Array.Prepend(vLocation, &quot;ScriptForge&quot;)
@@ -703,7 +705,6 @@ Try:
 		End If
 
 		&apos;	Log and display
-		Set L10N = _SF_.Interface
 		sMessage = L10N.GetText(&quot;LONGERRORDESC&quot;, .Number, .Source, .Description)
 		.DebugPrint(sMessage)
 		If _SF_.DisplayEnabled Then
@@ -739,10 +740,15 @@ Public Sub RaiseFatal(Optional ByVal ErrorCode As Variant _
 &apos;&apos;&apos;		pvArgs: the arguments to insert in the error message
 
 Dim sLocation As String		&apos;	Common header in error messages: location of error
+Dim sService As String		&apos;	Service name having detected the error
+Dim sMethod As String		&apos;	Method name having detected the error
 Dim vLocation As Variant	&apos;	Split array (library, module, method)
 Dim sMessage As String		&apos;	Message to log and display
-Dim L10N As Object			&apos;	Alias of Interface
+Dim L10N As Object			&apos;	Alias of LocalizedInterface
 Dim sAlt As String			&apos;	Alternative error messages
+Dim iButtons As Integer		&apos;	MB_OK or MB_YESNO
+Dim iMsgBox As Integer		&apos;	Return value of the message box
+
 Const cstTabSize = 4
 Const cstThisSub = &quot;Exception.RaiseFatal&quot;
 Const cstSubArgs = &quot;ErrorCode, [Arg0[, Arg1 ...]]&quot;
@@ -757,14 +763,18 @@ Check:
 	End If
 
 Try:
-	Set L10N = _SF_.Interface
+	Set L10N = _SF_._GetLocalizedInterface()
 	&apos;	Location header common to all error messages
 	If Len(_SF_.MainFunction) &gt; 0 Then	&apos;	MainFunction = [Library.]Module.Method
 		vLocation = Split(_SF_.MainFunction, &quot;.&quot;)
 		If UBound(vLocation) &lt; 2 Then vLocation = SF_Array.Prepend(vLocation, &quot;ScriptForge&quot;)
-		sLocation = L10N.GetText(&quot;VALIDATESOURCE&quot;, vLocation(0), vLocation(1), vLocation(2)) _
+		sService = vLocation(1)
+		sMethod = vLocation(2)
+		sLocation = L10N.GetText(&quot;VALIDATESOURCE&quot;, vLocation(0), sService, sMethod) _
 					&amp; &quot;\n&quot; &amp; L10N.GetText(&quot;VALIDATEARGS&quot;, _RightCaseArgs(_SF_.MainFunctionArgs))
 	Else
+		sService = &quot;&quot;
+		sMethod = &quot;&quot;
 		sLocation = &quot;&quot;
 	End If
 
@@ -969,6 +979,10 @@ Try:
 				sMessage = sLocation _
 					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;VALIDATEERROR&quot;, pvArgs(0)) _
 					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;DUPLICATECHART&quot;, pvArgs(0), pvArgs(1), pvArgs(2), pvArgs(3), pvArgs(4), pvArgs(5))
+			Case RANGEEXPORTERROR	&apos;	SF_Calc.ExportRangeToFile(Arg1Name, FileName, Arg2, Overwrite)
+				pvArgs(0) = _RightCase(pvArgs(0))	:	pvArgs(2) = _RightCase(pvArgs(2))
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;RANGEEXPORT&quot;, pvArgs(0), pvArgs(1), pvArgs(2), pvArgs(3))
 			Case CHARTEXPORTERROR	&apos;	SF_Chart.ExportToFile(Arg1Name, FileName, Arg2, Overwrite)
 				pvArgs(0) = _RightCase(pvArgs(0))	:	pvArgs(2) = _RightCase(pvArgs(2))
 				sMessage = sLocation _
@@ -1015,6 +1029,12 @@ Try:
 			Case PYTHONSHELLERROR	&apos;	SF_Exception.PythonShell (Python only)
 				sMessage = sLocation _
 					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;PYTHONSHELL&quot;)
+			Case UNITTESTLIBRARYERROR	&apos;	SFUnitTests._NewUnitTest(LibraryName)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;UNITTESTLIBRARY&quot;, pvArgs(0))
+			Case UNITTESTMETHODERROR	&apos;	SFUnitTests.SF_UnitTest(Method)
+				sMessage = sLocation _
+					&amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; .GetText(&quot;UNITTESTMETHOD&quot;, pvArgs(0))
 			Case Else
 		End Select
 	End With
@@ -1025,9 +1045,19 @@ Try:
 	&apos;	Display fatal event, if relevant (default)
 	If _SF_.DisplayEnabled Then
 		If _SF_.StopWhenError Then sMessage = sMessage &amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; L10N.GetText(&quot;STOPEXECUTION&quot;)
-		MsgBox SF_String.ExpandTabs(SF_String.Unescape(sMessage), cstTabSize) _
-				, MB_OK + MB_ICONEXCLAMATION _
-				, L10N.GetText(&quot;ERRORNUMBER&quot;, ErrorCode)
+		&apos;	Do you need more help ?
+		If Len(sMethod) &gt; 0 Then
+			sMessage = sMessage &amp; &quot;\n&quot; &amp; &quot;\n&quot; &amp; L10N.GetText(&quot;NEEDMOREHELP&quot;, sMethod)
+			iButtons = MB_YESNO + MB_DEFBUTTON2
+		Else
+			iButtons = MB_OK
+		End If
+		iMsgBox = MsgBox(SF_String.ExpandTabs(SF_String.Unescape(sMessage), cstTabSize) _
+					, iButtons + MB_ICONEXCLAMATION _
+					, L10N.GetText(&quot;ERRORNUMBER&quot;, ErrorCode) _
+					)
+		&apos;	If more help needed ...
+		If iMsgBox = IDYES Then _OpenHelpInBrowser(sService, sMethod)
 	End If
 	
 Finally:
@@ -1184,6 +1214,22 @@ Private Sub _ConsoleRefresh()
 Finally:
 	Exit Sub
 End Sub			&apos;	ScriptForge.SF_Exception._ConsoleRefresh
+
+REM -----------------------------------------------------------------------------
+Private Sub _OpenHelpInBrowser(ByVal psService As String, ByVal psMethod As String)
+&apos;&apos;&apos;	Open the help page and help anchor related to the given ScriptForge service and method
+
+Dim sUrl As String			&apos;	URL to open
+Const cstURL = &quot;https://help.libreoffice.org/latest/en-US/text/sbasic/shared/03/sf_%1.html?&amp;DbPAR=BASIC#%2&quot;
+
+	On Local Error GoTo Finally		&apos;	No reason to risk abort here
+Try:
+	sUrl = SF_String.ReplaceStr(cstURL, Array(&quot;%1&quot;, &quot;%2&quot;), Array(LCase(psService), psMethod))
+	SF_Session.OpenUrlInBrowser(sUrl)
+
+Finally:
+	Exit Sub
+End Sub			&apos;	ScriptForge.SF_Exception._OpenHelpInBrowser
 
 REM -----------------------------------------------------------------------------
 Private Function _PropertyGet(Optional ByVal psProperty As String) As Variant

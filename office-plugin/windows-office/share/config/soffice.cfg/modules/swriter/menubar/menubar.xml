@@ -490,6 +490,7 @@
           <menu:menuitem menu:id=".uno:ColorSettings"/>
           <menu:menuseparator/>
           <menu:menuitem menu:id=".uno:GraphicDialog"/>
+          <menu:menuitem menu:id=".uno:GraphicSizeCheck"/>
         </menu:menupopup>
       </menu:menu>
       <menu:menu menu:id=".uno:FormatObjectMenu">
@@ -708,6 +709,17 @@
       <menu:menuseparator/>
       <menu:menuitem menu:id=".uno:OpenReadOnly"/>
       <menu:menuitem menu:id=".uno:AutoControlFocus"/>
+      <menu:menuseparator/>
+      <menu:menu menu:id=".uno:ContentControlsMenu">
+        <menu:menupopup>
+          <menu:menuitem menu:id=".uno:InsertContentControl"/>
+          <menu:menuitem menu:id=".uno:InsertPictureContentControl"/>
+          <menu:menuitem menu:id=".uno:InsertCheckboxContentControl"/>
+          <menu:menuitem menu:id=".uno:InsertDropdownContentControl"/>
+          <menu:menuitem menu:id=".uno:InsertDateContentControl"/>
+          <menu:menuitem menu:id=".uno:ContentControlProperties"/>
+        </menu:menupopup>
+      </menu:menu>
     </menu:menupopup>
   </menu:menu>
   <menu:menu menu:id=".uno:ToolsMenu">

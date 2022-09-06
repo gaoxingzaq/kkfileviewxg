@@ -3,7 +3,7 @@
 <interface domain="cui">
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkAdjustment" id="adjustment1">
-    <property name="lower">2</property>
+    <property name="lower">1</property>
     <property name="upper">9</property>
     <property name="value">2</property>
     <property name="step_increment">1</property>
@@ -21,7 +21,7 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment4">
-    <property name="lower">2</property>
+    <property name="lower">1</property>
     <property name="upper">9</property>
     <property name="value">2</property>
     <property name="step_increment">1</property>
@@ -38,6 +38,18 @@
     <property name="lower">2</property>
     <property name="upper">9</property>
     <property name="value">2</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment7">
+    <property name="lower">4</property>
+    <property name="upper">99</property>
+    <property name="value">4</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment8">
+    <property name="upper">55.88</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -86,6 +98,26 @@
               </packing>
             </child>
             <child>
+              <object class="GtkSpinButton" id="spinMinLen">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="halign">start</property>
+                <property name="margin-start">25</property>
+                <property name="activates_default">True</property>
+                <property name="adjustment">adjustment7</property>
+                <property name="truncate-multiline">True</property>
+                <child internal-child="accessible">
+                  <object class="AtkObject" id="spinMinLen-atkobject">
+                    <property name="AtkObject::accessible-description" translatable="yes" context="textflowpage|extended_tip|spinMinLen">Enter the minimum word length in characters that can be hyphenated.</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkSpinButton" id="spinMaxNum">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -102,7 +134,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -122,7 +154,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -142,7 +174,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
@@ -156,7 +188,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
@@ -170,7 +202,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">3</property>
+                <property name="top_attach">4</property>
               </packing>
             </child>
             <child>
@@ -184,7 +216,21 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="labelMinLen">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes" context="textflowpage|labelMinLen">_Minimum word length in characters</property>
+                <property name="use_underline">True</property>
+                <property name="mnemonic_widget">spinMinLen</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -199,6 +245,64 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="checkNoLastWord">
+                <property name="label" translatable="yes" context="textflowpage|checkNoLastWord">Don't hyphenate the last word</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_underline">True</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <!-- n-columns=1 n-rows=1 -->
+              <object class="GtkGrid" id="gridHyphenZone">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="row_spacing">6</property>
+                <property name="column_spacing">12</property>
+                <property name="margin-start">12</property>
+                <property name="margin-top">6</property>
+                <child>
+                  <object class="GtkSpinButton" id="spinHyphenZone">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="activates_default">True</property>
+                    <property name="truncate_multiline">True</property>
+                    <property name="adjustment">adjustment8</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="labelHyphenZone">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes" context="textflowpage|labelHyphenZone">Hyphenation _zone:</property>
+                    <property name="use_underline">True</property>
+                    <property name="mnemonic_widget">spinHyphenZone</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">7</property>
                 <property name="width">2</property>
               </packing>
             </child>

@@ -28,6 +28,10 @@ We use rem as the unit for article and footer contents because they
 do not break anything related to layout by scaling.
 
 */
+:root {
+  --font_mono: Menlo, "Cascadia Mono", "Cascadia Code", Consolas, "DejaVu Sans Mono", monospace;
+  --font_body: Ubuntu, Cantarell, "Segoe UI Variable", "Segoe UI", "Noto Sans", "DejaVu Sans", "Lucida Grande", sans-serif, FreeSerif, NanumGothic, "Noto Sans Tibetan", Taprom;
+}
 
 body,
 p,
@@ -40,14 +44,14 @@ h6,
 .listitem,
 .listitemintable,
 .tablecontent {
-    font-family: -apple-system, "Segoe UI", sans-serif, Roboto, Ubuntu, Cantarell, "Noto Sans", "DejaVu Sans", "Lucida Grande", "Helvetica Neue", Helvetica, Arial, FreeSerif, NanumGothic, "Noto Sans Tibetan", Taprom;
+    font-family: var(--font_body);
 }
 .input {
     background-color: rgba(0,0,0,0.04);
     transition-property: background-color;
     transition-duration: 150ms;
     border-bottom: 1px dashed rgba(0,0,0,0.1);
-    font-family: Menlo, Consolas, "DejaVu Sans Mono", "Nimbus Mono L", "Lucida Sans Typewriter", "Courier New", Courier, Monaco, monospace;
+    font-family: var(--font_mono);
 }
 [data-tooltip]{
   position:relative;
@@ -117,12 +121,13 @@ pre,
     border-radius: 2px;
     display: inline;
     padding: 1px 3px;
-    font-family: Menlo, Consolas, "DejaVu Sans Mono", "Nimbus Mono L", "Lucida Sans Typewriter", "Courier New", Courier, Monaco, monospace;
+    font-family: var(--font_mono);
+    word-wrap: anywhere;
 }
 .smathcode {
     border-radius: 2px;
     padding: 1px 3px;
-    font-family: Menlo, Consolas, "DejaVu Sans Mono", "Nimbus Mono L", "Lucida Sans Typewriter", "Courier New", Courier, Monaco, monospace;
+    font-family: var(--font_mono);
 }
 .acronym {
     font-weight: bold;
@@ -137,7 +142,7 @@ pre,
     font-weight: bold;
 }
 .keycode {
-    font-family: Menlo, Consolas, "DejaVu Sans Mono", "Nimbus Mono L", "Lucida Sans Typewriter", "Courier New", Courier, Monaco, monospace;
+    font-family: var(--font_mono);
 }
 .widget{
     padding: 1px 10px;
@@ -175,6 +180,10 @@ pre,
 .noteicon, .notetext {
     padding:0.3em;
 }
+/* Override some Prism.js styles */
+code[class*="language-"], pre[class*="language-"] {
+    white-space: pre-wrap;
+}
 
 /* Table related classes */
 
@@ -204,6 +213,9 @@ table, th, td {
     border-right: 0;
     padding: 0.3em;
 }
+html[dir=ltr] th {
+    text-align: left;
+}
 .tablehead,
 .tableheadintable {
     font-weight: bold;
@@ -216,6 +228,17 @@ table, th, td {
 
 .table_font_small {
     font-size: 0.98rem;
+}
+
+/* ScriptForge service tables */
+.sf_table {
+    min-width: 100%;
+}
+.sf_table thead {
+    display: none;
+}
+.sf_table tr, .sf_table td {
+    display: block;
 }
 
 h1,
@@ -231,7 +254,7 @@ p,
 ol,
 td {
     font-size: 1.15rem;
-    margin: 2px 0 2px 0;
+    margin: 2px 0 10px 0;
 }
 h1 {
     font-size: 1.83rem;
@@ -292,7 +315,7 @@ h6 {
     color: red;
     text-align: left;
 }
-
+.sqlcode,
 .pycode,
 .bascode {
     border: solid 5px transparent;
@@ -306,9 +329,7 @@ h6 {
     padding: 10px 10px 40px 10px;
     grid-area: main;
 }
-#DisplayArea > p {
-    margin-bottom: 10px;
-}
+
 .mediabutton {
     background-color: cyan;
 }
@@ -376,6 +397,54 @@ h6 {
 
 [data-a11y-toggle]:not([aria-controls]) {
   display: none;
+}
+/* You Tube matters */
+.youtube_placeholder{
+    border: 1px solid #eee;
+    max-width:700px;
+    padding: 10px;
+    background-color: #eee;
+    text-align: center;
+}
+.youtube_button {
+  appearance: none;
+  backface-visibility: hidden;
+  background-color: #27ae60;
+  border-radius: 8px;
+  border-style: none;
+  box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: 1.5;
+  outline: none;
+  overflow: hidden;
+  padding: 13px 20px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transform: translate3d(0, 0, 0);
+  transition: all .3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.youtube_button:hover {
+  background-color: #1e8449;
+  opacity: 1;
+  transform: translateY(0);
+  transition-duration: .35s;
+  box-shadow: rgba(39, 174, 96, .2) 0 6px 12px;
+}
+.youtube_button:active {
+  transform: translateY(2px);
+  transition-duration: .35s;
 }
 
 #langs-nav:not([aria-hidden='true']), #modules-nav:not([aria-hidden='true']) {
@@ -467,63 +536,63 @@ aside input[type=checkbox]:checked ~ .contents-treeview {
     color: #148603;
 }
 #WRITER::before {
-    content: "WRITER";
+    content: "Writer";
     display: block;
     font-size: 22px;
     font-weight: bold;
     color: #0369a3;
 }
 #CALC::before {
-    content: "CALC";
+    content: "Calc";
     display: block;
     font-size: 22px;
     font-weight: bold;
     color: #43c330;
 }
 #IMPRESS::before {
-    content: "IMPRESS";
+    content: "Impress";
     display: block;
     font-size: 22px;
     font-weight: bold;
     color: #a33e03;
 }
 #DRAW::before {
-    content: "DRAW";
+    content: "Draw";
     display: block;
     font-size: 22px;
     font-weight: bold;
     color: #c99c00;
 }
 #BASE::before {
-    content: "BASE";
+    content: "Base";
     display: block;
     font-size: 22px;
     font-weight: bold;
     color: #8e03a3;
 }
 #MATH::before {
-    content: "MATH";
+    content: "Math";
     display: block;
     font-size: 22px;
     font-weight: bold;
     color: darkslategray;
 }
 #CHART::before {
-    content: "CHART";
+    content: "Chart";
     display: block;
     font-size: 22px;
     font-weight: bold;
     color: darkcyan;
 }
 #BASIC::before {
-    content: "BASIC";
+    content: "Basic";
     display: block;
     font-size: 22px;
     font-weight: bold;
     color: black;
 }
 #SHARED::before {
-    content: "GLOBAL";
+    content: "LibreOffice";
     display: block;
     font-size: 22px;
     font-weight: bold;
@@ -602,6 +671,7 @@ li.disabled a {
     background: #18A303;
     top: 0px;
     position: sticky;
+    z-index: 100;
 }
 .xapian-omega-search {
     margin: auto;
@@ -629,6 +699,7 @@ li.disabled a {
     display: none;
 }
 
+.office-icon,
 .calc-icon,
 .chart-icon,
 .writer-icon,
@@ -641,6 +712,9 @@ li.disabled a {
     height: 26px;
     position: relative;
     margin-right: 5px;
+}
+.office-icon {
+    background-image: url(media/navigation/libo-symbol-black.svg);
 }
 .calc-icon {
     background-image: url(media/navigation/libo-calc.svg);
@@ -775,8 +849,6 @@ li.disabled a {
         display: flex;
         flex-direction: column;
         overflow-y: auto;
-        overflow-x: hidden;
-        max-width: 120px;
         max-height: 480px;
         position: absolute;
     }
@@ -830,6 +902,19 @@ li.disabled a {
     .omega-autofocus {
         max-width: 200px;
         width: 100%
+    }
+    /* ScriptForge service tables */
+    .sf_table {
+        min-width: auto;
+    }
+    .sf_table thead {
+        display: table-header-group;
+    }
+    .sf_table tr {
+        display: table-row;
+    }
+    .sf_table td {
+        display: table-cell;
     }
 }
 @media screen and (min-width: 1440px) {

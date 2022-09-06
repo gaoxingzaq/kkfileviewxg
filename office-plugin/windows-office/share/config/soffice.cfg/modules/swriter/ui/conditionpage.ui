@@ -96,7 +96,7 @@
                     </child>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="links-atkobject">
-                        <property name="AtkObject::accessible-description" translatable="yes" context="conditionpage|extended_tip|links">Here you can see the %PRODUCTNAME predefined contexts, including outline levels 1 to 10, list levels 1 to 10, table header, table contents, section, border, footnote, header and footer.</property>
+                        <property name="AtkObject::accessible-description" translatable="yes" context="conditionpage|extended_tip|links">Here you can see the Writer predefined contexts, including outline levels 1 to 10, list levels 1 to 10, table header, table contents, section, border, footnote, header and footer.</property>
                       </object>
                     </child>
                   </object>
@@ -219,7 +219,7 @@
                 <child>
                   <object class="GtkComboBoxText" id="filter">
                     <property name="visible">True</property>
-                    <property name="sensitive">False</property>
+                    <property name="sensitive">True</property>
                     <property name="can-focus">False</property>
                     <items>
                       <item translatable="yes" context="conditionpage|filter">Table Header</item>

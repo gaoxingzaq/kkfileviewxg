@@ -7,14 +7,14 @@
 #  *** are part of the LibreOffice project.                          ***
 #  *********************************************************************
 #  
-#  ScriptForge Release 7.3
+#  ScriptForge Release 7.4
 #  -----------------------
 #  
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.libreoffice.org/enter_bug.cgi?product=LibreOffice&bug_status=UNCONFIRMED&component=UI\n"
-"POT-Creation-Date: 2021-07-30 13:10:57\n"
+"POT-Creation-Date: 2022-05-04 18:07:20\n"
 "PO-Revision-Date: YYYY-MM-DD HH:MM:SS\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -25,11 +25,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: LibreOffice - ScriptForge\n"
 "X-Accelerator-Marker: ~\n"
-
-#. Text in close buttons of progress and console dialog boxes
-msgctxt "CLOSEBUTTON"
-msgid  "Close"
-msgstr ""
 
 #. Title in error message box
 #. %1: an error number
@@ -51,9 +46,16 @@ msgctxt "LONGERRORDESC"
 msgid  "Error %1 - Location = %2 - Description = %3"
 msgstr ""
 
-#. SF_Utils._Validate error message
+#. Any blocking error message
 msgctxt "STOPEXECUTION"
 msgid  "THE EXECUTION IS CANCELLED."
+msgstr ""
+
+#. Any blocking error message
+#. %1: a method name
+#, kde-format
+msgctxt "NEEDMOREHELP"
+msgid  "Do you want to receive more information about the '%1' method ?"
 msgstr ""
 
 #. SF_Exception.RaiseAbort error message
@@ -755,6 +757,23 @@ msgid  ""
 ""
 msgstr ""
 
+#. SF_Calc.ExportRangeToFile error message
+#. %1: An identifier
+#. %2: A file name
+#. %3: An identifier
+#. %4: True or False
+#. 
+#, kde-format
+msgctxt "RANGEEXPORT"
+msgid  ""
+"The given range could not be exported.\n"
+"Either the destination file must not be overwritten, or it has a "
+"read-only attribute set.\n"
+"\n"
+"%1 = '%2'\n"
+"%3 = %4"
+msgstr ""
+
 #. SF_Chart.ExportToFile error message
 #. %1: An identifier
 #. %2: A file name
@@ -933,4 +952,24 @@ msgctxt "PYTHONSHELL"
 msgid  ""
 "The APSO extension could not be located in your LibreOffice "
 "installation."
+msgstr ""
+
+#. SFUnitTest could not locate the library gven as argument
+#. %1: The name of the library
+#, kde-format
+msgctxt "UNITTESTLIBRARY"
+msgid  ""
+"The requested library could not be located.\n"
+"The UnitTest service has not been initialized.\n"
+"\n"
+"Library name : « %1 »"
+msgstr ""
+
+#. SFUnitTest finds a RunTest() call in a inappropriate location
+#. %1: The name of a method
+#, kde-format
+msgctxt "UNITTESTMETHOD"
+msgid  ""
+"The method '%1' is unexpected in the current context.\n"
+"The UnitTest service cannot proceed further with the on-going test."
 msgstr ""

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<registry date="2021-08-06">
+<registry date="2021-12-29">
   <language>
     <subtag>aa</subtag>
     <description>Afar</description>
@@ -47904,6 +47904,11 @@
     <added>2005-10-16</added>
   </script>
   <script>
+    <subtag>Kawi</subtag>
+    <description>Kawi</description>
+    <added>2021-12-24</added>
+  </script>
+  <script>
     <subtag>Khar</subtag>
     <description>Kharoshthi</description>
     <added>2005-10-16</added>
@@ -48121,6 +48126,11 @@
     <description>Myanmar</description>
     <description>Burmese</description>
     <added>2005-10-16</added>
+  </script>
+  <script>
+    <subtag>Nagm</subtag>
+    <description>Nag Mundari</description>
+    <added>2021-12-24</added>
   </script>
   <script>
     <subtag>Nand</subtag>
@@ -48644,6 +48654,11 @@
     <subtag>Sund</subtag>
     <description>Sundanese</description>
     <added>2006-07-21</added>
+  </script>
+  <script>
+    <subtag>Sunu</subtag>
+    <description>Sunuwar</description>
+    <added>2021-12-24</added>
   </script>
   <script>
     <subtag>Sylo</subtag>

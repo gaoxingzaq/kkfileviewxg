@@ -416,10 +416,6 @@
                     <property name="hexpand">True</property>
                     <items>
                       <item translatable="yes" context="optviewpage|iconstyle">Automatic</item>
-                      <item translatable="yes" context="optviewpage|iconstyle">Galaxy</item>
-                      <item translatable="yes" context="optviewpage|iconstyle">High Contrast</item>
-                      <item translatable="yes" context="optviewpage|iconstyle">Oxygen</item>
-                      <item translatable="yes" context="optviewpage|iconstyle">Classic</item>
                       <item translatable="yes" context="optviewpage|iconstyle">Sifr</item>
                       <item translatable="yes" context="optviewpage|iconstyle">Breeze</item>
                     </items>
@@ -438,7 +434,7 @@
                   <object class="GtkLabel" id="label6">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes" context="optviewpage|label6">Icon s_tyle:</property>
+                    <property name="label" translatable="yes" context="optviewpage|label6">_Theme:</property>
                     <property name="use-underline">True</property>
                     <property name="mnemonic-widget">iconstyle</property>
                     <property name="xalign">0</property>
@@ -469,7 +465,7 @@
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes" context="optviewpage|label1">Icon Style</property>
+                <property name="label" translatable="yes" context="optviewpage|label1">Icon Theme</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>

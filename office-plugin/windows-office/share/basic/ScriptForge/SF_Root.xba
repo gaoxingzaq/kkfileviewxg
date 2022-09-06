@@ -58,7 +58,12 @@ Private CoreReflection		As Object	&apos; com.sun.star.reflection.CoreReflection
 Private DispatchHelper		As Object	&apos; com.sun.star.frame.DispatchHelper
 Private TextSearch			As Object	&apos; com.sun.star.util.TextSearch
 Private SearchOptions		As Object	&apos; com.sun.star.util.SearchOptions
-Private Locale				As Object	&apos; com.sun.star.lang.Locale
+Private SystemLocale		As Object	&apos; com.sun.star.lang.Locale
+Private OfficeLocale		As Object	&apos; com.sun.star.lang.Locale
+Private FormatLocale		As Object	&apos; com.sun.star.lang.Locale
+Private LocaleData			As Object	&apos; com.sun.star.i18n.LocaleData
+Private CalendarImpl		As Object	&apos; com.sun.star.i18n.CalendarImpl
+Private Number2Text			As Object	&apos; com.sun.star.linguistic2.NumberText
 Private PrinterServer		As Object	&apos; com.sun.star.awt.PrinterServer
 Private CharacterClass		As Object	&apos; com.sun.star.i18n.CharacterClassification
 Private FileAccess			As Object	&apos; com.sun.star.ucb.SimpleFileAccess
@@ -71,6 +76,7 @@ Private BrowseNodeFactory	As Object	&apos; com.sun.star.script.browse.BrowseNode
 Private DatabaseContext		As Object	&apos; com.sun.star.sdb.DatabaseContext
 Private ConfigurationProvider _
 							As Object	&apos; com.sun.star.configuration.ConfigurationProvider
+Private PackageProvider		As Object	&apos; com.sun.star.comp.deployment.PackageInformationProvider
 Private MailService			As Object	&apos; com.sun.star.system.SimpleCommandMail or com.sun.star.system.SimpleSystemMail
 Private GraphicExportFilter	As Object	&apos; com.sun.star.drawing.GraphicExportFilter
 Private Toolkit				As Object	&apos; com.sun.star.awt.Toolkit
@@ -79,7 +85,7 @@ Private Toolkit				As Object	&apos; com.sun.star.awt.Toolkit
 Private FileSystemNaming	As String	&apos; If &quot;SYS&quot;, file and folder naming is based on operating system notation
 Private PythonHelper		As String	&apos; File name of Python helper functions (stored in $(inst)/share/Scripts/python)
 Private PythonHelper2		As String	&apos; Alternate Python helper file name for test purposes
-Private Interface			As Object	&apos; ScriptForge own L10N service
+Private LocalizedInterface	As Object	&apos; ScriptForge own L10N service
 Private OSName				As String	&apos; WIN, LINUX, MACOS
 Private SFDialogs			As Variant	&apos; Persistent storage for the SFDialogs library
 Private SFForms				As Variant	&apos; Persistent storage for the SF_Form class in the SFDocuments library
@@ -118,7 +124,12 @@ Private Sub Class_Initialize()
 	Set DispatchHelper = Nothing
 	Set TextSearch = Nothing
 	Set SearchOptions = Nothing
-	Set Locale = Nothing
+	Set SystemLocale = Nothing
+	Set OfficeLocale = Nothing
+	Set FormatLocale = Nothing
+	Set LocaleData = Nothing
+	Set CalendarImpl = Nothing
+	Set Number2Text = Nothing
 	Set PrinterServer = Nothing
 	Set CharacterClass = Nothing
 	Set FileAccess = Nothing
@@ -130,10 +141,11 @@ Private Sub Class_Initialize()
 	FileSystemNaming = &quot;ANY&quot;
 	PythonHelper = &quot;ScriptForgeHelper.py&quot;
 	PythonHelper2 = &quot;&quot;
-	Set Interface = Nothing
+	Set LocalizedInterface = Nothing
 	Set BrowseNodeFactory = Nothing
 	Set DatabaseContext = Nothing
 	Set ConfigurationProvider = Nothing
+	Set PackageProvider = Nothing
 	Set MailService = Nothing
 	Set GraphicExportFilter = Nothing
 	Set Toolkit = Nothing
@@ -232,6 +244,20 @@ Finally:
 	Exit Function
 End Function	&apos;	ScriptForge.SF_Root._AddToPythonStorage
 
+REM ------------------------------------------------------------------------------
+Public Function _GetLocalizedInterface() As Object
+&apos;&apos;&apos;	Returns the LN object instance related to the ScriptForge internal localization
+&apos;&apos;&apos;	If not yet done, load it from the shipped po files
+&apos;&apos;&apos;	Makes that the localized user interface is loaded only when needed
+
+Try:
+	If IsNull(LocalizedInterface) Then _LoadLocalizedInterface()
+
+Finally:
+	Set _GetLocalizedInterface = LocalizedInterface
+	Exit Function
+End Function	&apos;	ScriptForge.SF_Root._GetLocalizedInterface
+
 REM -----------------------------------------------------------------------------
 Public Sub _InitPythonStorage()
 &apos;&apos;&apos;	Make PythonStorage an array
@@ -240,7 +266,7 @@ Public Sub _InitPythonStorage()
 
 Try:
 	If Not IsArray(PythonStorage) Then
-		PythonPermanent = 7
+		PythonPermanent = 8
 		PythonStorage = Array()
 		ReDim PythonStorage(0 To PythonPermanent)
 		&apos;	Initialize each entry
@@ -248,10 +274,11 @@ Try:
 		PythonStorage(1) = ScriptForge.SF_Exception
 		PythonStorage(2) = ScriptForge.SF_FileSystem
 		PythonStorage(3) = ScriptForge.SF_Platform
-		PythonStorage(4) = ScriptForge.SF_Services
-		PythonStorage(5) = ScriptForge.SF_Session
-		PythonStorage(6) = ScriptForge.SF_String
-		PythonStorage(7) = ScriptForge.SF_UI
+		PythonStorage(4) = ScriptForge.SF_Region
+		PythonStorage(5) = ScriptForge.SF_Services
+		PythonStorage(6) = ScriptForge.SF_Session
+		PythonStorage(7) = ScriptForge.SF_String
+		PythonStorage(8) = ScriptForge.SF_UI
 	End If
 
 Finally:
@@ -261,7 +288,7 @@ End Sub		&apos;	ScriptForge.SF_Root._InitPythonStorage
 REM -----------------------------------------------------------------------------
 Public Sub _LoadLocalizedInterface(Optional ByVal psMode As String)
 &apos;&apos;&apos;	Build the user interface in a persistent L10N object
-&apos;&apos;&apos;	Executed - only once - at first ScriptForge invocation by a user script
+&apos;&apos;&apos;	Executed - only once - at first request of a label inside the LocalizedInterface dictionary
 &apos;&apos;&apos;	Args:
 &apos;&apos;&apos;		psMode:	ADDTEXT =&gt;	the (english) labels are loaded from code below
 &apos;&apos;&apos;				POFILE  =&gt;	the localized labels are loaded from a PO file
@@ -283,42 +310,45 @@ Try:
 		&apos;	Build the po file name
 		With SF_FileSystem
 			sInstallFolder = ._SFInstallFolder()	&apos;	ScriptForge installation folder
-			sLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;).Language
+			sLocale = SF_Utils._GetUNOService(&quot;OfficeLocale&quot;).Language
 			sPOFolder = .BuildPath(sInstallFolder, &quot;po&quot;)
 			sPOFile = .BuildPath(sPOFolder, sLocale &amp; &quot;.po&quot;)
-			If Not .FileExists(sPOFile) Then	&apos;	File not found =&gt; load texts from code below
+			If sLocale = &quot;en&quot; Then					&apos;	LocalizedInterface loaded by code i.o. read from po file
+				psMode = &quot;ADDTEXT&quot;
+			ElseIf Not .FileExists(sPOFile) Then	&apos;	File not found =&gt; load texts from code below
 				psMode = &quot;ADDTEXT&quot;
 			Else
-				Set Interface = CreateScriptService(&quot;L10N&quot;, sPOFolder, sLocale)
+				Set LocalizedInterface = CreateScriptService(&quot;L10N&quot;, sPOFolder, sLocale)
 			End If
 		End With
 	End If
 
 	If psMode = &quot;ADDTEXT&quot; Then		&apos;	Use this mode in development to prepare a new POT file
-		Set Interface = CreateScriptService(&quot;L10N&quot;)
-		With Interface
+		Set LocalizedInterface = CreateScriptService(&quot;L10N&quot;)
+		With LocalizedInterface
 	&apos;	SF_Exception.Raise
-			.AddText(	Context := &quot;CLOSEBUTTON&quot; _
-						, MsgId := &quot;Close&quot; _
-						, Comment := &quot;Text in close buttons of progress and console dialog boxes&quot; _
-					)
 			.AddText(	Context := &quot;ERRORNUMBER&quot; _
 						, MsgId := &quot;Error %1&quot; _
-						, Comment := &quot;Title in error message box\n&quot; _
-									&amp; &quot;%1: an error number&quot; _
+						, Comment :=	&quot;Title in error message box\n&quot; _
+									&amp;	&quot;%1: an error number&quot; _
 					)
 			.AddText(	Context := &quot;ERRORLOCATION&quot; _
 						, MsgId := &quot;Location : %1&quot; _
-						, Comment := &quot;Error message box\n&quot; _
-									&amp; &quot;%1: a line number&quot; _
+						, Comment :=	&quot;Error message box\n&quot; _
+									&amp;	&quot;%1: a line number&quot; _
 					)
 			.AddText(	Context := &quot;LONGERRORDESC&quot; _
 						, MsgId := &quot;Error %1 - Location = %2 - Description = %3&quot; _
-						, Comment := &quot;Logfile record&quot; _
+						, Comment :=	&quot;Logfile record&quot; _
 					)
 			.AddText(	Context := &quot;STOPEXECUTION&quot; _
 						, MsgId := &quot;THE EXECUTION IS CANCELLED.&quot; _
-						, Comment :=	&quot;SF_Utils._Validate error message&quot; _
+						, Comment :=	&quot;Any blocking error message&quot; _
+					)
+			.AddText(	Context := &quot;NEEDMOREHELP&quot; _
+						, MsgId := &quot;Do you want to receive more information about the &apos;%1&apos; method ?&quot; _
+						, Comment :=	&quot;Any blocking error message\n&quot; _
+									&amp;	&quot;%1: a method name&quot; _
 					)
 	&apos;	SF_Exception.RaiseAbort
 			.AddText(	Context := &quot;INTERNALERROR&quot; _
@@ -838,6 +868,18 @@ Try:
 									&amp;	&quot;%5: An identifier\n&quot; _
 									&amp;	&quot;%6: A file name&quot; _
 					)
+	&apos;	SF_Calc.ExportRangeToFile
+			.AddText(	Context := &quot;RANGEEXPORT&quot; _
+						, MsgId := &quot;The given range could not be exported.\n&quot; _
+									&amp; &quot;Either the destination file must not be overwritten, or it has a read-only attribute set.\n\n&quot; _
+									&amp; &quot;%1 = &apos;%2&apos;\n&quot; _
+									&amp; &quot;%3 = %4&quot; _
+						, Comment :=	&quot;SF_Calc.ExportRangeToFile error message\n&quot; _
+									&amp;	&quot;%1: An identifier\n&quot; _
+									&amp;	&quot;%2: A file name\n&quot; _
+									&amp;	&quot;%3: An identifier\n&quot; _
+									&amp;	&quot;%4: True or False\n&quot; _
+					)
 	&apos;	SF_Chart.ExportToFile
 			.AddText(	Context := &quot;CHARTEXPORT&quot; _
 						, MsgId := &quot;The chart could not be exported.\n&quot; _
@@ -969,6 +1011,21 @@ Try:
 						, MsgId := &quot;The APSO extension could not be located in your LibreOffice installation.&quot; _
 						, Comment :=	&quot;SF_Exception.PythonShell error message&quot; _
 									&amp;	&quot;APSO: to leave unchanged&quot; _
+					)
+	&apos;	SFUnitTests._NewUnitTest
+			.AddText(	Context := &quot;UNITTESTLIBRARY&quot; _
+						, MsgId := &quot;The requested library could not be located.\n&quot; _
+									&amp; &quot;The UnitTest service has not been initialized.\n\n&quot; _
+									&amp; &quot;Library name : « %1 »&quot; _
+						, Comment :=	&quot;SFUnitTest could not locate the library gven as argument\n&quot; _
+									&amp;	&quot;%1: The name of the library&quot; _
+					)
+	&apos;	SFUnitTests.SF_UnitTest
+			.AddText(	Context := &quot;UNITTESTMETHOD&quot; _
+						, MsgId := &quot;The method &apos;%1&apos; is unexpected in the current context.\n&quot; _
+									&amp; &quot;The UnitTest service cannot proceed further with the on-going test.&quot; _
+						, Comment :=	&quot;SFUnitTest finds a RunTest() call in a inappropriate location\n&quot; _
+									&amp;	&quot;%1: The name of a method&quot; _
 					)
 		End With
 	End If

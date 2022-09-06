@@ -115,7 +115,7 @@ function fixURL(module, system) {
     if ((DisplayArea = document.getElementById("DisplayArea")) === null) return;
     var itemlink = DisplayArea.getElementsByTagName("a");
     var pSystem = (system === null) ? getSystem() : system;
-    var pAppl = (module === null) ? "WRITER" : module;
+    var pAppl = (module === null) ? "SHARED" : module;
     var n = itemlink.length;
     for (var i = 0; i < n; i++) {
         if (itemlink[i].getAttribute("class") != "objectfiles") {
@@ -187,6 +187,7 @@ function setupModules(lang) {
     var modulesNav = document.getElementById('modules-nav');
     if (!modulesNav.classList.contains('loaded')) {
         var html =
+            '<a href="' + lang + '/text/shared/05/new_help.html?DbPAR=SHARED"><div class="office-icon"></div>LibreOffice</a>' +
             '<a href="' + lang + '/text/swriter/main0000.html?DbPAR=WRITER"><div class="writer-icon"></div>Writer</a>' +
             '<a href="' + lang + '/text/scalc/main0000.html?DbPAR=CALC"><div class="calc-icon"></div>Calc</a>' +
             '<a href="' + lang + '/text/simpress/main0000.html?DbPAR=IMPRESS"><div class="impress-icon"></div>Impress</a>' +

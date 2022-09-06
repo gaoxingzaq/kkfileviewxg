@@ -50,17 +50,19 @@ function getQuery(q) {
 
 function currentModule() {
     // We need to know the module that the user is using when they call for help
-    var module = getQuery('DbPAR');
+    let module = getQuery('DbPAR');
+    let moduleFromURL = regexArray[1].toUpperCase();
     if (module == null) {
-        // get the module name from the URL and remove the first character,
-        // but first deal with snowflake Base
-        if(url.indexOf('explorer/database/') !== -1) {
+        // first deal with snowflake Base
+        if(url.indexOf('/sdatabase/') !== -1) {
             module = 'BASE';
         } else {
-            if (null === regexArray){// comes from search or elsewhere, no defined module in URL
-                module = 'HARED'
+            if (null === regexArray || moduleFromURL === 'SHARED') {
+                // comes from search or elsewhere, no defined module in URL
+                module = 'SHARED'
             } else {
-                module = regexArray[1].toUpperCase().substring(1);
+                // drop the 's' from the start
+                module = moduleFromURL.substring(1);
             }
         }
     }
@@ -69,13 +71,13 @@ function currentModule() {
 function fullLinkify(indexEl, bookmarks, modules, currentModule) {
     var fullLinkified = '';
     // if user is not on a shared category page, limit the index to the current module + shared
-    if(currentModule !== 'HARED') {
+    if(currentModule !== 'SHARED') {
         bookmarks = bookmarks.filter(function(obj) {
             return obj['app'] === currentModule || obj['app'] === 'SHARED';
         });
     }
     bookmarks.forEach(function(obj) {
-        fullLinkified += '<a href="' + obj['url'] + '" class="' + obj['app'] + '">' + obj['text'] + '</a>';
+        fullLinkified += '<a href="' + obj['url'] + '" class="' + obj['app'] + '" dir="auto">' + obj['text'] + '</a>';
     });
     return fullLinkified;
 }
@@ -114,7 +116,7 @@ function filter(indexList) {
 
     // Similarly to fullLinkify(), limit search results to the user's current module + shared
     // unless they're somehow not coming from a module.
-    if(userModule !== 'HARED') {
+    if(userModule !== 'SHARED') {
         resultModules = [userModule, 'SHARED'];
     } else {
         resultModules = modules;
@@ -146,10 +148,11 @@ function debounce(fn, wait, indexList) {
     };
 }
 
-// copy pycode and bascode to clipboard on mouse click
+// copy pycode, sqlcode and bascode to clipboard on mouse click
 // Show border when copy is done
 divcopyable(document.getElementsByClassName("bascode"));
 divcopyable(document.getElementsByClassName("pycode"));
+divcopyable(document.getElementsByClassName("sqlcode"));
 
 function divcopyable(itemcopyable){
 for (var i = 0, len = itemcopyable.length; i < len; i++) {
@@ -244,4 +247,15 @@ document.addEventListener('click', function(event) {
         });
     }
 });
+// YouTube consent click. This only works for a single video.
+let youtubePlaceholder = document.querySelector(".youtube_placeholder");
+if (youtubePlaceholder) {
+    youtubePlaceholder.prepend(...document.querySelectorAll(".youtube_consent"));
+}
+function youtubeLoader(ytId, width, height) {
+    let iframeMarkup = `<iframe width="${width}" height="${height}" src="https://www.youtube-nocookie.com/embed/${ytId}?version=3" allowfullscreen="true" frameborder="0"></iframe>`;
+    let placeholder = document.getElementById(ytId);
+    placeholder.innerHTML = iframeMarkup;
+    placeholder.removeAttribute("style");
+}
 /* vim:set shiftwidth=4 softtabstop=4 expandtab cinoptions=b1,g0,N-s cinkeys+=0=break: */

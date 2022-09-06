@@ -72,7 +72,13 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes" context="footnotepage|pos">Position</property>
+                <property name="use-underline">True</property>
+                <property name="mnemonic-widget">pospagecb</property>
                 <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="label-for" target="pospagecb"/>
+                  <relation type="label-for" target="posdoccb"/>
+                </accessibility>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -113,7 +119,7 @@
                 <property name="active">True</property>
                 <property name="draw-indicator">True</property>
                 <accessibility>
-                  <relation type="member-of" target="pos"/>
+                  <relation type="labelled-by" target="pos"/>
                 </accessibility>
                 <child internal-child="accessible">
                   <object class="AtkObject" id="pospagecb-atkobject">
@@ -136,7 +142,7 @@
                 <property name="draw-indicator">True</property>
                 <property name="group">pospagecb</property>
                 <accessibility>
-                  <relation type="member-of" target="pos"/>
+                  <relation type="labelled-by" target="pos"/>
                 </accessibility>
                 <child internal-child="accessible">
                   <object class="AtkObject" id="posdoccb-atkobject">
@@ -308,7 +314,7 @@
                 <property name="truncate-multiline">True</property>
                 <child internal-child="accessible">
                   <object class="AtkObject" id="contfromed-atkobject">
-                    <property name="AtkObject::accessible-description" translatable="yes" context="footnotepage|extended_tip|contfromed">Enter the text that you want to display on the page where the footnotes are continued, for example, "Continued from Page ". %PRODUCTNAME Writer automatically inserts the number of the previous page.</property>
+                    <property name="AtkObject::accessible-description" translatable="yes" context="footnotepage|extended_tip|contfromed">Enter the text that you want to display on the page where the footnotes are continued, for example, "Continued from Page ". Writer automatically inserts the number of the previous page.</property>
                   </object>
                 </child>
               </object>
@@ -327,7 +333,7 @@
                 <property name="truncate-multiline">True</property>
                 <child internal-child="accessible">
                   <object class="AtkObject" id="conted-atkobject">
-                    <property name="AtkObject::accessible-description" translatable="yes" context="footnotepage|extended_tip|conted">Enter the text that you want to display when the footnotes are continued on the next page, for example, "Continued on Page ". %PRODUCTNAME Writer automatically inserts the number of the following page.</property>
+                    <property name="AtkObject::accessible-description" translatable="yes" context="footnotepage|extended_tip|conted">Enter the text that you want to display when the footnotes are continued on the next page, for example, "Continued on Page ". Writer automatically inserts the number of the following page.</property>
                   </object>
                 </child>
               </object>

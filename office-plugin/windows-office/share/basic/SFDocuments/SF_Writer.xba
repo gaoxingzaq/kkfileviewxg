@@ -217,16 +217,8 @@ Public Function Methods() As Variant
 &apos;&apos;&apos;	Return the list of public methods of the Writer service as an array
 
 	Methods = Array( _
-					&quot;Activate&quot; _
-					, &quot;CloseDocument&quot; _
-					, &quot;ExportAsPDF&quot; _
-					, &quot;Forms&quot; _
+					&quot;Forms&quot; _
 					, &quot;PrintOut&quot; _
-					, &quot;RunCommand&quot; _
-					, &quot;Save&quot; _
-					, &quot;SaveAs&quot; _
-					, &quot;SaveCopyAs&quot; _
-					, &quot;SetPrinter&quot; _
 					)
 
 End Function	&apos;	SFDocuments.SF_Writer.Methods
@@ -315,6 +307,8 @@ Public Function Properties() As Variant
 					, &quot;Description&quot; _
 					, &quot;DocumentProperties&quot; _
 					, &quot;DocumentType&quot; _
+					, &quot;ExportFilters&quot; _
+					, &quot;ImportFilters&quot; _
 					, &quot;IsBase&quot; _
 					, &quot;IsCalc&quot; _
 					, &quot;IsDraw&quot; _
@@ -411,6 +405,16 @@ Property Get DocumentType() As String
 End Property	&apos;	SFDocuments.SF_Writer.DocumentType
 
 REM -----------------------------------------------------------------------------
+Property Get ExportFilters() As Variant
+	ExportFilters = [_Super].GetProperty(&quot;ExportFilters&quot;)
+End Property	&apos;	SFDocuments.SF_Writer.ExportFilters
+
+REM -----------------------------------------------------------------------------
+Property Get ImportFilters() As Variant
+	ImportFilters = [_Super].GetProperty(&quot;ImportFilters&quot;)
+End Property	&apos;	SFDocuments.SF_Writer.ImportFilters
+
+REM -----------------------------------------------------------------------------
 Property Get IsBase() As Boolean
 	IsBase = [_Super].GetProperty(&quot;IsBase&quot;)
 End Property	&apos;	SFDocuments.SF_Writer.IsBase
@@ -493,6 +497,14 @@ Public Function CloseDocument(Optional ByVal SaveAsk As Variant) As Boolean
 End Function   &apos;   SFDocuments.SF_Writer.CloseDocument
 
 REM -----------------------------------------------------------------------------
+Public Function CreateMenu(Optional ByVal MenuHeader As Variant _
+								, Optional ByVal Before As Variant _
+								, Optional ByVal SubmenuChar As Variant _
+								) As Object
+	Set CreateMenu = [_Super].CreateMenu(MenuHeader, Before, SubmenuChar)
+End Function	&apos;	SFDocuments.SF_Writer.CreateMenu
+
+REM -----------------------------------------------------------------------------
 Public Function ExportAsPDF(Optional ByVal FileName As Variant _
 							, Optional ByVal Overwrite As Variant _
 							, Optional ByVal Pages As Variant _
@@ -503,8 +515,15 @@ Public Function ExportAsPDF(Optional ByVal FileName As Variant _
 End Function   &apos;   SFDocuments.SF_Writer.ExportAsPDF
 
 REM -----------------------------------------------------------------------------
-Public Sub RunCommand(Optional ByVal Command As Variant)
-	[_Super].RunCommand(Command)
+Public Function RemoveMenu(Optional ByVal MenuHeader As Variant) As Boolean
+	RemoveMenu = [_Super].RemoveMenu(MenuHeader)
+End Function	&apos;	SFDocuments.SF_Writer.RemoveMenu
+
+REM -----------------------------------------------------------------------------
+Public Sub RunCommand(Optional ByVal Command As Variant _
+									, ParamArray Args As Variant _
+									)
+	[_Super].RunCommand(Command, Args)
 End Sub		  &apos;   SFDocuments.SF_Writer.RunCommand
 
 REM -----------------------------------------------------------------------------

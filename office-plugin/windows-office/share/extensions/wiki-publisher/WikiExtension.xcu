@@ -116,7 +116,7 @@
         	<value xml:lang="pl">Nie udało się wykonać operacji &apos;Wyślij do MediaWiki&apos;.</value>
         	<value xml:lang="pt">Não foi possível concluir com êxito a operação &quot;Enviar para MediaWiki&quot;.</value>
         	<value xml:lang="pt-BR">Não foi possível completar com sucesso a operação &apos;Enviar ao MediaWiki&apos;.</value>
-        	<value xml:lang="ro">Operația de trimitere către MediaWiki nu a putut fi completată cu succes.</value>
+        	<value xml:lang="ro">Operația &apos;Trimite către MediaWiki&apos; nu a putut fi finalizată cu succes.</value>
         	<value xml:lang="ru">Невозможно завершить отправку в MediaWiki.</value>
         	<value xml:lang="rw">The operation &apos;Send to MediaWiki&apos; could not be completed successfully.</value>
         	<value xml:lang="sa-IN"> &apos;मीडिया विकी&apos; प्रति प्रेषितानि कार्याणि सफलतया समाप्तं भवितुं न शक्यते।</value>
@@ -174,7 +174,7 @@
         	<value xml:lang="cs">Nebyl nalezen filtr pro export do MediaWiki. Nainstalujte filtr pomocí &apos;Nástroje-Nastavení XML filtrů&apos; nebo pomocí instalátoru přidejte potřebnou součást.</value>
         	<value xml:lang="cy">Nid oedd modd canfo hidl allforio MediaWiki. Dewiswch &apos;Offer-Gosodiadau Hidl XML&apos; i osod yr hidl, neu ddefnyddio gosod i osod y cydran.</value>
         	<value xml:lang="da">MediaWiki-eksportfilter kan ikke findes. Vælg &apos;Funktioner - Indstillinger for XML-filter&apos; for at installere filteret, eller brug installationsprogrammet for at installere komponenten.</value>
-        	<value xml:lang="de">Der MediaWiki-Exportfilter kann nicht gefunden werden. Wählen Sie »Extras ▸ XML-Filter-Einstellungen«, um den Filter zu installieren, oder führen Sie die Installation erneut aus, um die Komponente zu installieren.</value>
+        	<value xml:lang="de">Der MediaWiki-Exportfilter kann nicht gefunden werden. Wählen Sie »Extras ▸ XML-Filtereinstellungen«, um den Filter zu installieren, oder führen Sie die Installation erneut aus, um die Komponente zu installieren.</value>
         	<value xml:lang="dgo">मीडिया विकी बरामद पूनी नेईं लब्भी सकी. पूनी प्रस्थापत करने लेई  &apos;उपकरण-XML पूनी सैट्टिंगां&apos; तालो जां अंश प्रस्थापत करने लेई सैट-अप बरतो.</value>
         	<value xml:lang="dsb">Eksportowy filter MediaWiki njedajo se namakaś. Wubjeŕśo &apos;Rědy - Filtrowe nastajenja XML&apos;, aby filter instalěrował, abo instalěrujśo komponentu.</value>
         	<value xml:lang="dz">The MediaWiki export filter cannot be found. Choose &apos;Tools-XML Filter Settings&apos; to install the filter, or use the setup to install the component.</value>
@@ -203,7 +203,7 @@
         	<value xml:lang="id">Penyaring ekspor MediaWiki tidak ditemukan. Pilih &apos;Perkakas-Pengaturan Penyaring XML&apos; untuk memasang penyaring tersebut, atau gunakan setup untuk memasang komponen itu.</value>
         	<value xml:lang="is">MediaWiki útflutningssían fannst ekki. Farðu í &apos;Verkfæri-&gt;Stillingar XML síu&apos; til að setja upp síuna, eða notaðu uppsetningarforritið til að setja upp þessa einingu.</value>
         	<value xml:lang="it">Impossibile trovare il filtro di esportazione di MediaWiki. Fai clic su &apos;Strumenti - Impostazioni filtro XML&apos; per installare il filtro, oppure installa il componente tramite la configurazione iniziale.</value>
-        	<value xml:lang="ja">MediaWikiエクスポートフィルターが見つかりません。「ツール」→「XMLフィルター設定」を選択してフィルターをインストールするか、セットアップを実行してコンポーネントをインストールしてください。</value>
+        	<value xml:lang="ja">MediaWiki エクスポートフィルターが見つかりません。[ツール]&gt;[XMLフィルターの設定]を選択してフィルターをインストールするか、セットアップを実行してコンポーネントをインストールしてください。</value>
         	<value xml:lang="ka">The MediaWiki export filter cannot be found. Choose &apos;Tools-XML Filter Settings&apos; to install the filter, or use the setup to install the component.</value>
         	<value xml:lang="kab">Tastayt n usifeḍ MediaWiki ulac-itt. Fren &apos;Ifecka - Iɣewwaren n testayt XML&apos; iwakken ad tesbeddeḍ tastayt, neɣ seqdec setup iwakken ad tesbeddeḍ isger.</value>
         	<value xml:lang="kk">MediaWiki экспорттау сүзгісі табылмады. Сүзгіні орнату үшін «Саймандар - XML сүзгілерін баптау» мәзірін ашыңыз, немесе, орнату бағдарламасын қолданып, сәйкес құрауышты таңдаңыз.</value>
@@ -240,7 +240,7 @@
         	<value xml:lang="pl">Nie znaleziono filtra eksportu MediaWiki. Wybierz opcję &apos;Narzędzia - Ustawienia filtrów XML&apos;, aby zainstalować filtr, lub zainstaluj komponent za pomocą konfiguracji.</value>
         	<value xml:lang="pt">O filtro de exportação MediaWiki não foi encontrado. Escolha &quot;Ferramentas - Definições de filtro XML&quot; ou utilize o programa de configuração para instalar o componente.</value>
         	<value xml:lang="pt-BR">Não foi possível encontrar o filtro de exportação para o MediaWiki. Selecione &apos;Ferramentas - Filtros XML&apos; para instalar o filtro, ou utilize o setup para instalar o componente.</value>
-        	<value xml:lang="ro">Filtrul de export în format MediaWiki nu poate fi găsit. Accesați „Unelte-Setări pentru filtrul XML” pentru a instala acest filtru sau folosiți programul de instalare pentru a instala această componentă.</value>
+        	<value xml:lang="ro">Filtrul de exportare în format MediaWiki nu poate fi găsit. Accesați &apos;Instrumente ▸ Macrouri ▸ Setări pentru filtrul XML&apos; pentru a instala acest filtru, sau folosiți programul de instalare pentru a instala această componentă.</value>
         	<value xml:lang="ru">Фильтр экспорта MediaWiki не обнаружен. Выберите «Сервис - Настройка фильтров XML» для установки фильтра или используйте программу установки и выберите соответствующий компонент.</value>
         	<value xml:lang="rw">The MediaWiki export filter cannot be found. Choose &apos;Tools-XML Filter Settings&apos; to install the filter, or use the setup to install the component.</value>
         	<value xml:lang="sa-IN">मीडियाविकि निर्याणनियन्दकं न दृष्टम्।निष्यन्दकं संस्थापयितुं &apos;टूल्स्-XML निष्यन्दकनिर्धारणानि&apos; वृणु, अथवा घटकं संस्थापयितुं सेटेप् उपयोजय।</value>
@@ -361,7 +361,7 @@
         	<value xml:lang="pl">Tworzenie połączenia z systemem MediaWiki &apos;$ARG1&apos; nie powiodło się.</value>
         	<value xml:lang="pt">Não foi possível criar uma ligação ao sistema MediaWiki em &quot;$ARG1&quot;.</value>
         	<value xml:lang="pt-BR">Não foi possível criar uma conexão ao sistema MediaWiki em &apos;$ARG1&apos;.</value>
-        	<value xml:lang="ro">Nu s-a putut crea o conexiune cu sistemul MediaWiki de la „$ARG1”.</value>
+        	<value xml:lang="ro">Nu s-a putut crea o conexiune către sistemul MediaWiki la &apos;$ARG1&apos;.</value>
         	<value xml:lang="ru">Невозможно установить соединение с MediaWiki «$ARG1».</value>
         	<value xml:lang="rw">A connection to the MediaWiki system at &apos;$ARG1&apos; could not be created.</value>
         	<value xml:lang="sa-IN"> &apos;$ARG1&apos; मध्ये मीडीयाविकीसिस्टम् संयोगः उत्पादितुं न शक्यते।</value>
@@ -484,7 +484,7 @@
         	<value xml:lang="pl">Niepoprawna nazwa użytkownika lub hasło. Spróbuj ponownie albo pozostaw pola puste, aby spróbować nawiązać połączenie anonimowe.</value>
         	<value xml:lang="pt">Palavra-passe ou nome de utilizador incorreta(o). Tente novamente ou deixe os campos em branco para estabelecer uma ligação anónima.</value>
         	<value xml:lang="pt-BR">O nome de usuário ou a senha estão incorretos. Tente novamente, ou deixe os campos em branco para uma conexão anônima.</value>
-        	<value xml:lang="ro">Numele de utilizator sau parola sunt incorecte. Încercați din nou sau lăsați câmpurile goale pentru o conexiune anonimă.</value>
+        	<value xml:lang="ro">Numele de utilizator sau parola sunt incorecte. Încercați din nou, sau lăsați câmpurile goale pentru o conexiune anonimă.</value>
         	<value xml:lang="ru">Имя пользователя или пароль не верны. Попробуйте ещё раз или оставьте указанные поля пустыми для анонимного соединения.</value>
         	<value xml:lang="rw">User name or password is incorrect. Please try again, or leave the fields blank for an anonymous connection.</value>
         	<value xml:lang="sa-IN">प्रयोक्तृनाम अथवा गुह्यपदम् असमीचीनम्।कृपया पुनः प्रयत्न्सव, अथवा अज्ञातसंयोगाय क्षेत्राणि रिक्तानि त्यज।</value>
@@ -605,7 +605,7 @@
         	<value xml:lang="pl">Nie udało się utworzyć połączenia, ponieważ wprowadzony adres URL jest niepoprawny.</value>
         	<value xml:lang="pt">Não foi possível criar uma ligação porque o URL não é válido.</value>
         	<value xml:lang="pt-BR">Não foi possível criar uma conexão por que o URL é invalido.</value>
-        	<value xml:lang="ro">Nu s-a putut crea o conexiune deoarece adresa nu este validă.</value>
+        	<value xml:lang="ro">Nu s-a putut crea o conexiune deoarece URL-ul nu este valid.</value>
         	<value xml:lang="ru">Невозможно установить соединение по причине некорректного URL.</value>
         	<value xml:lang="rw">A connection could not be created because the URL is invalid.</value>
         	<value xml:lang="sa-IN">संयोगः न उत्पादितः भवितुं न शक्यते,यतः URL असिद्धमस्ति।</value>
@@ -726,7 +726,7 @@
         	<value xml:lang="pl">Określ serwer MediaWiki, wprowadzając jego adres URL.</value>
         	<value xml:lang="pt">Especifique um servidor MediaWiki indicando um URL.</value>
         	<value xml:lang="pt-BR">Especifique um servidor MediaWiki fornecendo um URL.</value>
-        	<value xml:lang="ro">Specificați un server MediaWiki precizând adresa sa.</value>
+        	<value xml:lang="ro">Specificați un server MediaWiki furnizând o adresă URL.</value>
         	<value xml:lang="ru">Определите сервер MediWiki, используя URL.</value>
         	<value xml:lang="rw">Specify a MediaWiki server by providing a URL.</value>
         	<value xml:lang="sa-IN"> URL प्रदानेन मीडियाविकीसर्वर् निर्दिश।</value>
@@ -1009,7 +1009,7 @@
         <prop oor:name="Dlg_EditSetting_UsernameLabel">
             <value xml:lang="en-US">~Username</value>
         	<value xml:lang="af">~Gebruikernaam</value>
-        	<value xml:lang="am">~የተጠቃሚ ስም</value>
+        	<value xml:lang="am">የ ~ተጠቃሚ ስም</value>
         	<value xml:lang="ar">ا~سم المستخدم</value>
         	<value xml:lang="as">ব্যৱহাৰকৰোঁতাৰ নাম (~U)</value>
         	<value xml:lang="ast">Nome d&apos;us~uariu</value>
@@ -1130,7 +1130,7 @@
         <prop oor:name="Dlg_EditSetting_PasswordLabel">
             <value xml:lang="en-US">~Password</value>
         	<value xml:lang="af">~Wagwoord</value>
-        	<value xml:lang="am">~የመግቢያ ቃል</value>
+        	<value xml:lang="am">የ ~መግቢያ ቃል</value>
         	<value xml:lang="ar">~كلمة السر</value>
         	<value xml:lang="as">পাছৱাৰ্ড (~P)</value>
         	<value xml:lang="ast">~Contraseña</value>
@@ -1252,7 +1252,7 @@
             <value xml:lang="en-US">Send to MediaWiki</value>
         	<value xml:lang="af">Stuur na MediaWiki</value>
         	<value xml:lang="am">ወደ MediaWiki መላኪያ</value>
-        	<value xml:lang="ar">الإرسال إلى ميدياويكي</value>
+        	<value xml:lang="ar">أرسل إلى ميدياويكي</value>
         	<value xml:lang="as">MediaWiki লৈ পঠিয়াওক</value>
         	<value xml:lang="ast">Unviar a MediaWiki</value>
         	<value xml:lang="be">Send to MediaWiki</value>
@@ -1332,7 +1332,7 @@
         	<value xml:lang="pl">Wyślij do MediaWiki</value>
         	<value xml:lang="pt">Enviar para MediaWiki</value>
         	<value xml:lang="pt-BR">Enviar ao MediaWiki</value>
-        	<value xml:lang="ro">Trimite spre MediaWiki</value>
+        	<value xml:lang="ro">Trimite către MediaWiki</value>
         	<value xml:lang="ru">Отправить в MediaWiki</value>
         	<value xml:lang="rw">Send to MediaWiki</value>
         	<value xml:lang="sa-IN">मीडियाविकी प्रयि प्रेषय </value>
@@ -2058,7 +2058,7 @@
         	<value xml:lang="pl">~Edycja...</value>
         	<value xml:lang="pt">~Editar...</value>
         	<value xml:lang="pt-BR">~Editar...</value>
-        	<value xml:lang="ro">~Editează...</value>
+        	<value xml:lang="ro">~Editare...</value>
         	<value xml:lang="ru">Правка...</value>
         	<value xml:lang="rw">Guhindura...</value>
         	<value xml:lang="sa-IN">~सम्पादय...</value>
@@ -2376,7 +2376,7 @@
         	<value xml:lang="fy">In wiki artikel mei de titel &apos;$ARG1&apos; bestiet noch net. Wolle jo in nij artikel mei dy namme oanmeitsje?</value>
         	<value xml:lang="ga">Níl alt vicí dar teideal &quot;$ARG1&quot; ann fós. An mian leat alt nua a chruthú leis an ainm sin air?</value>
         	<value xml:lang="gd">Chan eil artaigil aig an Uicipeid fhathast air a bheil &apos;$ARG1&apos; fhathast. A bheil thu airson artaigil ùr a chruthachadh leis an ainm sin?</value>
-        	<value xml:lang="gl">O artigo do wiki co título &apos;$ARG1&apos; aínda non existe. Quere crear un novo artigo con ese título?</value>
+        	<value xml:lang="gl">O artigo do wiki co título «$ARG1» aínda non existe. Quere crear un novo artigo con ese título?</value>
         	<value xml:lang="gu">કોષ્ટક &apos;$ARG1&apos; સાથે વિકી લેખ એ હજુ અસ્તિત્વ ધરાવતો નથી. શું તમે પેલા નામ સાથે નવા લેખ ને બનાવવા ઇચ્છો છો?</value>
         	<value xml:lang="gug">A wiki article with the title &apos;$ARG1&apos; does not exist yet. Do you want to create a new article with that name?</value>
         	<value xml:lang="he">לא קיים בוויקי ערך בשם &apos;$ARG1&apos;. האם ליצור ערך עם שם זה?</value>
@@ -2423,7 +2423,7 @@
         	<value xml:lang="pl">Artykuł wiki o zatytułowany &apos;$ARG1&apos; jeszcze nie istnieje. Czy chcesz utworzyć nowy artykuł o takiej nazwie?</value>
         	<value xml:lang="pt">Ainda não existe um artigo do Wiki com o título &quot;$ARG1&quot;. Deseja criar um novo artigo com esse nome?</value>
         	<value xml:lang="pt-BR">Não existe ainda um artigo wiki com o título &apos;$ARG1&apos;. Deseja criar um artigo com esse nome?</value>
-        	<value xml:lang="ro">Încă nu există un articol wiki cu titlul „$ARG1”. Doriți să creați un articol nou cu acest nume?</value>
+        	<value xml:lang="ro">Încă nu există un articol wiki cu titlul &apos;$ARG1&apos;. Vreți să creați un articol nou cu acest nume?</value>
         	<value xml:lang="ru">Статья wiki с названием «$ARG1» ещё не существует. Создать статью с указанным названием?</value>
         	<value xml:lang="rw">A wiki article with the title &apos;$ARG1&apos; does not exist yet. Do you want to create a new article with that name?</value>
         	<value xml:lang="sa-IN"> &apos;$ARG1&apos; शीर्षकेन विकि आलेखः न विद्यते।त्वं तेन् नाम्ना नूतनालेखम् उत्पादितुं इच्छसि किम्?</value>
@@ -2432,7 +2432,7 @@
         	<value xml:lang="si">&apos;$ARG1&apos; සිරස්තලය සහිත විකි ලිපිය දැනට නොමැත. එම නමින් නව ලිපියක් නිර්මාණය කිරීමට ඔබට අවශ්‍ය ද?</value>
         	<value xml:lang="sid">Wiiki borricho &apos;$ARG1&apos; umiti xaageeshsha dino. Hakko su&apos;minni haaro borricho kalaqa hasi&apos;ratto?</value>
         	<value xml:lang="sk">Článok wiki s názvom &apos;$ARG1&apos; ešte neexistuje. Chcete vytvoriť nový článok s týmto názvom?</value>
-        	<value xml:lang="sl">Članek wiki z naslovom »$ARG1« še ne obstaja. Želite ustvariti nov članek s tem imenom?</value>
+        	<value xml:lang="sl">Članek wiki z naslovom »$ARG1« še ne obstaja. Ali želite ustvariti nov članek s tem imenom?</value>
         	<value xml:lang="sq">Një artikull wiki me titull &apos;$ARG1&apos; nuk ekziston akoma. Dëshironi të krijoni një artikull të ri me këtë emër?</value>
         	<value xml:lang="sr">Још увек не постоји Вики чланак са насловом „$ARG1“. Да ли желите да га направите?</value>
         	<value xml:lang="sr-Latn">Još uvek ne postoji Viki članak sa naslovom „$ARG1“. Da li želite da ga napravite?</value>
@@ -2994,7 +2994,7 @@
         	<value xml:lang="id">Tampilkan di penelusur we~b</value>
         	<value xml:lang="is">Sýna í ~vefskoðara</value>
         	<value xml:lang="it">Mostra nel ~browser web</value>
-        	<value xml:lang="ja">Web ブラウザーで表示(~B)</value>
+        	<value xml:lang="ja">Webブラウザーで表示(~B)</value>
         	<value xml:lang="ka">Show in web ~browser</value>
         	<value xml:lang="kab">Sken deg i~minig n web</value>
         	<value xml:lang="kk">~Браузерде көрсету</value>
@@ -3028,7 +3028,7 @@
         	<value xml:lang="pl">Wyświetl w ~przeglądarce internetowej</value>
         	<value xml:lang="pt">Mostrar no navegador we~b</value>
         	<value xml:lang="pt-BR">Mostrar no navegador we~b</value>
-        	<value xml:lang="ro">Arată în navigatorul we~b</value>
+        	<value xml:lang="ro">Arată în browserul we~b</value>
         	<value xml:lang="ru">Показать в браузере</value>
         	<value xml:lang="rw">Show in web ~browser</value>
         	<value xml:lang="sa-IN">वेब् ब्रौसर् मध्ये दर्शय </value>
@@ -3149,7 +3149,7 @@
         	<value xml:lang="pl">Strona posiada nieznany certyfikat.</value>
         	<value xml:lang="pt">O certificado do site selecionado é desconhecido.</value>
         	<value xml:lang="pt-BR">O certificado do site selecionado é desconhecido.</value>
-        	<value xml:lang="ro">Certificatul siteului selectat este necunoscut.</value>
+        	<value xml:lang="ro">Certificatul site-ului web selectat nu este cunoscut.</value>
         	<value xml:lang="ru">Сертификат указанного сайта неизвестен.</value>
         	<value xml:lang="rw">The certificate of the selected site is unknown.</value>
         	<value xml:lang="sa-IN">वृतसैट् अस्य प्रमाणपत्रम् अज्ञातमस्ति। </value>
@@ -3806,7 +3806,7 @@
         	<value xml:lang="br">Ur pennad Wiki gant an titl &apos;$ARG1&apos; ez eus anezhañ endeo.&amp;#13;&amp;#13;He fellout a ra deoc&apos;h ma vo amsavet ar pennad bremanel gant ho pennad deoc&apos;h-c&apos;hwi ?&amp;#13;&amp;#13;</value>
         	<value xml:lang="brx">A wiki article with the title &apos;$ARG1&apos; already exists.&amp;#13;&amp;#13;Do you want to replace the current article with your article?&amp;#13;&amp;#13;</value>
         	<value xml:lang="bs">Wiki članak sa naslovom &apos;$ARG1&apos; već postoji.&amp;#13;&amp;#13;Da li želite da zamijenite postojeći članak sa vašim?&amp;#13;&amp;#13;</value>
-        	<value xml:lang="ca">Ja existeix un article wiki amb el títol «$ARG1».&amp;#13;&amp;#13;Voleu reemplaçar l&apos;article actual amb el vostre article?&amp;#13;&amp;#13;</value>
+        	<value xml:lang="ca">Ja existeix un article wiki amb el títol «$ARG1».&amp;#13;&amp;#13;Voleu reemplaçar l&apos;article actual pel vostre article?&amp;#13;&amp;#13;</value>
         	<value xml:lang="ca-valencia">Ja existeix un article wiki amb el títol &apos;$ARG1&apos;.&amp;#13;&amp;#13;Voleu reemplaçar l&apos;article actual amb el vostre article?&amp;#13;&amp;#13;</value>
         	<value xml:lang="ckb">A wiki article with the title &apos;$ARG1&apos; already exists.&amp;#13;&amp;#13;Do you want to replace the current article with your article?&amp;#13;&amp;#13;</value>
         	<value xml:lang="cs">Wiki článek s názvem &apos;$ARG1&apos; již existuje.&amp;#13;&amp;#13;Chcete aktuální článek nahradit svým článkem?&amp;#13;&amp;#13;</value>
@@ -3878,7 +3878,7 @@
         	<value xml:lang="pl">Artykuł wiki zatytułowany &apos;$ARG1&apos; już istnieje.&amp;#13;&amp;#13;Czy chcesz zastąpić istniejący artykuł nowym?&amp;#13;&amp;#13;</value>
         	<value xml:lang="pt">Já existe um artigo no Wiki com o título &quot;$ARG1&quot;.&amp;#13;&amp;#13;Deseja substituir o artigo atual pelo seu artigo?&amp;#13;&amp;#13;</value>
         	<value xml:lang="pt-BR">Um artigo wiki com título &apos;$ARG1&apos; já existe.&amp;#13;&amp;#13;Deseja substituir o artigo existente com o seu?&amp;#13;&amp;#13;</value>
-        	<value xml:lang="ro">Există deja un articol wiki cu titlul &apos;$ARG1&apos;.&amp;#13;&amp;#13;Doriți să înlocuiți articolul curent cu articolul dumneavoastră?&amp;#13;&amp;#13;</value>
+        	<value xml:lang="ro">Un articol wiki cu titlul &apos;$ARG1&apos; există deja.&amp;#13;&amp;#13;Vreți să înlocuiți articolul curent cu articolul dumneavoastră?&amp;#13;&amp;#13;</value>
         	<value xml:lang="ru">Статья wiki с именем «$ARG1» уже существует.&amp;#13;&amp;#13;Заменить существующую статью?&amp;#13;&amp;#13;</value>
         	<value xml:lang="rw">A wiki article with the title &apos;$ARG1&apos; already exists.&amp;#13;&amp;#13;Do you want to replace the current article with your article?&amp;#13;&amp;#13;</value>
         	<value xml:lang="sa-IN">एतावत् पर्यन्तं &apos;$ARG1&apos; शीर्षकेन सह विकि आलेखः विद्यते। &amp;#13;&amp;#13; तव आलेखेन 
@@ -3888,7 +3888,7 @@
         	<value xml:lang="si">&apos;$ARG1&apos; සිරස්තලයෙන් දැනටමත් විකි ලිපියක් ඇත. &amp;#13;&amp;#13; ඔබේ නව ලිපිය මඟින් දැනට ඇති ලිපිය ආදේශ කිරිමට අවශ්‍ය ද? &amp;#13;&amp;#13;</value>
         	<value xml:lang="sid">Wiiki borricho &apos;$ARG1&apos; umiti wonanni no.&amp;#13;&amp;#13;Borrichokkinni xaa borricho riqiwa hasi&apos;ratto?&amp;#13;&amp;#13;</value>
         	<value xml:lang="sk">Článok Wiki s názvom &apos;$ARG1&apos; už existuje.&amp;#13;&amp;#13;Chcete nahradiť aktuálny článok vaším článkom?&amp;#13;&amp;#13;</value>
-        	<value xml:lang="sl">Članek wiki z naslovom »$ARG1« že obstaja.&amp;#13;&amp;#13;Želite zamenjati obstoječi članek s svojim člankom?&amp;#13;&amp;#13;</value>
+        	<value xml:lang="sl">Članek wiki z naslovom »$ARG1« že obstaja.&amp;#13;&amp;#13;Ali želite zamenjati obstoječi članek s svojim člankom?&amp;#13;&amp;#13;</value>
         	<value xml:lang="sq">Ekziston tashmë një artikull wiki me titull &apos;$ARG1&apos; .&amp;#13;&amp;#13;Dëshironi ta zëvendësoni me artikullin tuaj?&amp;#13;&amp;#13;</value>
         	<value xml:lang="sr">Већ постоји вики чланак са насловом „$ARG1“.&amp;#13;&amp;#13;Да ли желите да препишете чланак новим?&amp;#13;&amp;#13;</value>
         	<value xml:lang="sr-Latn">Već postoji viki članak sa naslovom „$ARG1“.&amp;#13;&amp;#13;Da li želite da prepišete članak novim?&amp;#13;&amp;#13;</value>

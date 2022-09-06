@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <description xmlns="http://openoffice.org/extensions/description/2006" xmlns:d="http://openoffice.org/extensions/description/2006"  xmlns:xlink="http://www.w3.org/1999/xlink">
-    <version value="2021.11.01" />
+    <version value="2022.05.01" />
     <identifier value="org.openoffice.en.hunspell.dictionaries" />
     <display-name>
         <name lang="en-US">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
@@ -63,7 +63,7 @@
         <name lang="kok">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="ks">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="lb">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
-        <name lang="lo">ພົດຈະນານຸກົມສະກົດຄຳພາສາ English, ກົດລະບຽບການເຊື່ອມໂຍງ, ພົດຈະນານຸກົມ, ແລະ ໄວຍະກອນ </name>
+        <name lang="lo">ພົດຈະນານຸກົມສະກົດຄຳ, ກົດການເຊື່ອມໂຍງ, ພົດຈະນານຸກົມ, ແລະ ເຄື່ອງມືກວດໄວຍະກອນພາສາອັງກິດ</name>
         <name lang="lt">Anglų kalbos rašybos tikrinimo, žodžių kėlybos, tezauro žodynai ir gramatikos tikrintuvė</name>
         <name lang="lv">Angļu pareizrakstības vārdnīcas, zilbjdales kārtulas, tēzaurs un gramatikas pārbaudītājs</name>
         <name lang="mai">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
@@ -86,7 +86,7 @@
         <name lang="pl">Angielskie słowniki ortograficzne, reguły dzielenia wyrazów, słownik wyrazów bliskoznacznych i sprawdzanie gramatyki</name>
         <name lang="pt">Dicionário ortográfico, sinónimos, regras de hifenização e verificação gramatical em inglês</name>
         <name lang="pt-BR">Dicionário ortográfico, sinônimos, regras de hifenização e verificação gramatical em inglês</name>
-        <name lang="ro">Dicționar ortografic, despărțire în silabe, de sinonime și gramatical englez</name>
+        <name lang="ro">Dicționar ortografic, de sinonime, reguli de despărțire în silabe și verificator gramatical pentru engleză</name>
         <name lang="ru">Английский орфографический словарь, правила переноса, тезаурус и проверка грамматики</name>
         <name lang="rw">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="sa-IN">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
@@ -107,7 +107,7 @@
         <name lang="ta">ஆங்கில எழுத்துக்கூட்டு அகராதிகள், நடுக்கோடு விதிகள், நிகண்டு மற்றும் இலக்கண திருத்தி</name>
         <name lang="te">ఆంగ్ల వుచ్ఛారణా నిఘంటువు, హైఫనేషన్ నియమాలు, పదకోశాలు, మరియు వ్యాకరణ పరిశీలని</name>
         <name lang="tg">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
-        <name lang="th">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
+        <name lang="th">พจนานุกรมสะกดคำ, กฎการแทรกยัติภังค์, อรรถาภิธาน, และเครื่องมือตรวจไวยากรณ์ภาษาอังกฤษ</name>
         <name lang="tn">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>
         <name lang="tr">İngilizce yazım sözlüğü, heceleme kuralları ve dilbilgisi denetleyicisi</name>
         <name lang="ts">English spelling dictionaries, hyphenation rules, thesaurus, and grammar checker</name>

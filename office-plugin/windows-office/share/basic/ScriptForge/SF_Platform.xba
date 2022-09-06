@@ -74,6 +74,24 @@ Property Get CurrentUser() As String
 End Property	&apos;	ScriptForge.SF_Platform.CurrentUser (get)
 
 REM -----------------------------------------------------------------------------
+Property Get Extensions() As Variant
+&apos;&apos;&apos;	Returns the list of availableeExtensions as an unsorted array of unique strings
+&apos;&apos;&apos;	To get the list sorted, use SF_Array.Sort()
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;		myExtensionsList = platform.Extensions
+	Extensions = _PropertyGet(&quot;Extensions&quot;)
+End Property	&apos;	ScriptForge.SF_Platform.Extensions (get)
+
+REM -----------------------------------------------------------------------------
+Property Get FilterNames() As Variant
+&apos;&apos;&apos;	Returns the list of available document import and export filter names as an unsorted array of unique strings
+&apos;&apos;&apos;	To get the list sorted, use SF_Array.Sort()
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;		myFilterNamesList = platform.FilterNames
+	FilterNames = _PropertyGet(&quot;FilterNames&quot;)
+End Property	&apos;	ScriptForge.SF_Platform.FilterNames (get)
+
+REM -----------------------------------------------------------------------------
 Property Get Fonts() As Variant
 &apos;&apos;&apos;	Returns the list of available fonts as an unsorted array of unique strings
 &apos;&apos;&apos;	To get the list sorted, use SF_Array.Sort()
@@ -83,8 +101,16 @@ Property Get Fonts() As Variant
 End Property	&apos;	ScriptForge.SF_Platform.Fonts (get)
 
 REM -----------------------------------------------------------------------------
+Property Get FormatLocale() As String
+&apos;&apos;&apos;	Returns the locale used for number and date formats, combining language-COUNTRY (la-CO)
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;		MsgBox platform.FormatLocale
+	FormatLocale = _PropertyGet(&quot;FormatLocale&quot;)
+End Property	&apos;	ScriptForge.SF_Platform.FormatLocale (get)
+
+REM -----------------------------------------------------------------------------
 Property Get Locale() As String
-&apos;&apos;&apos;	Returns the locale combining language-COUNTRY (la-CO)
+&apos;&apos;&apos;	Returns the locale of the operating system, combining language-COUNTRY (la-CO)
 &apos;&apos;&apos;	Example:
 &apos;&apos;&apos;		MsgBox platform.Locale
 	Locale = _PropertyGet(&quot;Locale&quot;)
@@ -103,6 +129,14 @@ Property Get ObjectType As String
 &apos;&apos;&apos;	Only to enable object representation
 	ObjectType = &quot;SF_Platform&quot;
 End Property	&apos;	ScriptForge.SF_Platform.ObjectType
+
+REM -----------------------------------------------------------------------------
+Property Get OfficeLocale() As String
+&apos;&apos;&apos;	Returns the locale of the user interface, combining language-COUNTRY (la-CO)
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;		MsgBox platform.OfficeLocale
+	OfficeLocale = _PropertyGet(&quot;OfficeLocale&quot;)
+End Property	&apos;	ScriptForge.SF_Platform.OfficeLocale (get)
 
 REM -----------------------------------------------------------------------------
 Property Get OfficeVersion() As String
@@ -175,6 +209,14 @@ Property Get ServiceName As String
 	ServiceName = &quot;ScriptForge.Platform&quot;
 End Property	&apos;	ScriptForge.SF_Platform.ServiceName
 
+REM -----------------------------------------------------------------------------
+Property Get SystemLocale() As String
+&apos;&apos;&apos;	Returns the locale of the operating system, combining language-COUNTRY (la-CO)
+&apos;&apos;&apos;	Example:
+&apos;&apos;&apos;		MsgBox platform.SystemLocale
+	SystemLocale = _PropertyGet(&quot;SystemLocale&quot;)
+End Property	&apos;	ScriptForge.SF_Platform.SystemLocale (get)
+
 REM ===================================================================== METHODS
 
 REM -----------------------------------------------------------------------------
@@ -227,9 +269,13 @@ Public Function Properties() As Variant
 					, &quot;ComputerName&quot; _
 					, &quot;CPUCount&quot; _
 					, &quot;CurrentUser&quot; _
+					, &quot;Extensions&quot; _
+					, &quot;FilterNames&quot; _
 					, &quot;Fonts&quot; _
+					, &quot;FormatLocale&quot; _
 					, &quot;Locale&quot; _
 					, &quot;Machine&quot; _
+					, &quot;OfficeLocale&quot; _
 					, &quot;OfficeVersion&quot; _
 					, &quot;OSName&quot; _
 					, &quot;OSPlatform&quot; _
@@ -238,6 +284,7 @@ Public Function Properties() As Variant
 					, &quot;Printers&quot; _
 					, &quot;Processor&quot; _
 					, &quot;PythonVersion&quot; _
+					, &quot;SystemLocale&quot; _
 					)
 
 End Function	&apos;	ScriptForge.SF_Platform.Properties
@@ -320,9 +367,13 @@ Dim oLocale As Object			&apos;	com.sun.star.lang.Locale
 Dim oPrinterServer As Object	&apos;	com.sun.star.awt.PrinterServer
 Dim oToolkit As Object			&apos;	com.sun.star.awt.Toolkit
 Dim oDevice As Object			&apos;	com.sun.star.awt.XDevice
+Dim oFilterFactory As Object	&apos;	com.sun.star.document.FilterFactory
 Dim oFontDescriptors As Variant	&apos;	Array of com.sun.star.awt.FontDescriptor
 Dim sFonts As String			&apos;	Comma-separated list of fonts
 Dim sFont As String				&apos;	A single font name
+Dim vExtensionsList As Variant	&apos;	Array of extension descriptors
+Dim sExtensions As String		&apos;	Comma separated list of extensions
+Dim sExtension As String		&apos;	A single extension name
 Dim i As Long
 
 Const cstPyHelper = &quot;$&quot; &amp; &quot;_SF_Platform&quot;
@@ -338,6 +389,16 @@ Const cstSubArgs = &quot;&quot;
 			With ScriptForge.SF_Session
 				_PropertyGet = .ExecutePythonScript(.SCRIPTISSHARED, _SF_.PythonHelper &amp; cstPyHelper, psProperty)
 			End With
+		Case &quot;Extensions&quot;
+			Set vExtensionsList = SF_Utils._GetUnoService(&quot;PackageInformationProvider&quot;).ExtensionList
+			sExtensions = &quot;&quot;
+			For i = 0 To UBound(vExtensionsList)
+				sExtensions = sExtensions &amp; &quot;,&quot; &amp; vExtensionsList(i)(0)
+			Next i
+			If Len(sExtensions) &gt; 0 Then _PropertyGet = Split(Mid(sExtensions, 2), &quot;,&quot;) Else _PropertyGet = Array()
+		Case &quot;FilterNames&quot;
+			Set oFilterFactory = SF_Utils._GetUNOService(&quot;FilterFactory&quot;)
+			_PropertyGet = oFilterFactory.getElementNames()
 		Case &quot;Fonts&quot;
 			Set oToolkit = SF_Utils._GetUnoService(&quot;Toolkit&quot;)
 			Set oDevice = oToolkit.createScreenCompatibleDevice(0, 0)
@@ -350,8 +411,11 @@ Const cstSubArgs = &quot;&quot;
 			Next i
 			&apos;	Remove leading and trailing commas
 			If Len(sFonts) &gt; 1 Then _PropertyGet = Split(Mid(sFonts, 2, Len(sFonts) - 2), &quot;,&quot;) Else _PropertyGet = Array()
-		Case &quot;Locale&quot;
-			Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
+		Case &quot;FormatLocale&quot;
+			Set oLocale = SF_Utils._GetUNOService(&quot;FormatLocale&quot;)
+			_PropertyGet = oLocale.Language &amp; &quot;-&quot; &amp; oLocale.Country
+		Case &quot;OfficeLocale&quot;
+			Set oLocale = SF_Utils._GetUNOService(&quot;OfficeLocale&quot;)
 			_PropertyGet = oLocale.Language &amp; &quot;-&quot; &amp; oLocale.Country
 		Case &quot;OfficeVersion&quot;
 			_PropertyGet = _GetProductName()
@@ -371,6 +435,9 @@ Const cstSubArgs = &quot;&quot;
 			_PropertyGet = sOSName
 		Case &quot;Printers&quot;
 			_PropertyGet = _GetPrinters()
+		Case &quot;SystemLocale&quot;, &quot;Locale&quot;
+			Set oLocale = SF_Utils._GetUNOService(&quot;SystemLocale&quot;)
+			_PropertyGet = oLocale.Language &amp; &quot;-&quot; &amp; oLocale.Country
 		Case Else
 			_PropertyGet = Null
 	End Select

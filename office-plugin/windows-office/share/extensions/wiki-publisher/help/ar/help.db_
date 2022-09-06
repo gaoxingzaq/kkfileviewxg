@@ -1,11 +1,11 @@
-25 com.sun.wiki-publisher%2Fwikisend.xhp 56 #com.sun.wiki-publisher/wikisend.xhphelp.jar(الإرسال إلى ميدياويكي
-22 vnd.com.sun.star.wiki%3AsendDialog 63 0com.sun.wiki-publisher/wikisend.xhp#bm_id7021088help.jar(الإرسال إلى ميدياويكي
-34 com.sun.star.wiki.MediaWiki.SendToMediaWiki.WikiList 62 /com.sun.wiki-publisher/wikisend.xhp#bm_id735801help.jar(الإرسال إلى ميدياويكي
-37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.ArticleText 62 /com.sun.wiki-publisher/wikisend.xhp#bm_id735802help.jar(الإرسال إلى ميدياويكي
-37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.CommentText 62 /com.sun.wiki-publisher/wikisend.xhp#bm_id735803help.jar(الإرسال إلى ميدياويكي
-36 com.sun.star.wiki.MediaWiki.SendToMediaWiki.MinorCheck 63 0com.sun.wiki-publisher/wikisend.xhp#bm_id2619708help.jar(الإرسال إلى ميدياويكي
-38 com.sun.star.wiki.MediaWiki.SendToMediaWiki.BrowserCheck 63 0com.sun.wiki-publisher/wikisend.xhp#bm_id1293679help.jar(الإرسال إلى ميدياويكي
-36 com.sun.star.wiki.MediaWiki.SendToMediaWiki.SendButton 62 /com.sun.wiki-publisher/wikisend.xhp#bm_id290536help.jar(الإرسال إلى ميدياويكي
+25 com.sun.wiki-publisher%2Fwikisend.xhp 50 #com.sun.wiki-publisher/wikisend.xhphelp.jar"أرسل إلى ميدياويكي
+22 vnd.com.sun.star.wiki%3AsendDialog 5d 0com.sun.wiki-publisher/wikisend.xhp#bm_id7021088help.jar"أرسل إلى ميدياويكي
+34 com.sun.star.wiki.MediaWiki.SendToMediaWiki.WikiList 5c /com.sun.wiki-publisher/wikisend.xhp#bm_id735801help.jar"أرسل إلى ميدياويكي
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.ArticleText 5c /com.sun.wiki-publisher/wikisend.xhp#bm_id735802help.jar"أرسل إلى ميدياويكي
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.CommentText 5c /com.sun.wiki-publisher/wikisend.xhp#bm_id735803help.jar"أرسل إلى ميدياويكي
+36 com.sun.star.wiki.MediaWiki.SendToMediaWiki.MinorCheck 5d 0com.sun.wiki-publisher/wikisend.xhp#bm_id2619708help.jar"أرسل إلى ميدياويكي
+38 com.sun.star.wiki.MediaWiki.SendToMediaWiki.BrowserCheck 5d 0com.sun.wiki-publisher/wikisend.xhp#bm_id1293679help.jar"أرسل إلى ميدياويكي
+36 com.sun.star.wiki.MediaWiki.SendToMediaWiki.SendButton 5c /com.sun.wiki-publisher/wikisend.xhp#bm_id290536help.jar"أرسل إلى ميدياويكي
 28 com.sun.wiki-publisher%2Fwikiformats.xhp 52 &com.sun.wiki-publisher/wikiformats.xhphelp.jar!تنسيقات ميدياويكي
 1f vnd.com.sun.star.wiki%3Aformats 5f 3com.sun.wiki-publisher/wikiformats.xhp#bm_id7021088help.jar!تنسيقات ميدياويكي
 28 com.sun.wiki-publisher%2Fwikiaccount.xhp 43 &com.sun.wiki-publisher/wikiaccount.xhphelp.jarميدياويكي

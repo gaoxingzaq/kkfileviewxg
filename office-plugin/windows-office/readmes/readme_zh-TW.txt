@@ -1,6 +1,6 @@
 
 ======================================================================
-LibreOffice 7.3 讀我檔案
+LibreOffice 7.4 讀我檔案
 ======================================================================
 
 
@@ -85,7 +85,7 @@ sudo dpkg -i *.deb
 
 在本安裝指引內未特別提及的其他 Linux 散布版上安裝 LibreOffice 應該也很容易，但可能遇到的主要的差異大概是桌面整合這項。
 
-RPMS (或 DEBS，視軟體包管理系統自行對應) 目錄也包含名為 libreoffice7.3-freedesktop-menus-7.3.0.1-1.noarch.rpm (或 libreoffice7.3-debian-menus_7.3.0.1-1_all.deb，相對應之檔案，或類似檔名)。這是供所有支援 Freedesktop.org 規格/建議 (https://en.wikipedia.org/wiki/Freedesktop.org) 之 Linux 散布版使用的軟體包，提供上述指示中未提及之其他 Linux 散布版安裝。
+RPMS (或 DEBS，視軟體包管理系統自行對應) 目錄也包含名為 libreoffice7.4-freedesktop-menus-7.4.0.1-1.noarch.rpm (或 libreoffice7.4-debian-menus_7.4.0.1-1_all.deb，相對應之檔案，或類似檔名)。這是供所有支援 Freedesktop.org 規格/建議 (https://en.wikipedia.org/wiki/Freedesktop.org) 之 Linux 散布版使用的軟體包，提供上述指示中未提及之其他 Linux 散布版安裝。
 
 安裝語言包
 ----------------------------------------------------------------------
@@ -198,7 +198,7 @@ LibreOffice 中只能使用作業系統未使用的捷徑鍵 (按鍵組合)。�
 
 即使您對軟體設計或編寫程式碼的經驗有限，還是可對此重要的開源碼專案做出卓越的貢獻。沒錯，就是您！
 
-我們希望您對使用新版 LibreOffice 7.3 感到滿意，並願意線上加入我們。
+我們希望您對使用新版 LibreOffice 7.4 感到滿意，並願意線上加入我們。
 
 LibreOffice 社群
 

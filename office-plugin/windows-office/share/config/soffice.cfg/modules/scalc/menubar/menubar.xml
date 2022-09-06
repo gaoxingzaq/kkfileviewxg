@@ -165,6 +165,7 @@
       </menu:menu>
       <menu:menuseparator/>
       <menu:menuitem menu:id=".uno:ViewValueHighlighting"/>
+      <menu:menuitem menu:id=".uno:ViewHiddenColRow"/>
       <menu:menuitem menu:id=".uno:ToggleFormula"/>
       <menu:menuitem menu:id=".uno:ShowAnnotations"/>
       <menu:menuseparator/>
@@ -206,6 +207,7 @@
     <menu:menupopup>
       <menu:menuitem menu:id=".uno:InsertGraphic"/>
       <menu:menuitem menu:id=".uno:InsertObjectChart"/>
+      <menu:menuitem menu:id=".uno:InsertSparkline"/>
       <menu:menuitem menu:id=".uno:DataDataPilotRun"/>
       <menu:menu menu:id=".uno:GraphicMenu">
         <menu:menupopup>
@@ -438,7 +440,16 @@
           <menu:menuitem menu:id=".uno:ExportAsGraphic"/>
         </menu:menupopup>
       </menu:menu>
-      <menu:menu menu:id=".uno:ObjectMenu">
+      <menu:menu menu:id=".uno:FormatSparklineMenu">
+        <menu:menupopup>
+          <menu:menuitem menu:id=".uno:EditSparklineGroup"/>
+          <menu:menuitem menu:id=".uno:DeleteSparkline"/>
+          <menu:menuitem menu:id=".uno:DeleteSparklineGroup"/>
+          <menu:menuitem menu:id=".uno:GroupSparklines"/>
+          <menu:menuitem menu:id=".uno:UngroupSparklines"/>
+        </menu:menupopup>
+      </menu:menu>
+      <menu:menu menu:id=".uno:FormatObjectMenu">
         <menu:menupopup>
           <menu:menuitem menu:id=".uno:TransformDialog"/>
           <menu:menuitem menu:id=".uno:FormatLine"/>
@@ -577,8 +588,10 @@
       <menu:menuitem menu:id=".uno:Show" menu:style="text"/>
       <menu:menuseparator/>
       <menu:menuitem menu:id=".uno:Move"/>
+      <menu:menuitem menu:id=".uno:DuplicateSheet"/>
       <menu:menu menu:id=".uno:NavigateMenu">
         <menu:menupopup>
+          <menu:menuitem menu:id=".uno:JumpToTable"/>
           <menu:menuitem menu:id=".uno:JumpToPrevTable"/>
           <menu:menuitem menu:id=".uno:JumpToNextTable"/>
         </menu:menupopup>

@@ -18,7 +18,7 @@
             	<value xml:lang="br">Arventennoù yezh</value>
             	<value xml:lang="brx">Language Settings</value>
             	<value xml:lang="bs">Jezičke postavke</value>
-            	<value xml:lang="ca">Configuració de la llengua</value>
+            	<value xml:lang="ca">Paràmetres de la llengua</value>
             	<value xml:lang="ca-valencia">Configuració de la llengua</value>
             	<value xml:lang="ckb">ڕێکخستنەکانی زمان</value>
             	<value xml:lang="cs">Jazyková nastavení</value>
@@ -87,7 +87,7 @@
             	<value xml:lang="pl">Ustawienia językowe</value>
             	<value xml:lang="pt">Definições de idioma</value>
             	<value xml:lang="pt-BR">Configurações de idioma</value>
-            	<value xml:lang="ro">Configurări limbă</value>
+            	<value xml:lang="ro">Setări de limbă</value>
             	<value xml:lang="ru">Настройки языка</value>
             	<value xml:lang="rw">Language Settings</value>
             	<value xml:lang="sa-IN">भाषा निर्धारणानि</value>
@@ -213,7 +213,7 @@
                     	<value xml:lang="pl">Sprawdzanie zdań w języku angielskim</value>
                     	<value xml:lang="pt">Análise de frases em inglês</value>
                     	<value xml:lang="pt-BR">Verificação de frases em inglês</value>
-                    	<value xml:lang="ro">English Sentence Checking</value>
+                    	<value xml:lang="ro">Verificare de propoziții în limba engleză</value>
                     	<value xml:lang="ru">Грамматика (английский)</value>
                     	<value xml:lang="rw">English Sentence Checking</value>
                     	<value xml:lang="sa-IN">English Sentence Checking</value>
@@ -234,7 +234,7 @@
                     	<value xml:lang="ta">தமிழ் வாக்கியச் சோதனை</value>
                     	<value xml:lang="te">English Sentence Checking</value>
                     	<value xml:lang="tg">English Sentence Checking</value>
-                    	<value xml:lang="th">English Sentence Checking</value>
+                    	<value xml:lang="th">การตรวจสอบประโยคภาษาอังกฤษ</value>
                     	<value xml:lang="tn">English Sentence Checking</value>
                     	<value xml:lang="tr">İngilizce Cümle Kontrolü</value>
                     	<value xml:lang="ts">English Sentence Checking</value>

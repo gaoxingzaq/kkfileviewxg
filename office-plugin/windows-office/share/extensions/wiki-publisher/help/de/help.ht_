@@ -11,8 +11,8 @@
 2f com.sun.star.wiki.MediaWiki.EditSetting.SaveBox a8 Aktivieren Sie diese Option, um das Kennwort dauerhaft zu speichern. Das Master-Kennwort muss unter Extras ▸ Optionen… ▸ %PRODUCTNAME ▸ Sicherheit gesetzt sein.
 20 vnd.com.sun.star.wiki%3Aaboutbox b7 Mithilfe des Wiki Publisher können Sie Ihr aktuelles Writer-Textdokument auf einen MediaWiki-Server hochladen. Nach dem Hochladen kann jeder Wiki-Benutzer Ihr Dokument im Wiki lesen.
 1c vnd.com.sun.star.wiki%3Asend 7a Wählen Sie Datei ▸ Senden ▸ An MediaWiki, um das aktuelle Writer-Dokument auf einem MediaWiki-Server bereitzustellen.
-20 vnd.com.sun.star.wiki%3Asettings 11a Klicken Sie auf Hinzufügen, um einen neuen Wiki-Server hinzuzufügen.Wählen Sie einen Eintrag aus und klicken Sie dann auf Bearbeiten, um die Konto-Einstellungen zu bearbeiten.Wählen Sie einen Eintrag aus und klicken Sie auf Entfernen, um einen Eintrag aus der Liste zu löschen.
-31 com.sun.star.wiki.MediaWiki.Settings.RemoveButton 31 Entfernt den ausgewählten Eintrag von der Liste.
+20 vnd.com.sun.star.wiki%3Asettings 125 Klicken Sie auf »Hinzufügen«, um einen neuen Wiki-Server hinzuzufügen.Wählen Sie einen Eintrag aus und klicken Sie dann auf »Bearbeiten«, um die Kontoeinstellungen zu bearbeiten.Wählen Sie einen Eintrag aus und klicken Sie auf »Entfernen«, um einen Eintrag aus der Liste zu löschen.
+31 com.sun.star.wiki.MediaWiki.Settings.RemoveButton 31 Entfernt den ausgewählten Eintrag aus der Liste.
 2f com.sun.star.wiki.MediaWiki.Settings.EditButton 49 Öffnet den Dialog MediaWiki, um den ausgewählten Eintrag zu bearbeiten.
-2d com.sun.star.wiki.MediaWiki.Settings.WikiList 11a Klicken Sie auf Hinzufügen, um einen neuen Wiki-Server hinzuzufügen.Wählen Sie einen Eintrag aus und klicken Sie dann auf Bearbeiten, um die Konto-Einstellungen zu bearbeiten.Wählen Sie einen Eintrag aus und klicken Sie auf Entfernen, um einen Eintrag aus der Liste zu löschen.
+2d com.sun.star.wiki.MediaWiki.Settings.WikiList 125 Klicken Sie auf »Hinzufügen«, um einen neuen Wiki-Server hinzuzufügen.Wählen Sie einen Eintrag aus und klicken Sie dann auf »Bearbeiten«, um die Kontoeinstellungen zu bearbeiten.Wählen Sie einen Eintrag aus und klicken Sie auf »Entfernen«, um einen Eintrag aus der Liste zu löschen.
 2e com.sun.star.wiki.MediaWiki.Settings.AddButton 4e Öffnet den Dialog MediaWiki, um einen neuen Eintrag in die Liste einzufügen.
