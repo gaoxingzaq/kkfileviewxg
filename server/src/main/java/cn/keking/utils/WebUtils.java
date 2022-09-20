@@ -1,6 +1,7 @@
 package cn.keking.utils;
 
 import cn.keking.service.FileHandlerService;
+import cn.keking.web.controller.IndexController;
 import io.mola.galimatias.GalimatiasParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Base64Utils;
@@ -208,22 +209,16 @@ public class WebUtils {
      */
     public static String getSourceUrl(ServletRequest request) {
         String url = request.getParameter("url");
-        String urls = request.getParameter("urls");
         String currentUrl = request.getParameter("currentUrl");
         String urlPath = request.getParameter("urlPath");
         if (StringUtils.isNotBlank(url)) {
-            return new String(Base64Utils.decodeFromString(url), StandardCharsets.UTF_8);
+            return url;
         }
         if (StringUtils.isNotBlank(currentUrl)) {
-            return new String(Base64Utils.decodeFromString(currentUrl), StandardCharsets.UTF_8);
+            return currentUrl;
         }
         if (StringUtils.isNotBlank(urlPath)) {
-            return new String(Base64Utils.decodeFromString(urlPath), StandardCharsets.UTF_8);
-        }
-        if (StringUtils.isNotBlank(urls)) {
-            urls = new String(Base64Utils.decodeFromString(urls), StandardCharsets.UTF_8);
-            String[] images = urls.split("\\|");
-            return images[0];
+            return urlPath;
         }
         return null;
     }

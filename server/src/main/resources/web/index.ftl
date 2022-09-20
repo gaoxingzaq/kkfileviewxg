@@ -115,8 +115,12 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年9月20日，v4.7.9.1版本发布:<br>  
+1、修复base64和正常URL不自动识别问题<br>
+2、升级windows下 LibreOffice为7.41版本<br><br>
+
 2022年8月9日，v4.7.9版本发布:<br>  
-1、修复修复Excel 乱码问题<br>
+1、修复Excel 乱码问题<br>
 2、优化代码<br>
 3、OFD转换优化/OFD.JS解析插件优化图片处理/优化字体处理/修复只能预览10页的BUG<br><br>
 
