@@ -500,6 +500,7 @@ ofd 类型文件支持版本，本次版本重要功能均由社区开发贡献�
 如果这个项目解决了你的实际问题，可在 https://gitee.com/kekingcn/file-online-preview/issues/IGSBV
 登记下，如果节省了你的三方预览服务费用，也愿意支持下的话，可点击下方【捐助】请作者喝杯咖啡，也是非常感谢
 
+
 ### Stars 趋势图
 #### Gitee
 [![Stargazers over time](https://whnb.wang/img/kekingcn/file-online-preview)](https://whnb.wang/kekingcn/file-online-preview?e=86400)
