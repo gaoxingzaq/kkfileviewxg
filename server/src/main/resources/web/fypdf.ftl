@@ -82,7 +82,7 @@ $('body').append('共计:' + ${fenye} + '页');
    now = 1;
    }
     var url = '${finalUrl}'+"?page="+now;
-     document.getElementsByTagName('iframe')[0].src = "${baseUrl}pdfjs/web/viewer.html?file=" + encodeURIComponent(url) + "&disabledownload=${pdfDownloadDisable}&pdfXianzhi=${pdfXianzhi}&watermarkTxt=${watermarkTxt}&pdfhighlightAll=${highlightAll}";
+     document.getElementsByTagName('iframe')[0].src = "${baseUrl}pdfjs/web/viewer.html?file=" + encodeURIComponent(url) + "&disabledownload=${pdfDownloadDisable}&pdfXianzhi=${pdfXianzhi}&watermarkTxt=${watermarkTxt}&pdfhighlightAll=${highlightAll}#page=${page}";
     document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight - 10;
     /**
      * 页面变化调整高度

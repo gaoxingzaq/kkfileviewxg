@@ -72,13 +72,14 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
         <div class="panel-body">
-            <label>文件下载地址：<input type="text" id="_url" style="min-width:50em"/></label>
+            <label>文件下载地址：<input type="text" id="_url" style="min-width:45em"/></label>
             <form action="${baseUrl}onlinePreview" target="_blank" id="preview_by_url" style="display: inline-block">
                 <input type="hidden" name="url"/>
 				<label><input type="checkbox"  name="genxin" value="ok" />更新</label> 
-                <input type="text" id="filePassword" name="filePassword" placeholder="密码" style="width:50px;"> 
+                <input type="text" id="filePassword" name="filePassword" placeholder="密码" style="width:40px;"> 
+                 <input type="text" id="page" name="page" placeholder="页码" style="width:40px;"> 
                  <input type="text" id="highlightAll" name="highlightAll" placeholder="高亮显示" style="width:60px;"> 
-				<input type="text" id="watermarkTxt" name="watermarkTxt" placeholder="插入水印" style="width:80px;"> 
+				<input type="text" id="watermarkTxt" name="watermarkTxt" placeholder="插入水印" style="width:60px;"> 
                 <input type="submit" value="预览">
             </form>
         </div>

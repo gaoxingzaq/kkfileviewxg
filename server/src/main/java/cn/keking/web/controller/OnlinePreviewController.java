@@ -61,7 +61,7 @@ public class OnlinePreviewController {
     @Value("${pdfpagee:0}")
     private String pdfpagee;
     @GetMapping( "/onlinePrevieww")
-    public String onlinePrevieww(String url,String highlightAll, Model model, HttpServletRequest req) {
+    public String onlinePrevieww(String url,String highlightAll, String page, Model model, HttpServletRequest req) {
         String ip = jilvip(req);  //获取IP地址
         String fileUrl;
         try {
@@ -82,8 +82,13 @@ public class OnlinePreviewController {
         if (highlightAll == null || highlightAll == "" ){
             highlightAll = "null";
         }
+        if (page == null || page.equals("")){
+            page = "1";
+        }
         highlightAll= HtmlUtils.htmlEscape(highlightAll);
+        page= HtmlUtils.htmlEscape(page);
         model.addAttribute("highlightAll", highlightAll);
+        model.addAttribute("page", page);
         model.addAttribute("file", fileAttribute);
         FilePreview filePreview = previewFactory.get(fileAttribute);
         if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false")) {
@@ -125,8 +130,12 @@ public class OnlinePreviewController {
             String errorMsg = String.format(BASE64_DECODE_ERROR_MSG, "urls");
             return otherFilePreview.notSupportedFile(model, errorMsg);
         }
+        if (fileUrls == null || fileUrls.length()<= 0){
+            logger.info("URL异常：{}", fileUrls);
+            return otherFilePreview.notSupportedFile(model, "NULL地址不允许预览：");
+        }
         if(!ConfigConstants.getlocalpreview().equalsIgnoreCase("false")) {
-            if (fileUrls == null || fileUrls.toLowerCase().startsWith("file:") || fileUrls.toLowerCase().startsWith("file%3")) {
+            if ( fileUrls.toLowerCase().startsWith("file:") || fileUrls.toLowerCase().startsWith("file%3")) {
                 logger.info("URL异常：{}", fileUrls);
                 return otherFilePreview.notSupportedFile(model, "该文件不允许预览：" + fileUrls);
             }
