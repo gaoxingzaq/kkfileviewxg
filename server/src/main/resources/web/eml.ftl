@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0">
     <#include "*/commonHeader.ftl">
 </head>
-	<#if currentUrl?contains("http://") || currentUrl?contains("https://") || currentUrl?contains("file://")>
+	<#if currentUrl?contains("http://") || currentUrl?contains("https://") || currentUrl?contains("file://") || currentUrl?contains("ftp://")>
     <#assign finalUrl="${currentUrl}">
 <#else>
     <#assign finalUrl="${baseUrl}${currentUrl}">

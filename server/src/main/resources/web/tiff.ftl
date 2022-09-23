@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="css/viewer.min.css">
     <script src="js/UTIF.js"></script>
     <#include "*/commonHeader.ftl">
+    	<#if currentUrl?contains("http://") || currentUrl?contains("https://") || currentUrl?contains("file://")|| currentUrl?contains("ftp://")>
+    <#assign finalUrl="${currentUrl}">
+<#else>
+    <#assign finalUrl="${baseUrl}${currentUrl}">
+</#if>
 </head>
 <style type="text/css">
     body{ text-align:center} 
@@ -59,8 +64,9 @@
 String.prototype.endsWithh = function(str) {
     var reg = new RegExp(str + "$");
     return reg.test(this);
+	 
 }
-	   var url = '${currentUrl}';
+  var url = '${finalUrl}';
     var baseUrl = '${baseUrl}'.endsWithh('/') ? '${baseUrl}' : '${baseUrl}' + '/';
     if (!url.startsWithh(baseUrl)) {
         url = baseUrl + 'getCorsFile?urlPath=' + encodeURIComponent(url);

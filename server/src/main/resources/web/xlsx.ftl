@@ -12,7 +12,7 @@
         <script src="xlsx/luckysheet.umd.js"></script>
 		<script src="js/watermark.js" type="text/javascript"></script>
     </head>
-	<#if pdfUrl?contains("http://") || pdfUrl?contains("https://")>
+	<#if pdfUrl?contains("http://") || pdfUrl?contains("https://") || pdfUrl?contains("ftp://")>
     <#assign finalUrl="${pdfUrl}">
 <#else>
     <#assign finalUrl="${baseUrl}${pdfUrl}">

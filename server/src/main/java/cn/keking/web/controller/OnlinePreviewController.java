@@ -184,7 +184,13 @@ public class OnlinePreviewController {
     @GetMapping("/getCorsFile")
     public String getCorsFile(String urlPath, Model model, HttpServletResponse response) {
         HttpURLConnection urlcon;
-        if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || !urlPath.toLowerCase().startsWith("http")) {
+        boolean xieyi ;
+        if(urlPath.toLowerCase().startsWith("ftp:")) {
+            xieyi= false;
+        }else {
+            xieyi= true;
+        }
+        if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || xieyi) {
             logger.info("读取跨域文件异常：{}", urlPath);
             return otherFilePreview.notSupportedFile(model, "该类型不允许预览：" + urlPath);
         }else {
@@ -195,34 +201,47 @@ public class OnlinePreviewController {
                 urlPath = URLDecoder.decode(urlPath, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-            }
-            try {
-                URL url = WebUtils.normalizedURL(urlPath);
-                urlcon=(HttpURLConnection)url.openConnection();
-                urlcon.setConnectTimeout(30000);
-                urlcon.setReadTimeout(30000);
-                urlcon.setInstanceFollowRedirects(false);
-                if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
-                    url =new URL(urlcon.getHeaderField("Location"));
+            } if(xieyi){
+                try {
+                    URL url = WebUtils.normalizedURL(urlPath);
                     urlcon=(HttpURLConnection)url.openConnection();
                     urlcon.setConnectTimeout(30000);
                     urlcon.setReadTimeout(30000);
                     urlcon.setInstanceFollowRedirects(false);
-                    //  System.out.println(urlcon.getResponseCode());
-                }
-                if(urlcon.getResponseCode() ==404 ||urlcon.getResponseCode() ==403 ||urlcon.getResponseCode() ==500 ){
+                    if(urlcon.getResponseCode() ==302 ||urlcon.getResponseCode() ==301){
+                        url =new URL(urlcon.getHeaderField("Location"));
+                        urlcon=(HttpURLConnection)url.openConnection();
+                        urlcon.setConnectTimeout(30000);
+                        urlcon.setReadTimeout(30000);
+                        urlcon.setInstanceFollowRedirects(false);
+                        //  System.out.println(urlcon.getResponseCode());
+                    }
+                    if(urlcon.getResponseCode() ==404 ||urlcon.getResponseCode() ==403 ||urlcon.getResponseCode() ==500 ){
+                        logger.error("读取跨域文件异常，url：{}", urlPath);
+                        return otherFilePreview.notSupportedFile(model, "地址错误：" + urlPath);
+                    }else {
+                        if(urlPath.contains( ".svg")) {
+                            response.setContentType("image/svg+xml");
+                        }
+                        byte[] bytes = NetUtil.downloadBytes(url.toString());
+                        IOUtils.write(bytes, response.getOutputStream());
+                    }
+                } catch (IOException | GalimatiasParseException e) {
                     logger.error("读取跨域文件异常，url：{}", urlPath);
-                    return otherFilePreview.notSupportedFile(model, "地址错误：" + urlPath);
-                }else {
-                if(urlPath.contains( ".svg")) {
-               response.setContentType("image/svg+xml");
+                    return otherFilePreview.notSupportedFile(model, "文件有问题：" + urlPath);
                 }
+            }else {
+                try {
+                    URL url = WebUtils.normalizedURL(urlPath);
+                    if(urlPath.contains( ".svg")) {
+                        response.setContentType("image/svg+xml");
+                    }
                     byte[] bytes = NetUtil.downloadBytes(url.toString());
                     IOUtils.write(bytes, response.getOutputStream());
+                } catch (IOException | GalimatiasParseException e) {
+                    logger.error("读取跨域文件异常，url：{}", urlPath);
+                    return otherFilePreview.notSupportedFile(model, "文件有问题：" + urlPath);
                 }
-            } catch (IOException | GalimatiasParseException e) {
-                logger.error("读取跨域文件异常，url：{}", urlPath);
-                return otherFilePreview.notSupportedFile(model, "文件有问题：" + urlPath);
             }
         }
         return null;

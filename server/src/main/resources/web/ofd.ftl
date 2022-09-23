@@ -7,22 +7,20 @@
     <title>${file.name}文件预览</title>
     <#include "*/commonHeader.ftl">
 </head>
-<#if pdfUrl?contains("http://") || pdfUrl?contains("https://")>
+<#if pdfUrl?contains("http://") || pdfUrl?contains("https://")|| pdfUrl?contains("ftp://")>
     <#assign finalUrl="${pdfUrl}">
 <#else>
     <#assign finalUrl="${baseUrl}${pdfUrl}">
 </#if>
 <body>
-
 <iframe src="" width="100%" frameborder="0"></iframe>
-</body>
+</body>fff
 <script type="text/javascript">
     var url = '${finalUrl}';
     var baseUrl = '${baseUrl}'.endsWith('/') ? '${baseUrl}' : '${baseUrl}' + '/';
     if (!url.startsWith(baseUrl)) {
         url = baseUrl + 'getCorsFile?urlPath=' + encodeURIComponent(url);
     }
-
 	document.getElementsByTagName('iframe')[0].src = "${baseUrl}ofd/index.html?file=" + encodeURIComponent(url)+"&pdfXianzhi=${pdfXianzhi}";
     document.getElementsByTagName('iframe')[0].height = document.documentElement.clientHeight - 10;
     /**

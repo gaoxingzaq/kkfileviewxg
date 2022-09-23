@@ -7,7 +7,7 @@
     <title>${file.name}3D预览</title>
     <#include "*/commonHeader.ftl">
 </head>
-<#if pdfUrl?contains("http://") || pdfUrl?contains("https://")>
+<#if pdfUrl?contains("http://") || pdfUrl?contains("https://") || pdfUrl?contains("ftp://")>
     <#assign finalUrl="${pdfUrl}">
 <#else>
     <#assign finalUrl="${baseUrl}${pdfUrl}">

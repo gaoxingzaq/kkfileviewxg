@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <#include "*/commonHeader.ftl">
 <script src="js/svg-pan-zoom.js"></script>
-<#if currentUrl?contains("http://") || currentUrl?contains("https://")>
+<#if currentUrl?contains("http://") || currentUrl?contains("https://") || currentUrl?contains("ftp://")>
     <#assign finalUrl="${currentUrl}">
 <#else>
     <#assign finalUrl="${baseUrl}${currentUrl}">

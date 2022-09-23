@@ -44,18 +44,11 @@ public class PictureFilePreviewImpl implements FilePreview {
         if (!CollectionUtils.isEmpty(zipImgUrls)) {
             imgUrls.addAll(zipImgUrls);
         }
-        // 不是http开头，浏览器不能直接访问，需下载到本地
-        if (url != null && !url.toLowerCase().startsWith("http")) {
-            ReturnResponse<String> response = DownloadUtils.downLoad(fileAttribute, null);
-            if (response.isFailure()) {
-                return otherFilePreview.notSupportedFile(model, fileAttribute, response.getMsg());
-            } else {
-                String file = fileHandlerService.getRelativePath(response.getContent());
-                imgUrls.clear();
-                imgUrls.add(file);
-                model.addAttribute("imgUrls", imgUrls);
-                model.addAttribute("currentUrl", file);
-            }
+        // 不是http开头，用跨域方法
+        if (url != null && url.toLowerCase().startsWith("ftp")) {
+            model.addAttribute("imgUrls", imgUrls);
+            model.addAttribute("currentUrl", url);
+            return XZLPICTURE_FILE_PREVIEW_PAGE;
         } else {
            
             if (officePreviewType.equalsIgnoreCase("imagexz")){
