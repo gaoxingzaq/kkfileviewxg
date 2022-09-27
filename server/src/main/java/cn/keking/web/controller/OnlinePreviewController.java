@@ -190,7 +190,7 @@ public class OnlinePreviewController {
         }else {
             xieyi= true;
         }
-        if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3") || xieyi) {
+        if (urlPath == null || urlPath.toLowerCase().startsWith("file:") || urlPath.toLowerCase().startsWith("file%3")) {
             logger.info("读取跨域文件异常：{}", urlPath);
             return otherFilePreview.notSupportedFile(model, "该类型不允许预览：" + urlPath);
         }else {
