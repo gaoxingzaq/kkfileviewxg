@@ -83,6 +83,9 @@ public class SimTextFilePreviewImpl implements FilePreview {
             return "";
         }else {
             String charset = EncodingDetects.getJavaEncode(baseUrll);
+            if (charset.equalsIgnoreCase("ASCII")){
+                charset ="UTF-8";
+            }
             System.out.println(charset);
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(baseUrll), charset));
             StringBuilder result = new StringBuilder();
