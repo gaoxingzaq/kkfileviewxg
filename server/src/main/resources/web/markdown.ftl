@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0">
     <title>${file.name}文本预览</title>
     <script src="js/marked.min.js" type="text/javascript"></script>
+    <link id="mdstyle" rel="stylesheet" type="text/css" href="css/markdown.css">
     <#include "*/commonHeader.ftl">
 </head>
 <body>
