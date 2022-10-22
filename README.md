@@ -116,6 +116,7 @@ pdf预览模式预览效果如下
 3、修复Luckysheet 一处解析BUG   
 4、OFD读取优化/文本文件编码处理   
 5、pdfbox组件更新   
+6、更新Online 3D Viewer 新增FCStd格式支持   
 
 
 2022年9月20日，v4.7.9.1版本发布:    

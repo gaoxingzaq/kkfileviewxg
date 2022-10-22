@@ -42,7 +42,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
                     var url = 'http://127.0.0.1:8080/file/test.txt'; //要预览文件的访问地址
                     window.open('${baseUrl}onlinePreview?url='+encodeURIComponent(Base64.encode(url)));
                    更新功能&gengxin=ok 固定格式 为了开启缓存 而且需要更新的文件设立的
-                   其他功能  &filePassword=(密码)&highlightAll=(PDF高亮)&watermarkTxt=(水印)
+                   其他功能  &filePassword=(密码)&highlightAll=(PDF高亮)&watermarkTxt=(水印)&&page=(页码)
                    下载流图片的方法 &officePreviewType=imagexz 其他转换内核 &officePreviewType=poi 
                 </pre>
             </div>
@@ -122,6 +122,7 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
 3、修复Luckysheet 一处解析BUG<br>
 4、OFD读取优化/文本文件编码处理<br>
 5、pdfbox组件更新<br>
+6、更新Online 3D Viewer 新增FCStd格式支持<br>
        
 2022年9月20日，v4.7.9.1版本发布:<br>  
 1、修复base64和正常URL不自动识别问题<br>
