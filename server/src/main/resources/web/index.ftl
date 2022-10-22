@@ -116,6 +116,13 @@ white-space:pre-line;word-wrap: break-word;    word-break: break-all;
             </h4>
         </div>
        <div id="div" class="panel-body" style="display:none;">
+2022年10月22日，v4.7.9.2版本发布:<br>  
+1、新增PDF选页功能<br>
+2、针对ftp协议预览错误 进行了修复<br>
+3、修复Luckysheet 一处解析BUG<br>
+4、OFD读取优化/文本文件编码处理<br>
+5、pdfbox组件更新<br>
+       
 2022年9月20日，v4.7.9.1版本发布:<br>  
 1、修复base64和正常URL不自动识别问题<br>
 2、升级windows下 LibreOffice为7.41版本<br><br>
