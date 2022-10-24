@@ -1,1 +1,0 @@
-Ĉi tiu aldonaĵo integriĝas en Tablelilon kaj provizas novajn modulojn uzeblajn por optimumigi modelojn de nelineara programado.

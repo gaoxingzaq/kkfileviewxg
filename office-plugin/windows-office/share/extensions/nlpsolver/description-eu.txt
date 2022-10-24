@@ -1,1 +1,0 @@
-Hedapen hau Calc aplikazioan integratzen da eta ebazpen-motor berriak eskaintzen ditu programazio-eredu ez-linealak optimizatzeko.

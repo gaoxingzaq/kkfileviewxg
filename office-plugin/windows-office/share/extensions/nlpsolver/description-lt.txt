@@ -1,1 +1,0 @@
-Šis plėtinys, integruojamas į skaičiuoklę „Calc“, įdiegia naujus sprendiklio algoritmus netiesinio programavimo modeliams optimizuoti.

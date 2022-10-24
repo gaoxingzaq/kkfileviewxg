@@ -1,1 +1,0 @@
-Šis paplašinājums ir integrēts ar Calc un piedāvā Solver dzini, lai optimizētu nelineārās programmēšanas modeļus.

@@ -1,1 +1,0 @@
-Rozšíření Calcu přidávající řešitele s funkcemi použitelnými pro optimalizaci nelineárních programovacích modelů.

@@ -1,1 +1,0 @@
-Aquesta extension s'intègra a Calc e ofrís de novèls motors de solucions d'utilizar per optimizar los modèls de programacion non linears.

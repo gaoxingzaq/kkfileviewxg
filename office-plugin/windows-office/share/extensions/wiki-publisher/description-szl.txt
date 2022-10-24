@@ -1,1 +1,0 @@
-WikiPublisher przizwolo na tworzynie artykułōw Wiki na serwerach MediaWiki bez kōnieczności znanio składnie jynzyka MediaWiki. Publikuj nowe i edytuj istniyjōnce dokumynta bezpostrzednio z Writera na strōna wiki.
